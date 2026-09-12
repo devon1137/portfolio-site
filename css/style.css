@@ -625,7 +625,7 @@ nav.primary a[aria-current="page"] { color: var(--text); }
    border, vertical ones down the right border.
    The icon glow stays on :hover for instant feedback. */
 :root {
-  --hex-tile-lit: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='66' height='38.105' viewBox='0 0 66 38.105'%3E%3Cpath d='M11 0L0 19.053L11 38.105M11 0H33M11 38.105H33M33 0L44 19.053L33 38.105M44 19.053H66' fill='none' stroke='%23D9A63E' stroke-opacity='0.6' stroke-width='1'/%3E%3C/svg%3E");
+  --hex-tile-lit: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='66' height='38.105' viewBox='0 0 66 38.105'%3E%3Cpath d='M11 0L0 19.053L11 38.105M11 0H33M11 38.105H33M33 0L44 19.053L33 38.105M44 19.053H66' fill='none' stroke='%23D9A63E' stroke-opacity='0.45' stroke-width='1'/%3E%3C/svg%3E");
   /* One soft edge, lit side first (wipe-in) or clear side first (wipe-out). */
   --wipe-in-x:  linear-gradient(105deg, #000 0 47%, transparent 53% 100%);
   --wipe-out-x: linear-gradient(105deg, transparent 0 47%, #000 53% 100%);
@@ -831,6 +831,22 @@ nav.primary a[aria-current="page"] { color: var(--text); }
 .practice-list > div.is-lit[data-from="bottom"]::after,
 .practice-list > div.is-leaving[data-to="top"]::before,
 .practice-list > div.is-leaving[data-to="top"]::after { transform: scaleY(-1); }
+/* Legibility while lit: body copy steps up from --text-dim to --text,
+   and heading + copy get a tight halo in the card's own fill so the
+   hex lines fall back behind the glyphs instead of running through
+   them. Applied through the leave too so it fades with the honeycomb
+   rather than snapping off ahead of it. */
+.practice-list h3,
+.practice-list p {
+  transition: color var(--t-med) var(--ease), text-shadow var(--t-med) var(--ease);
+}
+.practice-list > div:is(.is-lit, .is-leaving) p { color: var(--text); }
+.practice-list > div:is(.is-lit, .is-leaving) :is(h3, p) {
+  text-shadow:
+    0 0 2px var(--surface-2),
+    0 0 6px var(--surface-2),
+    0 0 12px var(--surface-2);
+}
 .practice-list .icon { transition: filter var(--t-med) var(--ease); }
 .practice-list > div:hover .icon,
 .practice-list > div:focus-within .icon {

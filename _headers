@@ -1,0 +1,13 @@
+# Netlify headers (applies to drag-and-drop and git deploys alike).
+# Caching is left at Netlify's default (ETag revalidation, invalidated on
+# every deploy) because the site has no build step or hashed filenames.
+
+/*
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: DENY
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=()
+
+# The agreement is a contract page, not a landing page.
+/agreement.html
+  X-Robots-Tag: noindex

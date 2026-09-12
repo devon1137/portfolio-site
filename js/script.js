@@ -31,10 +31,8 @@ document.addEventListener('DOMContentLoaded', () => {
     card.addEventListener('mouseenter', start);
     card.addEventListener('focusin', start);
     card.addEventListener('animationend', (e) => {
-      // ::after carries the 160ms delay, so it is always the last to finish.
-      if (e.animationName === 'practice-wave' && e.pseudoElement === '::after') {
-        card.classList.remove('is-waving');
-      }
+      // The bottom-edge meteor outlasts the wave, so it ends the cycle.
+      if (e.animationName === 'practice-meteor') card.classList.remove('is-waving');
     });
   });
 

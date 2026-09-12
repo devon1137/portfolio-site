@@ -598,19 +598,27 @@ nav.primary a[aria-current="page"] { color: var(--text); }
 }
 .practice-list p { color: var(--text-dim); font-size: var(--step--1); line-height: 1.65; }
 /* ---- Digital wave on hover (practice cards only) ----
-   A band of amber "pixels" (2px scanlines crossed with 2px columns)
-   sweeps diagonally across the card once per hover. Two layers run the
-   same sweep 160ms apart so the wave cascades rather than wipes, and
-   steps() timing snaps the motion to a coarse grid so it reads as
-   digital, not glossy. The heading bar re-draws itself in the same
-   stepped rhythm. Paints between the card fill and its text (z-index
-   -1 inside the card's own stacking context).
-   Keyed off .is-waving rather than :hover so the sweep always runs to
-   completion; script.js adds the class on enter/focus and removes it
-   on animationend. The icon glow stays on :hover for instant feedback. */
-.practice-list > div { position: relative; isolation: isolate; overflow: clip; }
-.practice-list > div::before,
-.practice-list > div::after {
+   Two things happen once per hover, both sweeping left→right:
+   1. A band of amber "pixels" (2px scanlines crossed with 2px columns)
+      crosses the card diagonally. The mask carries a bright leading band
+      and a dimmer trailing one so the wave cascades rather than wipes;
+      steps() timing snaps it to a coarse grid so it reads as digital.
+      Paints between the card fill and its text (z-index -1 inside the
+      card's own stacking context).
+   2. The bottom edge lights up with the same meteor streak the About
+      timeline uses — transparent tail, bright glowing head — riding
+      along the border under the wave.
+   Keyed off .is-waving rather than :hover so both run to completion;
+   script.js adds the class on enter/focus and removes it when the
+   meteor (the longer of the two) ends. The icon glow stays on :hover
+   for instant feedback. */
+.practice-list > div {
+  position: relative;
+  isolation: isolate;
+  overflow: clip;
+  overflow-clip-margin: 16px; /* room for the meteor's glow to bleed past the border */
+}
+.practice-list > div::before {
   content: "";
   position: absolute;
   inset: 0;
@@ -620,10 +628,15 @@ nav.primary a[aria-current="page"] { color: var(--text); }
   background:
     repeating-linear-gradient(180deg, color-mix(in srgb, var(--accent) 26%, transparent) 0 2px, transparent 2px 6px),
     repeating-linear-gradient(90deg,  color-mix(in srgb, var(--accent) 16%, transparent) 0 2px, transparent 2px 6px);
-  /* The mask is 3× the card wide; the visible band sits in its middle
-     third, so sliding it from 100% to 0% carries the band left→right. */
-  -webkit-mask-image: linear-gradient(105deg, transparent 0 43%, #000 48% 52%, transparent 57% 100%);
-          mask-image: linear-gradient(105deg, transparent 0 43%, #000 48% 52%, transparent 57% 100%);
+  /* The mask is 3× the card wide; the bands sit in its middle third, so
+     sliding it from 100% to 0% carries them left→right. Leading band
+     full strength, trailing band at half. */
+  -webkit-mask-image: linear-gradient(105deg,
+    transparent 0 38%, rgba(0, 0, 0, 0.5) 41% 43%, transparent 45% 46%,
+    #000 48% 52%, transparent 55% 100%);
+          mask-image: linear-gradient(105deg,
+    transparent 0 38%, rgba(0, 0, 0, 0.5) 41% 43%, transparent 45% 46%,
+    #000 48% 52%, transparent 55% 100%);
   -webkit-mask-size: 300% 100%;
           mask-size: 300% 100%;
   -webkit-mask-position: 100% 0;
@@ -633,20 +646,43 @@ nav.primary a[aria-current="page"] { color: var(--text); }
   opacity: 1;
   animation: practice-wave 820ms steps(20) both;
 }
-.practice-list > div.is-waving::after {
-  opacity: 0.55;
-  animation: practice-wave 820ms steps(20) 160ms both;
-}
 @keyframes practice-wave {
   from { -webkit-mask-position: 100% 0; mask-position: 100% 0; }
   to   { -webkit-mask-position: 0% 0;   mask-position: 0% 0; }
 }
-.practice-list > div.is-waving h3::after {
-  animation: practice-bar 480ms steps(6) both;
+/* Bottom-edge meteor: a 2px track over the border. The streak is a
+   fixed-length gradient (40% of the card) painted no-repeat and moved
+   by background-position; at 40% size, -100% parks it fully off the
+   left edge and 200% fully off the right. Same colours and glow as
+   .timeline::after on about.html. */
+.practice-list > div::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 2px;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0;
+  background:
+    linear-gradient(to right,
+      transparent 0%,
+      color-mix(in srgb, var(--accent) 35%, transparent) 55%,
+      var(--accent) 88%,
+      #FFF0C2 100%)
+    no-repeat -100% 0 / 40% 100%;
+  filter:
+    drop-shadow(0 0 3px var(--accent))
+    drop-shadow(0 0 10px color-mix(in srgb, var(--accent) 55%, transparent));
 }
-@keyframes practice-bar {
-  from { width: 0; }
-  to   { width: 60px; }
+.practice-list > div.is-waving::after {
+  opacity: 1;
+  animation: practice-meteor 950ms cubic-bezier(0.3, 0, 0.6, 1) both;
+}
+@keyframes practice-meteor {
+  from { background-position-x: -100%; }
+  to   { background-position-x: 200%; }
 }
 .practice-list .icon { transition: filter var(--t-med) var(--ease); }
 .practice-list > div:hover .icon,

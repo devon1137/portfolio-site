@@ -597,16 +597,21 @@ nav.primary a[aria-current="page"] { color: var(--text); }
   stroke-linejoin: round;
 }
 .practice-list p { color: var(--text-dim); font-size: var(--step--1); line-height: 1.65; }
-/* ---- Digital wave on hover (practice cards only) ----
+/* ---- Honeycomb wave on hover (practice cards only) ----
    Two things happen once per hover, both travelling away from the edge
    the pointer came in on (script.js sets data-from="left|right|top|
    bottom" by nearest edge; keyboard focus counts as "left"):
-   1. A band of amber "pixels" (2px scanlines crossed with 2px columns)
-      crosses the card. The mask carries a bright leading band and a
-      dimmer trailing one so the wave cascades rather than wipes;
-      steps() timing snaps it to a coarse grid so it reads as digital.
-      Paints between the card fill and its text (z-index -1 inside the
-      card's own stacking context).
+   1. A band of lit honeycomb crosses the card — the same 22px hex tile
+      the textured bands use, drawn in amber. The tile is authored
+      flat-top (the section tile rotated 30°, transposed into its own
+      66×38.105 repeat) because this layer is revealed through a moving
+      mask and can't carry a transform of its own. The mask has a bright
+      leading band and a dimmer trailing one so the wave cascades rather
+      than wipes; steps() timing snaps it to a coarse grid so it reads
+      as digital. Like the textured bands, the honeycomb drifts with
+      scroll (same view-timeline mechanism, see .grid-bg). Paints
+      between the card fill and its text (z-index -1 inside the card's
+      own stacking context).
    2. An edge lights up with the same meteor streak the About timeline
       uses — transparent tail, bright glowing head. Horizontal entries
       run it along the bottom border; vertical entries run it down the
@@ -614,11 +619,15 @@ nav.primary a[aria-current="page"] { color: var(--text); }
    Everything is authored once for "left" (left→right) and once for
    "top" (top→bottom); "right" and "bottom" mirror those layers with a
    scale(-1), which flips the band's slant, the meteor's head, and the
-   direction of travel in one go.
+   direction of travel in one go. Horizontal runs are ~1.7× longer than
+   vertical ones so the sweep crosses the wide axis at the same speed.
    Keyed off .is-waving rather than :hover so both run to completion;
    script.js adds the class on enter/focus and removes it when the
    meteor (the longer of the two) ends. The icon glow stays on :hover
    for instant feedback. */
+:root {
+  --hex-tile-lit: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='66' height='38.105' viewBox='0 0 66 38.105'%3E%3Cpath d='M11 0L0 19.053L11 38.105M11 0H33M11 38.105H33M33 0L44 19.053L33 38.105M44 19.053H66' fill='none' stroke='%23D9A63E' stroke-opacity='0.6' stroke-width='1'/%3E%3C/svg%3E");
+}
 .practice-list > div {
   position: relative;
   isolation: isolate;
@@ -632,9 +641,8 @@ nav.primary a[aria-current="page"] { color: var(--text); }
   z-index: -1;
   pointer-events: none;
   opacity: 0;
-  background:
-    repeating-linear-gradient(180deg, color-mix(in srgb, var(--accent) 26%, transparent) 0 2px, transparent 2px 6px),
-    repeating-linear-gradient(90deg,  color-mix(in srgb, var(--accent) 16%, transparent) 0 2px, transparent 2px 6px);
+  background-image: var(--hex-tile-lit);
+  background-size: 66px 38.105px;
   /* The mask is 3× the card along the travel axis; the bands sit in its
      middle third, so sliding it from 100% to 0% carries them across.
      Leading band full strength, trailing band at half. */
@@ -651,7 +659,7 @@ nav.primary a[aria-current="page"] { color: var(--text); }
 }
 .practice-list > div.is-waving::before {
   opacity: 1;
-  animation: practice-wave 820ms steps(20) both;
+  animation: practice-wave 1400ms steps(32) both;
 }
 @keyframes practice-wave {
   from { -webkit-mask-position: 100% 0; mask-position: 100% 0; }
@@ -675,10 +683,40 @@ nav.primary a[aria-current="page"] { color: var(--text); }
 .practice-list > div[data-from="top"].is-waving::before,
 .practice-list > div[data-from="bottom"].is-waving::before {
   animation-name: practice-wave-y;
+  animation-duration: 820ms;
+  animation-timing-function: steps(20);
 }
 @keyframes practice-wave-y {
   from { -webkit-mask-position: 0 100%; mask-position: 0 100%; }
   to   { -webkit-mask-position: 0 0%;   mask-position: 0 0%; }
+}
+/* Parallax: the lit honeycomb lags behind the card as the section
+   travels up the viewport, the same way the textured bands' honeycomb
+   does. The drift rides a second animation on the same layer, on the
+   section's view timeline; the wave stays on the document timeline. */
+@supports (animation-timeline: view()) {
+  #practice { view-timeline: --practice block; }
+  .practice-list > div.is-waving::before {
+    animation-name: practice-wave, practice-hex-drift;
+    animation-duration: 1400ms, auto;
+    animation-timing-function: steps(32), linear;
+    animation-fill-mode: both, both;
+    animation-timeline: auto, --practice;
+    animation-range: normal, entry 0% exit 100%;
+  }
+  .practice-list > div[data-from="top"].is-waving::before,
+  .practice-list > div[data-from="bottom"].is-waving::before {
+    animation-name: practice-wave-y, practice-hex-drift;
+    animation-duration: 820ms, auto;
+    animation-timing-function: steps(20), linear;
+  }
+  @keyframes practice-hex-drift {
+    from { background-position: 0 -76px; }  /* two tile rows either way */
+    to   { background-position: 0 76px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .practice-list > div::before { animation: none; }
+  }
 }
 /* Meteor: a 2px track over the border. The streak is a fixed-length
    gradient (40% of the edge) painted no-repeat and moved by
@@ -708,7 +746,7 @@ nav.primary a[aria-current="page"] { color: var(--text); }
 }
 .practice-list > div.is-waving::after {
   opacity: 1;
-  animation: practice-meteor 950ms cubic-bezier(0.3, 0, 0.6, 1) both;
+  animation: practice-meteor 1600ms cubic-bezier(0.3, 0, 0.6, 1) both;
 }
 @keyframes practice-meteor {
   from { background-position-x: -100%; }
@@ -736,6 +774,7 @@ nav.primary a[aria-current="page"] { color: var(--text); }
 .practice-list > div[data-from="top"].is-waving::after,
 .practice-list > div[data-from="bottom"].is-waving::after {
   animation-name: practice-meteor-y;
+  animation-duration: 950ms;
 }
 @keyframes practice-meteor-y {
   from { background-position-y: -100%; }

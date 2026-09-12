@@ -26,8 +26,19 @@ document.addEventListener('DOMContentLoaded', () => {
   // :hover alone would cancel the sweep the moment the pointer leaves,
   // so the class stays on until the last layer's animation ends. Entering
   // again mid-sweep is a no-op; it just lets the current wave finish.
+  // The sweep travels away from the side the pointer came in on: enter
+  // from the right half and .from-right mirrors the effect layers.
   document.querySelectorAll('.practice-list > div').forEach((card) => {
-    const start = () => card.classList.add('is-waving');
+    const start = (e) => {
+      if (card.classList.contains('is-waving')) return;
+      if (e.type === 'mouseenter') {
+        const r = card.getBoundingClientRect();
+        card.classList.toggle('from-right', e.clientX > r.left + r.width / 2);
+      } else {
+        card.classList.remove('from-right'); // keyboard focus: always left→right
+      }
+      card.classList.add('is-waving');
+    };
     card.addEventListener('mouseenter', start);
     card.addEventListener('focusin', start);
     card.addEventListener('animationend', (e) => {

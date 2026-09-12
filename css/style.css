@@ -684,6 +684,13 @@ nav.primary a[aria-current="page"] { color: var(--text); }
   from { background-position-x: -100%; }
   to   { background-position-x: 200%; }
 }
+/* Entered from the right (set by script.js): mirror both layers, which
+   flips the band's slant, the meteor's head, and the direction of travel
+   in one go — the keyframes themselves stay left→right. */
+.practice-list > div.from-right::before,
+.practice-list > div.from-right::after {
+  transform: scaleX(-1);
+}
 .practice-list .icon { transition: filter var(--t-med) var(--ease); }
 .practice-list > div:hover .icon,
 .practice-list > div:focus-within .icon {

@@ -597,6 +597,62 @@ nav.primary a[aria-current="page"] { color: var(--text); }
   stroke-linejoin: round;
 }
 .practice-list p { color: var(--text-dim); font-size: var(--step--1); line-height: 1.65; }
+/* ---- Digital wave on hover (practice cards only) ----
+   A band of amber "pixels" (2px scanlines crossed with 2px columns)
+   sweeps diagonally across the card once per hover. Two layers run the
+   same sweep 160ms apart so the wave cascades rather than wipes, and
+   steps() timing snaps the motion to a coarse grid so it reads as
+   digital, not glossy. The heading bar re-draws itself in the same
+   stepped rhythm. Paints between the card fill and its text (z-index
+   -1 inside the card's own stacking context). */
+.practice-list > div { position: relative; isolation: isolate; overflow: clip; }
+.practice-list > div::before,
+.practice-list > div::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0;
+  background:
+    repeating-linear-gradient(180deg, color-mix(in srgb, var(--accent) 26%, transparent) 0 2px, transparent 2px 6px),
+    repeating-linear-gradient(90deg,  color-mix(in srgb, var(--accent) 16%, transparent) 0 2px, transparent 2px 6px);
+  /* The mask is 3× the card wide; the visible band sits in its middle
+     third, so sliding it from 100% to 0% carries the band left→right. */
+  -webkit-mask-image: linear-gradient(105deg, transparent 0 43%, #000 48% 52%, transparent 57% 100%);
+          mask-image: linear-gradient(105deg, transparent 0 43%, #000 48% 52%, transparent 57% 100%);
+  -webkit-mask-size: 300% 100%;
+          mask-size: 300% 100%;
+  -webkit-mask-position: 100% 0;
+          mask-position: 100% 0;
+}
+.practice-list > div:hover::before,
+.practice-list > div:focus-within::before {
+  opacity: 1;
+  animation: practice-wave 820ms steps(20) both;
+}
+.practice-list > div:hover::after,
+.practice-list > div:focus-within::after {
+  opacity: 0.55;
+  animation: practice-wave 820ms steps(20) 160ms both;
+}
+@keyframes practice-wave {
+  from { -webkit-mask-position: 100% 0; mask-position: 100% 0; }
+  to   { -webkit-mask-position: 0% 0;   mask-position: 0% 0; }
+}
+.practice-list > div:hover h3::after,
+.practice-list > div:focus-within h3::after {
+  animation: practice-bar 480ms steps(6) both;
+}
+@keyframes practice-bar {
+  from { width: 0; }
+  to   { width: 60px; }
+}
+.practice-list .icon { transition: filter var(--t-med) var(--ease); }
+.practice-list > div:hover .icon,
+.practice-list > div:focus-within .icon {
+  filter: drop-shadow(0 0 5px color-mix(in srgb, var(--accent) 70%, transparent));
+}
 /* Section title for "What I Actually Do": slanted bar to the right of the
    heading, growing to fill the line (wraps beneath if the title is too long). */
 #practice > .wrap > h2 {

@@ -22,35 +22,61 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('scroll', onScroll, { passive: true });
   }
 
-  // ---- Practice-card wave (index.html) ----
-  // :hover alone would cancel the sweep the moment the pointer leaves,
-  // so the class stays on until the last layer's animation ends. Entering
-  // again mid-sweep is a no-op; it just lets the current wave finish.
-  // The sweep travels away from the edge the pointer came in on: the
-  // nearest edge at mouseenter becomes data-from, which the CSS uses to
-  // pick the axis and mirror the layers. Keyboard focus counts as left.
+  // ---- Practice-card honeycomb (index.html) ----
+  // Three phases, expressed as classes the CSS animates:
+  //   is-lit      wiping in from data-from, then held while hovering
+  //   is-leaving  wiping out toward data-to, removed when that finishes
+  // Directions come from the nearest edge at mouseenter / mouseleave.
+  // A leave that arrives while the wipe-in is still running is queued
+  // until it ends, so a quick pass over a card still plays both halves
+  // in full instead of jumping to solid and back.
   document.querySelectorAll('.practice-list > div').forEach((card) => {
-    const start = (e) => {
-      if (card.classList.contains('is-waving')) return;
-      let from = 'left';
-      if (e.type === 'mouseenter') {
-        const r = card.getBoundingClientRect();
-        const dist = {
-          left: e.clientX - r.left,
-          right: r.right - e.clientX,
-          top: e.clientY - r.top,
-          bottom: r.bottom - e.clientY,
-        };
-        from = Object.keys(dist).reduce((a, b) => (dist[a] <= dist[b] ? a : b));
-      }
-      card.dataset.from = from;
-      card.classList.add('is-waving');
+    let entering = false;    // wipe-in still running
+    let pendingLeave = null; // edge to leave toward once it has
+
+    const nearestEdge = (e) => {
+      const r = card.getBoundingClientRect();
+      const dist = {
+        left: e.clientX - r.left,
+        right: r.right - e.clientX,
+        top: e.clientY - r.top,
+        bottom: r.bottom - e.clientY,
+      };
+      return Object.keys(dist).reduce((a, b) => (dist[a] <= dist[b] ? a : b));
     };
-    card.addEventListener('mouseenter', start);
-    card.addEventListener('focusin', start);
+
+    const enter = (from) => {
+      pendingLeave = null;
+      if (card.classList.contains('is-lit')) return; // already in or held; just cancel any queued leave
+      card.classList.remove('is-leaving');
+      delete card.dataset.to;
+      card.dataset.from = from;
+      entering = true;
+      card.classList.add('is-lit');
+    };
+    const leave = (to) => {
+      if (!card.classList.contains('is-lit')) return;
+      if (entering) { pendingLeave = to; return; }
+      card.dataset.to = to;
+      card.classList.remove('is-lit');
+      card.classList.add('is-leaving');
+    };
+
+    card.addEventListener('mouseenter', (e) => enter(nearestEdge(e)));
+    card.addEventListener('mouseleave', (e) => leave(nearestEdge(e)));
+    // Keyboard: in from the left, out to the right.
+    card.addEventListener('focusin', () => enter('left'));
+    card.addEventListener('focusout', (e) => { if (!card.contains(e.relatedTarget)) leave('right'); });
+
     card.addEventListener('animationend', (e) => {
-      // The meteor (either axis) outlasts the wave, so it ends the cycle.
-      if (e.animationName.startsWith('practice-meteor')) card.classList.remove('is-waving');
+      if (e.animationName.startsWith('practice-wipe-in')) {
+        entering = false;
+        if (pendingLeave) { const to = pendingLeave; pendingLeave = null; leave(to); }
+      } else if (e.animationName.startsWith('practice-meteor-out')) {
+        // The exit meteor outlasts the wipe-out, so it ends the phase.
+        card.classList.remove('is-leaving');
+        delete card.dataset.to;
+      }
     });
   });
 

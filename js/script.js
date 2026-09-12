@@ -26,24 +26,31 @@ document.addEventListener('DOMContentLoaded', () => {
   // :hover alone would cancel the sweep the moment the pointer leaves,
   // so the class stays on until the last layer's animation ends. Entering
   // again mid-sweep is a no-op; it just lets the current wave finish.
-  // The sweep travels away from the side the pointer came in on: enter
-  // from the right half and .from-right mirrors the effect layers.
+  // The sweep travels away from the edge the pointer came in on: the
+  // nearest edge at mouseenter becomes data-from, which the CSS uses to
+  // pick the axis and mirror the layers. Keyboard focus counts as left.
   document.querySelectorAll('.practice-list > div').forEach((card) => {
     const start = (e) => {
       if (card.classList.contains('is-waving')) return;
+      let from = 'left';
       if (e.type === 'mouseenter') {
         const r = card.getBoundingClientRect();
-        card.classList.toggle('from-right', e.clientX > r.left + r.width / 2);
-      } else {
-        card.classList.remove('from-right'); // keyboard focus: always left→right
+        const dist = {
+          left: e.clientX - r.left,
+          right: r.right - e.clientX,
+          top: e.clientY - r.top,
+          bottom: r.bottom - e.clientY,
+        };
+        from = Object.keys(dist).reduce((a, b) => (dist[a] <= dist[b] ? a : b));
       }
+      card.dataset.from = from;
       card.classList.add('is-waving');
     };
     card.addEventListener('mouseenter', start);
     card.addEventListener('focusin', start);
     card.addEventListener('animationend', (e) => {
-      // The bottom-edge meteor outlasts the wave, so it ends the cycle.
-      if (e.animationName === 'practice-meteor') card.classList.remove('is-waving');
+      // The meteor (either axis) outlasts the wave, so it ends the cycle.
+      if (e.animationName.startsWith('practice-meteor')) card.classList.remove('is-waving');
     });
   });
 

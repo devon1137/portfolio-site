@@ -598,16 +598,23 @@ nav.primary a[aria-current="page"] { color: var(--text); }
 }
 .practice-list p { color: var(--text-dim); font-size: var(--step--1); line-height: 1.65; }
 /* ---- Digital wave on hover (practice cards only) ----
-   Two things happen once per hover, both sweeping left→right:
+   Two things happen once per hover, both travelling away from the edge
+   the pointer came in on (script.js sets data-from="left|right|top|
+   bottom" by nearest edge; keyboard focus counts as "left"):
    1. A band of amber "pixels" (2px scanlines crossed with 2px columns)
-      crosses the card diagonally. The mask carries a bright leading band
-      and a dimmer trailing one so the wave cascades rather than wipes;
+      crosses the card. The mask carries a bright leading band and a
+      dimmer trailing one so the wave cascades rather than wipes;
       steps() timing snaps it to a coarse grid so it reads as digital.
       Paints between the card fill and its text (z-index -1 inside the
       card's own stacking context).
-   2. The bottom edge lights up with the same meteor streak the About
-      timeline uses — transparent tail, bright glowing head — riding
-      along the border under the wave.
+   2. An edge lights up with the same meteor streak the About timeline
+      uses — transparent tail, bright glowing head. Horizontal entries
+      run it along the bottom border; vertical entries run it down the
+      right border.
+   Everything is authored once for "left" (left→right) and once for
+   "top" (top→bottom); "right" and "bottom" mirror those layers with a
+   scale(-1), which flips the band's slant, the meteor's head, and the
+   direction of travel in one go.
    Keyed off .is-waving rather than :hover so both run to completion;
    script.js adds the class on enter/focus and removes it when the
    meteor (the longer of the two) ends. The icon glow stays on :hover
@@ -628,9 +635,9 @@ nav.primary a[aria-current="page"] { color: var(--text); }
   background:
     repeating-linear-gradient(180deg, color-mix(in srgb, var(--accent) 26%, transparent) 0 2px, transparent 2px 6px),
     repeating-linear-gradient(90deg,  color-mix(in srgb, var(--accent) 16%, transparent) 0 2px, transparent 2px 6px);
-  /* The mask is 3× the card wide; the bands sit in its middle third, so
-     sliding it from 100% to 0% carries them left→right. Leading band
-     full strength, trailing band at half. */
+  /* The mask is 3× the card along the travel axis; the bands sit in its
+     middle third, so sliding it from 100% to 0% carries them across.
+     Leading band full strength, trailing band at half. */
   -webkit-mask-image: linear-gradient(105deg,
     transparent 0 38%, rgba(0, 0, 0, 0.5) 41% 43%, transparent 45% 46%,
     #000 48% 52%, transparent 55% 100%);
@@ -650,10 +657,33 @@ nav.primary a[aria-current="page"] { color: var(--text); }
   from { -webkit-mask-position: 100% 0; mask-position: 100% 0; }
   to   { -webkit-mask-position: 0% 0;   mask-position: 0% 0; }
 }
-/* Bottom-edge meteor: a 2px track over the border. The streak is a
-   fixed-length gradient (40% of the card) painted no-repeat and moved
-   by background-position; at 40% size, -100% parks it fully off the
-   left edge and 200% fully off the right. Same colours and glow as
+/* Vertical entries: same bands turned to lie across the card (105° → 195°),
+   mask stacked 3× tall instead of wide, and slid on the y axis. */
+.practice-list > div[data-from="top"]::before,
+.practice-list > div[data-from="bottom"]::before {
+  -webkit-mask-image: linear-gradient(195deg,
+    transparent 0 38%, rgba(0, 0, 0, 0.5) 41% 43%, transparent 45% 46%,
+    #000 48% 52%, transparent 55% 100%);
+          mask-image: linear-gradient(195deg,
+    transparent 0 38%, rgba(0, 0, 0, 0.5) 41% 43%, transparent 45% 46%,
+    #000 48% 52%, transparent 55% 100%);
+  -webkit-mask-size: 100% 300%;
+          mask-size: 100% 300%;
+  -webkit-mask-position: 0 100%;
+          mask-position: 0 100%;
+}
+.practice-list > div[data-from="top"].is-waving::before,
+.practice-list > div[data-from="bottom"].is-waving::before {
+  animation-name: practice-wave-y;
+}
+@keyframes practice-wave-y {
+  from { -webkit-mask-position: 0 100%; mask-position: 0 100%; }
+  to   { -webkit-mask-position: 0 0%;   mask-position: 0 0%; }
+}
+/* Meteor: a 2px track over the border. The streak is a fixed-length
+   gradient (40% of the edge) painted no-repeat and moved by
+   background-position; at 40% size, -100% parks it fully off one end
+   and 200% fully off the other. Same colours and glow as
    .timeline::after on about.html. */
 .practice-list > div::after {
   content: "";
@@ -684,13 +714,38 @@ nav.primary a[aria-current="page"] { color: var(--text); }
   from { background-position-x: -100%; }
   to   { background-position-x: 200%; }
 }
-/* Entered from the right (set by script.js): mirror both layers, which
-   flips the band's slant, the meteor's head, and the direction of travel
-   in one go — the keyframes themselves stay left→right. */
-.practice-list > div.from-right::before,
-.practice-list > div.from-right::after {
-  transform: scaleX(-1);
+/* Vertical entries: the track moves to the right border and the streak
+   runs top→bottom. Cards are shorter than they are wide, so the streak
+   takes a bigger share of the edge to keep a similar visual length. */
+.practice-list > div[data-from="top"]::after,
+.practice-list > div[data-from="bottom"]::after {
+  left: auto;
+  right: -1px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  height: auto;
+  background:
+    linear-gradient(to bottom,
+      transparent 0%,
+      color-mix(in srgb, var(--accent) 35%, transparent) 55%,
+      var(--accent) 88%,
+      #FFF0C2 100%)
+    no-repeat 0 -100% / 100% 55%;
 }
+.practice-list > div[data-from="top"].is-waving::after,
+.practice-list > div[data-from="bottom"].is-waving::after {
+  animation-name: practice-meteor-y;
+}
+@keyframes practice-meteor-y {
+  from { background-position-y: -100%; }
+  to   { background-position-y: 200%; }
+}
+/* Mirrors for the two remaining sides. */
+.practice-list > div[data-from="right"]::before,
+.practice-list > div[data-from="right"]::after { transform: scaleX(-1); }
+.practice-list > div[data-from="bottom"]::before,
+.practice-list > div[data-from="bottom"]::after { transform: scaleY(-1); }
 .practice-list .icon { transition: filter var(--t-med) var(--ease); }
 .practice-list > div:hover .icon,
 .practice-list > div:focus-within .icon {

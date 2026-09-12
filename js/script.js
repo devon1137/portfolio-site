@@ -22,6 +22,22 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('scroll', onScroll, { passive: true });
   }
 
+  // ---- Practice-card wave (index.html) ----
+  // :hover alone would cancel the sweep the moment the pointer leaves,
+  // so the class stays on until the last layer's animation ends. Entering
+  // again mid-sweep is a no-op; it just lets the current wave finish.
+  document.querySelectorAll('.practice-list > div').forEach((card) => {
+    const start = () => card.classList.add('is-waving');
+    card.addEventListener('mouseenter', start);
+    card.addEventListener('focusin', start);
+    card.addEventListener('animationend', (e) => {
+      // ::after carries the 160ms delay, so it is always the last to finish.
+      if (e.animationName === 'practice-wave' && e.pseudoElement === '::after') {
+        card.classList.remove('is-waving');
+      }
+    });
+  });
+
   // ---- Mobile nav ----
   if (toggle && nav) {
     const setOpen = (open) => {

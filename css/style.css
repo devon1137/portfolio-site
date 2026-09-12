@@ -604,7 +604,10 @@ nav.primary a[aria-current="page"] { color: var(--text); }
    steps() timing snaps the motion to a coarse grid so it reads as
    digital, not glossy. The heading bar re-draws itself in the same
    stepped rhythm. Paints between the card fill and its text (z-index
-   -1 inside the card's own stacking context). */
+   -1 inside the card's own stacking context).
+   Keyed off .is-waving rather than :hover so the sweep always runs to
+   completion; script.js adds the class on enter/focus and removes it
+   on animationend. The icon glow stays on :hover for instant feedback. */
 .practice-list > div { position: relative; isolation: isolate; overflow: clip; }
 .practice-list > div::before,
 .practice-list > div::after {
@@ -626,13 +629,11 @@ nav.primary a[aria-current="page"] { color: var(--text); }
   -webkit-mask-position: 100% 0;
           mask-position: 100% 0;
 }
-.practice-list > div:hover::before,
-.practice-list > div:focus-within::before {
+.practice-list > div.is-waving::before {
   opacity: 1;
   animation: practice-wave 820ms steps(20) both;
 }
-.practice-list > div:hover::after,
-.practice-list > div:focus-within::after {
+.practice-list > div.is-waving::after {
   opacity: 0.55;
   animation: practice-wave 820ms steps(20) 160ms both;
 }
@@ -640,8 +641,7 @@ nav.primary a[aria-current="page"] { color: var(--text); }
   from { -webkit-mask-position: 100% 0; mask-position: 100% 0; }
   to   { -webkit-mask-position: 0% 0;   mask-position: 0% 0; }
 }
-.practice-list > div:hover h3::after,
-.practice-list > div:focus-within h3::after {
+.practice-list > div.is-waving h3::after {
   animation: practice-bar 480ms steps(6) both;
 }
 @keyframes practice-bar {

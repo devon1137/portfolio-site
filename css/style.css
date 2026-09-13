@@ -598,7 +598,7 @@ nav.primary a[aria-current="page"] { color: var(--text); }
   stroke-linejoin: round;
 }
 .practice-list p { color: var(--text-dim); font-size: var(--step--1); line-height: 1.65; }
-/* ---- Honeycomb wipe on hover (.hex-card: practice + Recent Work cards) ----
+/* ---- Honeycomb wipe on hover (.hex-card: practice, Recent Work, Launch Package) ----
    Three phases, driven by script.js:
      .is-lit      pointer came in from data-from — the honeycomb wipes in
                   from that edge, then holds fully lit while hovering.
@@ -606,7 +606,7 @@ nav.primary a[aria-current="page"] { color: var(--text); }
                   card toward that edge, then the class comes off.
    Colour is per card via --hex-lit (the tile), --meteor and
    --meteor-head: amber by default, a lifted pine ("mint") on the
-   Recent Work cards so it reads cool against the slate band.
+   slate-band cards (Recent Work, Launch Package) so it reads cool there.
    The honeycomb is the same 22px hex tile the textured bands use. The
    tile is authored flat-top (the section tile rotated 30°,
    transposed into its own 66×38.105 repeat) because this layer is
@@ -657,9 +657,10 @@ nav.primary a[aria-current="page"] { color: var(--text); }
   overflow: clip;
   overflow-clip-margin: 16px; /* room for the meteor's glow to bleed past the border */
 }
-/* Recent Work: cool variant. Text/halo colours already flip with the
-   slate band's surface tokens; only the light source changes. */
-.work-card.hex-card {
+/* On the slate band (Recent Work, Launch Package): cool variant. Text
+   and halo colours already flip with the band's surface tokens; only
+   the light source changes. */
+.on-slate .hex-card {
   --hex-lit: var(--hex-tile-lit-mint);
   --meteor: var(--mint);
   --meteor-head: #E6FFF6;
@@ -887,12 +888,11 @@ nav.primary a[aria-current="page"] { color: var(--text); }
    hex lines fall back behind the glyphs instead of running through
    them. Applied through the leave too so it fades with the honeycomb
    rather than snapping off ahead of it. */
-.hex-card h3,
-.hex-card p {
+.hex-card :is(h3, p, li, .cat, .more, .price, .fine) {
   transition: color var(--t-med) var(--ease), text-shadow var(--t-med) var(--ease);
 }
-.hex-card:is(.is-lit, .is-leaving) p { color: var(--text); }
-.hex-card:is(.is-lit, .is-leaving) :is(h3, p, .cat, .more) {
+.hex-card:is(.is-lit, .is-leaving) :is(p, .terms, .fine) { color: var(--text); }
+.hex-card:is(.is-lit, .is-leaving) :is(h3, p, li, .cat, .more, .price, .fine) {
   text-shadow:
     0 0 2px var(--surface-2),
     0 0 6px var(--surface-2),

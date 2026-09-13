@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('scroll', onScroll, { passive: true });
   }
 
-  // ---- Card honeycomb (.hex-card: practice + Recent Work cards, index.html) ----
+  // ---- Card honeycomb (.hex-card: practice, Recent Work, Launch Package) ----
   // Three phases, expressed as classes the CSS animates:
   //   is-lit      wiping in from data-from, then held while hovering
   //   is-leaving  wiping out toward data-to, removed when that finishes

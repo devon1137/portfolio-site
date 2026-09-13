@@ -702,12 +702,12 @@ nav.primary a[aria-current="page"] { color: var(--text); }
 }
 .hex-card.is-lit::before {
   opacity: 1;
-  animation: practice-wipe-in 1400ms steps(32) both;
+  animation: practice-wipe-in 700ms steps(32) both;
 }
 .hex-card.is-leaving::before {
   opacity: 1;
   --wipe: var(--wipe-out-x);
-  animation: practice-wipe-out 1400ms steps(32) both;
+  animation: practice-wipe-out 700ms steps(32) both;
 }
 /* At 88% the soft edge sits just off the card's left; by 12% it has
    cleared the right (the slanted edge needs the margin). The range is
@@ -741,7 +741,7 @@ nav.primary a[aria-current="page"] { color: var(--text); }
 .hex-card.is-leaving[data-to="bottom"]::before {
   -webkit-mask-size: 100% 300%;
           mask-size: 100% 300%;
-  animation-duration: 820ms;
+  animation-duration: 410ms;
   animation-timing-function: steps(20);
 }
 .hex-card.is-lit[data-from="top"]::before {
@@ -778,7 +778,7 @@ nav.primary a[aria-current="page"] { color: var(--text); }
   #practice { view-timeline: --hex block; }
   .hex-card.is-lit::before,
   .hex-card.is-leaving::before {
-    animation-duration: 1400ms, auto;
+    animation-duration: 700ms, auto;
     animation-timing-function: steps(32), linear;
     animation-fill-mode: both, both;
     animation-timeline: auto, --hex;
@@ -790,7 +790,7 @@ nav.primary a[aria-current="page"] { color: var(--text); }
   .hex-card.is-lit[data-from="bottom"]::before,
   .hex-card.is-leaving[data-to="top"]::before,
   .hex-card.is-leaving[data-to="bottom"]::before {
-    animation-duration: 820ms, auto;
+    animation-duration: 410ms, auto;
     animation-timing-function: steps(20), linear;
   }
   .hex-card.is-lit[data-from="top"]::before,
@@ -839,11 +839,11 @@ nav.primary a[aria-current="page"] { color: var(--text); }
 }
 .hex-card.is-lit::after {
   opacity: 1;
-  animation: practice-meteor-in 1600ms cubic-bezier(0.3, 0, 0.6, 1) both;
+  animation: practice-meteor-in 800ms cubic-bezier(0.3, 0, 0.6, 1) both;
 }
 .hex-card.is-leaving::after {
   opacity: 1;
-  animation: practice-meteor-out 1600ms cubic-bezier(0.3, 0, 0.6, 1) both;
+  animation: practice-meteor-out 800ms cubic-bezier(0.3, 0, 0.6, 1) both;
 }
 @keyframes practice-meteor-in {
   from { background-position-x: -100%; }
@@ -873,7 +873,7 @@ nav.primary a[aria-current="page"] { color: var(--text); }
       var(--meteor) 88%,
       var(--meteor-head) 100%)
     no-repeat 0 -100% / 100% 55%;
-  animation-duration: 950ms;
+  animation-duration: 475ms;
 }
 .hex-card.is-lit[data-from="top"]::after,
 .hex-card.is-lit[data-from="bottom"]::after { animation-name: practice-meteor-in-y; }

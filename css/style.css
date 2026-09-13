@@ -674,12 +674,31 @@ nav.primary a[aria-current="page"] { color: var(--text); }
   opacity: 0;
   background-image: var(--hex-lit);
   background-size: 66px 38.105px;
-  -webkit-mask-image: var(--wipe-in-x);
-          mask-image: var(--wipe-in-x);
+  /* --wipe is the directional gradient; the per-direction rules below
+     only swap that property, so a variant can stack more mask layers
+     here without touching them. */
+  --wipe: var(--wipe-in-x);
+  -webkit-mask-image: var(--wipe);
+          mask-image: var(--wipe);
   -webkit-mask-size: 300% 100%;
           mask-size: 300% 100%;
   -webkit-mask-position: 100% 0;
           mask-position: 100% 0;
+}
+/* Launch Package: the honeycomb only lights the ring between the card
+   edge and an inner panel (.pkg-inner), so it reads as a hex border.
+   Two solid layers, clipped to the layer's padding box and content box
+   and composited with exclude, make the ring; the wipe intersects it.
+   The layer's padding equals the card's, so its content box is exactly
+   the inner panel. Solid layers ignore the size/position the wipe
+   animates, so nothing else changes. */
+.pkg.hex-card::before {
+  padding: inherit;
+  -webkit-mask-image: var(--wipe), linear-gradient(#000, #000), linear-gradient(#000, #000);
+          mask-image: var(--wipe), linear-gradient(#000, #000), linear-gradient(#000, #000);
+  -webkit-mask-clip: padding-box, padding-box, content-box;
+          mask-clip: padding-box, padding-box, content-box;
+          mask-composite: intersect, exclude;
 }
 .hex-card.is-lit::before {
   opacity: 1;
@@ -687,8 +706,7 @@ nav.primary a[aria-current="page"] { color: var(--text); }
 }
 .hex-card.is-leaving::before {
   opacity: 1;
-  -webkit-mask-image: var(--wipe-out-x);
-          mask-image: var(--wipe-out-x);
+  --wipe: var(--wipe-out-x);
   animation: practice-wipe-out 1400ms steps(32) both;
 }
 /* At 88% the soft edge sits just off the card's left; by 12% it has
@@ -707,13 +725,11 @@ nav.primary a[aria-current="page"] { color: var(--text); }
 /* Opposite direction on the x axis: in from the right, out toward the
    left. Reflected gradient, same keyframes run backwards. */
 .hex-card.is-lit[data-from="right"]::before {
-  -webkit-mask-image: var(--wipe-in-x-rev);
-          mask-image: var(--wipe-in-x-rev);
+  --wipe: var(--wipe-in-x-rev);
   animation-direction: reverse;
 }
 .hex-card.is-leaving[data-to="left"]::before {
-  -webkit-mask-image: var(--wipe-out-x-rev);
-          mask-image: var(--wipe-out-x-rev);
+  --wipe: var(--wipe-out-x-rev);
   animation-direction: reverse;
 }
 /* Vertical axis: entering from top/bottom, or leaving toward top/bottom.
@@ -729,24 +745,20 @@ nav.primary a[aria-current="page"] { color: var(--text); }
   animation-timing-function: steps(20);
 }
 .hex-card.is-lit[data-from="top"]::before {
-  -webkit-mask-image: var(--wipe-in-y);
-          mask-image: var(--wipe-in-y);
+  --wipe: var(--wipe-in-y);
   animation-name: practice-wipe-in-y;
 }
 .hex-card.is-lit[data-from="bottom"]::before {
-  -webkit-mask-image: var(--wipe-in-y-rev);
-          mask-image: var(--wipe-in-y-rev);
+  --wipe: var(--wipe-in-y-rev);
   animation-name: practice-wipe-in-y;
   animation-direction: reverse;
 }
 .hex-card.is-leaving[data-to="bottom"]::before {
-  -webkit-mask-image: var(--wipe-out-y);
-          mask-image: var(--wipe-out-y);
+  --wipe: var(--wipe-out-y);
   animation-name: practice-wipe-out-y;
 }
 .hex-card.is-leaving[data-to="top"]::before {
-  -webkit-mask-image: var(--wipe-out-y-rev);
-          mask-image: var(--wipe-out-y-rev);
+  --wipe: var(--wipe-out-y-rev);
   animation-name: practice-wipe-out-y;
   animation-direction: reverse;
 }
@@ -1423,7 +1435,18 @@ dialog.lightbox .close:hover { background: var(--ink-2); }
 .offer > div:first-child p + p { margin-top: var(--space-m); }
 @media (max-width: 900px) { .offer { grid-template-columns: 1fr; gap: var(--space-xl); } }
 
-.pkg { padding: var(--space-xl); }   /* card recipe above; a little roomier */
+/* Card recipe above. The card's own padding is a narrow ring — the
+   part the hover honeycomb lights (see .pkg.hex-card::before) — and
+   the content sits in an inner panel with a hairline of its own, so
+   at rest it reads as a framed card and on hover as a hex border. */
+.pkg { --ring: 16px; padding: var(--ring); }
+.pkg-inner {
+  padding: var(--space-l);
+  border: 1px solid var(--line);
+  border-radius: calc(var(--radius-m) - 3px);
+  transition: border-color var(--t-med) var(--ease);
+}
+.pkg:is(.is-lit, .is-leaving) .pkg-inner { border-color: var(--line-strong); }
 .pkg h3.name { font-size: var(--step-2); }
 .price {
   display: flex;

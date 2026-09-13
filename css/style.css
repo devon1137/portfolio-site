@@ -927,11 +927,12 @@ nav.primary a[aria-current="page"] { color: var(--text); }
    instead of swinging out. One drop-shadow on the train's wrapper
    gives the whole thing its glow.
    It sets off clockwise from the edge the pointer came in on
-   (script.js sets --orbit-from as a fraction of the perimeter) and
-   fades out on leave. orbit-in / orbit-out run on the wrapper and are
-   what script.js watches to end the entering and leaving phases; the
-   lap animation on the dashes is declared once for both phases so it
-   carries on across the class change without a restart. */
+   (script.js sets --orbit-from as a fraction of the perimeter). On
+   leave it explodes where it is: the train freezes and winks out while
+   the About timeline's burst (ring + spokes, see .timeline .row::after)
+   goes off at the head's position — script.js drops a .burst there.
+   orbit-in on the wrapper and orbit-out on the burst are what
+   script.js watches to end the entering and leaving phases. */
 .orbit-card {
   --orbit: var(--accent);
   --orbit-head: #FFF0C2;
@@ -940,9 +941,11 @@ nav.primary a[aria-current="page"] { color: var(--text); }
   --orbit-from: 0%;             /* start point along the perimeter (0 = top-left corner) */
   position: relative;
   isolation: isolate;
-  overflow: clip;
-  overflow-clip-margin: 16px;   /* room for the glow to bleed past the border */
+  /* No overflow clip: the glow and the burst are meant to spill past
+     the border. While active the card rises above its siblings so the
+     burst isn't painted under the next card. */
 }
+.orbit-card:is(.is-lit, .is-leaving) { z-index: 1; }
 .orbit-card .orbit {
   position: absolute;
   inset: -1px;                  /* the path runs on the border, not inside it */
@@ -954,9 +957,37 @@ nav.primary a[aria-current="page"] { color: var(--text); }
     drop-shadow(0 0 10px color-mix(in srgb, var(--orbit) 55%, transparent));
 }
 .orbit-card.is-lit .orbit     { animation: orbit-in 320ms var(--ease) both; }
-.orbit-card.is-leaving .orbit { animation: orbit-out 480ms var(--ease) both; }
-@keyframes orbit-in  { from { opacity: 0; } to { opacity: 1; } }
-@keyframes orbit-out { from { opacity: 1; } to { opacity: 0; } }
+.orbit-card.is-leaving .orbit { animation: orbit-fade 160ms var(--ease) both; }
+.orbit-card.is-leaving .orbit > i { animation-play-state: paused; } /* hold position for the burst */
+@keyframes orbit-in   { from { opacity: 0; } to { opacity: 1; } }
+@keyframes orbit-fade { from { opacity: 1; } to { opacity: 0; } }
+/* The explosion: same shape and timing as the timeline's per-dot pop,
+   centred on --x/--y (the head's position, set by script.js). */
+.orbit-card .burst {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  width: 120px;
+  height: 120px;
+  margin: -60px 0 0 -60px;
+  border-radius: 50%;
+  z-index: 2;
+  pointer-events: none;
+  background:
+    radial-gradient(circle, transparent 38%, var(--orbit) 40%, var(--orbit) 43%, transparent 46%),
+    repeating-conic-gradient(from 0deg, var(--orbit) 0 3deg, transparent 3deg 30deg);
+  -webkit-mask-image: radial-gradient(circle, #000 20%, transparent 62%);
+          mask-image: radial-gradient(circle, #000 20%, transparent 62%);
+  filter: drop-shadow(0 0 6px color-mix(in srgb, var(--orbit) 60%, transparent));
+  opacity: 0;
+  transform: scale(0.1);
+  animation: orbit-out 620ms linear both;
+}
+@keyframes orbit-out {
+  0%   { opacity: 0;   transform: scale(0.1) rotate(0deg); }
+  15%  { opacity: 0.9; transform: scale(0.35) rotate(8deg); }
+  100% { opacity: 0;   transform: scale(1.1) rotate(35deg); }
+}
 .orbit-card .orbit > i {
   position: absolute;
   top: 0;

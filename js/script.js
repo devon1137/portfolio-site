@@ -88,6 +88,19 @@ document.addEventListener('DOMContentLoaded', () => {
       card.dataset.to = to;
       card.classList.remove('is-lit');
       card.classList.add('is-leaving');
+      if (orbits) {
+        // Explode where the head is right now. Its rect already reflects
+        // the motion path, so this is the on-screen spot, made relative
+        // to the card's padding box (1px border).
+        const head = card.querySelector('.orbit > i').getBoundingClientRect();
+        const box = card.getBoundingClientRect();
+        const burst = document.createElement('span');
+        burst.className = 'burst';
+        burst.setAttribute('aria-hidden', 'true');
+        burst.style.setProperty('--x', `${head.left + head.width / 2 - box.left - 1}px`);
+        burst.style.setProperty('--y', `${head.top + head.height / 2 - box.top - 1}px`);
+        card.appendChild(burst);
+      }
     };
 
     card.addEventListener('mouseenter', (e) => enter(nearestEdge(e)));
@@ -102,7 +115,10 @@ document.addEventListener('DOMContentLoaded', () => {
         entering = false;
         if (pendingLeave) { const to = pendingLeave; pendingLeave = null; leave(to); }
       } else if (n.startsWith('practice-meteor-out') || n === 'orbit-out') {
-        // Outlasts everything else in the phase, so it ends it.
+        // Outlasts everything else in the phase, so it ends it. The burst
+        // is one-shot DOM, so it goes too. A re-enter mid-burst has
+        // already put the card back in is-lit; only is-leaving is cleared.
+        if (n === 'orbit-out') e.target.remove();
         card.classList.remove('is-leaving');
         delete card.dataset.to;
       }

@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('scroll', onScroll, { passive: true });
   }
 
-  // ---- Practice-card honeycomb (index.html) ----
+  // ---- Card honeycomb (.hex-card: practice + Recent Work cards, index.html) ----
   // Three phases, expressed as classes the CSS animates:
   //   is-lit      wiping in from data-from, then held while hovering
   //   is-leaving  wiping out toward data-to, removed when that finishes
@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // A leave that arrives while the wipe-in is still running is queued
   // until it ends, so a quick pass over a card still plays both halves
   // in full instead of jumping to solid and back.
-  document.querySelectorAll('.practice-list > div').forEach((card) => {
+  document.querySelectorAll('.hex-card').forEach((card) => {
     let entering = false;    // wipe-in still running
     let pendingLeave = null; // edge to leave toward once it has
 

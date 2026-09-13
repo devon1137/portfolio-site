@@ -615,10 +615,14 @@ nav.primary a[aria-current="page"] { color: var(--text); }
    edge; sliding it from one end to the other carries the edge across.
    Wipe-in and wipe-out use the same slide with the gradient inverted.
    steps() timing snaps the edge to a coarse grid so it reads as
-   digital. Both are authored once for "left"/"top" (edge moving right/
-   down); "right"/"bottom" mirror with scale(-1). Horizontal runs are
-   ~1.7× longer than vertical ones so the edge crosses the wide axis at
-   the same speed.
+   digital. The opposite directions ("right"/"bottom" on the way in,
+   "left"/"top" on the way out) use a mirrored gradient and play the
+   same keyframes in reverse — NOT a scale(-1) on the layer, which
+   would reflect the honeycomb about the card's centre line and visibly
+   shift the lattice whenever the entry and exit mirror states differ.
+   Only the meteor track, which has no pattern, is mirrored with a
+   transform. Horizontal runs are ~1.7× longer than vertical ones so
+   the edge crosses the wide axis at the same speed.
    Alongside each wipe, an edge lights up with the meteor streak from
    the About timeline — transparent tail, bright glowing head — running
    in the same direction: horizontal entries/exits along the bottom
@@ -626,11 +630,17 @@ nav.primary a[aria-current="page"] { color: var(--text); }
    The icon glow stays on :hover for instant feedback. */
 :root {
   --hex-tile-lit: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='66' height='38.105' viewBox='0 0 66 38.105'%3E%3Cpath d='M11 0L0 19.053L11 38.105M11 0H33M11 38.105H33M33 0L44 19.053L33 38.105M44 19.053H66' fill='none' stroke='%23D9A63E' stroke-opacity='0.45' stroke-width='1'/%3E%3C/svg%3E");
-  /* One soft edge, lit side first (wipe-in) or clear side first (wipe-out). */
-  --wipe-in-x:  linear-gradient(105deg, #000 0 47%, transparent 53% 100%);
-  --wipe-out-x: linear-gradient(105deg, transparent 0 47%, #000 53% 100%);
-  --wipe-in-y:  linear-gradient(185deg, #000 0 47%, transparent 53% 100%);
-  --wipe-out-y: linear-gradient(185deg, transparent 0 47%, #000 53% 100%);
+  /* One soft edge, lit side first (wipe-in) or clear side first
+     (wipe-out). The -rev variants are the same gradients reflected
+     (105° → 255°, 185° → 355°) for the opposite travel direction. */
+  --wipe-in-x:      linear-gradient(105deg, #000 0 45%, transparent 50% 100%);
+  --wipe-out-x:     linear-gradient(105deg, transparent 0 45%, #000 50% 100%);
+  --wipe-in-x-rev:  linear-gradient(255deg, #000 0 45%, transparent 50% 100%);
+  --wipe-out-x-rev: linear-gradient(255deg, transparent 0 45%, #000 50% 100%);
+  --wipe-in-y:      linear-gradient(185deg, #000 0 45%, transparent 50% 100%);
+  --wipe-out-y:     linear-gradient(185deg, transparent 0 45%, #000 50% 100%);
+  --wipe-in-y-rev:  linear-gradient(355deg, #000 0 45%, transparent 50% 100%);
+  --wipe-out-y-rev: linear-gradient(355deg, transparent 0 45%, #000 50% 100%);
 }
 .practice-list > div {
   position: relative;
@@ -664,17 +674,30 @@ nav.primary a[aria-current="page"] { color: var(--text); }
           mask-image: var(--wipe-out-x);
   animation: practice-wipe-out 1400ms steps(32) both;
 }
-/* At 100% the soft edge sits just off the card's left; by 15% it has
-   cleared the right (the slanted edge needs the extra margin). The two
-   keyframe sets are identical — separate names so switching from
-   .is-lit to .is-leaving restarts the animation. */
+/* At 88% the soft edge sits just off the card's left; by 12% it has
+   cleared the right (the slanted edge needs the margin). The range is
+   symmetric about 50% so the reflected gradients can simply play it
+   in reverse. The two keyframe sets are identical — separate names so
+   switching from .is-lit to .is-leaving restarts the animation. */
 @keyframes practice-wipe-in {
-  from { -webkit-mask-position: 100% 0; mask-position: 100% 0; }
-  to   { -webkit-mask-position: 15% 0;  mask-position: 15% 0; }
+  from { -webkit-mask-position: 88% 0; mask-position: 88% 0; }
+  to   { -webkit-mask-position: 12% 0; mask-position: 12% 0; }
 }
 @keyframes practice-wipe-out {
-  from { -webkit-mask-position: 100% 0; mask-position: 100% 0; }
-  to   { -webkit-mask-position: 15% 0;  mask-position: 15% 0; }
+  from { -webkit-mask-position: 88% 0; mask-position: 88% 0; }
+  to   { -webkit-mask-position: 12% 0; mask-position: 12% 0; }
+}
+/* Opposite direction on the x axis: in from the right, out toward the
+   left. Reflected gradient, same keyframes run backwards. */
+.practice-list > div.is-lit[data-from="right"]::before {
+  -webkit-mask-image: var(--wipe-in-x-rev);
+          mask-image: var(--wipe-in-x-rev);
+  animation-direction: reverse;
+}
+.practice-list > div.is-leaving[data-to="left"]::before {
+  -webkit-mask-image: var(--wipe-out-x-rev);
+          mask-image: var(--wipe-out-x-rev);
+  animation-direction: reverse;
 }
 /* Vertical axis: entering from top/bottom, or leaving toward top/bottom.
    Mask stacked 3× tall, slid on y. The edge is only 5° off horizontal
@@ -688,25 +711,35 @@ nav.primary a[aria-current="page"] { color: var(--text); }
   animation-duration: 820ms;
   animation-timing-function: steps(20);
 }
-.practice-list > div.is-lit[data-from="top"]::before,
-.practice-list > div.is-lit[data-from="bottom"]::before {
+.practice-list > div.is-lit[data-from="top"]::before {
   -webkit-mask-image: var(--wipe-in-y);
           mask-image: var(--wipe-in-y);
   animation-name: practice-wipe-in-y;
 }
-.practice-list > div.is-leaving[data-to="top"]::before,
+.practice-list > div.is-lit[data-from="bottom"]::before {
+  -webkit-mask-image: var(--wipe-in-y-rev);
+          mask-image: var(--wipe-in-y-rev);
+  animation-name: practice-wipe-in-y;
+  animation-direction: reverse;
+}
 .practice-list > div.is-leaving[data-to="bottom"]::before {
   -webkit-mask-image: var(--wipe-out-y);
           mask-image: var(--wipe-out-y);
   animation-name: practice-wipe-out-y;
 }
+.practice-list > div.is-leaving[data-to="top"]::before {
+  -webkit-mask-image: var(--wipe-out-y-rev);
+          mask-image: var(--wipe-out-y-rev);
+  animation-name: practice-wipe-out-y;
+  animation-direction: reverse;
+}
 @keyframes practice-wipe-in-y {
-  from { -webkit-mask-position: 0 95%; mask-position: 0 95%; }
-  to   { -webkit-mask-position: 0 15%; mask-position: 0 15%; }
+  from { -webkit-mask-position: 0 88%; mask-position: 0 88%; }
+  to   { -webkit-mask-position: 0 12%; mask-position: 0 12%; }
 }
 @keyframes practice-wipe-out-y {
-  from { -webkit-mask-position: 0 95%; mask-position: 0 95%; }
-  to   { -webkit-mask-position: 0 15%; mask-position: 0 15%; }
+  from { -webkit-mask-position: 0 88%; mask-position: 0 88%; }
+  to   { -webkit-mask-position: 0 12%; mask-position: 0 12%; }
 }
 /* Parallax: the lit honeycomb lags behind the card as the section
    travels up the viewport, the same way the textured bands' honeycomb
@@ -735,6 +768,11 @@ nav.primary a[aria-current="page"] { color: var(--text); }
   .practice-list > div.is-lit[data-from="bottom"]::before { animation-name: practice-wipe-in-y, practice-hex-drift; }
   .practice-list > div.is-leaving[data-to="top"]::before,
   .practice-list > div.is-leaving[data-to="bottom"]::before { animation-name: practice-wipe-out-y, practice-hex-drift; }
+  /* Reversed directions apply to the wipe only; the drift stays put. */
+  .practice-list > div.is-lit[data-from="right"]::before,
+  .practice-list > div.is-lit[data-from="bottom"]::before,
+  .practice-list > div.is-leaving[data-to="left"]::before,
+  .practice-list > div.is-leaving[data-to="top"]::before { animation-direction: reverse, normal; }
   @keyframes practice-hex-drift {
     from { background-position: 0 -76px; }  /* two tile rows either way */
     to   { background-position: 0 76px; }
@@ -820,16 +858,13 @@ nav.primary a[aria-current="page"] { color: var(--text); }
   from { background-position-y: -100%; }
   to   { background-position-y: 200%; }
 }
-/* Mirrors: everything above moves right or down. Entering from the
-   right / leaving toward the left flips x; entering from the bottom /
-   leaving toward the top flips y. */
-.practice-list > div.is-lit[data-from="right"]::before,
+/* Meteor mirrors: the track above moves right or down. Entering from
+   the right / leaving toward the left flips x; entering from the
+   bottom / leaving toward the top flips y. (The honeycomb layer is
+   never transformed — see the reflected masks above.) */
 .practice-list > div.is-lit[data-from="right"]::after,
-.practice-list > div.is-leaving[data-to="left"]::before,
 .practice-list > div.is-leaving[data-to="left"]::after { transform: scaleX(-1); }
-.practice-list > div.is-lit[data-from="bottom"]::before,
 .practice-list > div.is-lit[data-from="bottom"]::after,
-.practice-list > div.is-leaving[data-to="top"]::before,
 .practice-list > div.is-leaving[data-to="top"]::after { transform: scaleY(-1); }
 /* Legibility while lit: body copy steps up from --text-dim to --text,
    and heading + copy get a tight halo in the card's own fill so the

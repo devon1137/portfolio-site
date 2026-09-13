@@ -22,15 +22,18 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('scroll', onScroll, { passive: true });
   }
 
-  // ---- Card honeycomb (.hex-card: practice, Recent Work, Launch Package) ----
+  // ---- Card hover phases (.hex-card honeycomb, .orbit-card meteor) ----
   // Three phases, expressed as classes the CSS animates:
-  //   is-lit      wiping in from data-from, then held while hovering
-  //   is-leaving  wiping out toward data-to, removed when that finishes
+  //   is-lit      entering from data-from, then held while hovering
+  //   is-leaving  exiting toward data-to, removed when that finishes
   // Directions come from the nearest edge at mouseenter / mouseleave.
-  // A leave that arrives while the wipe-in is still running is queued
-  // until it ends, so a quick pass over a card still plays both halves
-  // in full instead of jumping to solid and back.
-  document.querySelectorAll('.hex-card').forEach((card) => {
+  // A leave that arrives while the enter animation is still running is
+  // queued until it ends, so a quick pass over a card still plays both
+  // halves in full instead of jumping to solid and back.
+  // The CSS names which animations close each phase: practice-wipe-in* /
+  // orbit-in end the entering phase, practice-meteor-out* / orbit-out end
+  // the leaving one.
+  document.querySelectorAll('.hex-card, .orbit-card').forEach((card) => {
     let entering = false;    // wipe-in still running
     let pendingLeave = null; // edge to leave toward once it has
 
@@ -69,11 +72,12 @@ document.addEventListener('DOMContentLoaded', () => {
     card.addEventListener('focusout', (e) => { if (!card.contains(e.relatedTarget)) leave('right'); });
 
     card.addEventListener('animationend', (e) => {
-      if (e.animationName.startsWith('practice-wipe-in')) {
+      const n = e.animationName;
+      if (n.startsWith('practice-wipe-in') || n === 'orbit-in') {
         entering = false;
         if (pendingLeave) { const to = pendingLeave; pendingLeave = null; leave(to); }
-      } else if (e.animationName.startsWith('practice-meteor-out')) {
-        // The exit meteor outlasts the wipe-out, so it ends the phase.
+      } else if (n.startsWith('practice-meteor-out') || n === 'orbit-out') {
+        // Outlasts everything else in the phase, so it ends it.
         card.classList.remove('is-leaving');
         delete card.dataset.to;
       }

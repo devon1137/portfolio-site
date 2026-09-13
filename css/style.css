@@ -598,7 +598,7 @@ nav.primary a[aria-current="page"] { color: var(--text); }
   stroke-linejoin: round;
 }
 .practice-list p { color: var(--text-dim); font-size: var(--step--1); line-height: 1.65; }
-/* ---- Honeycomb wipe on hover (.hex-card: practice, Recent Work, Launch Package) ----
+/* ---- Honeycomb wipe on hover (.hex-card: Recent Work, Launch Package) ----
    Three phases, driven by script.js:
      .is-lit      pointer came in from data-from — the honeycomb wipes in
                   from that edge, then holds fully lit while hovering.
@@ -910,6 +910,72 @@ nav.primary a[aria-current="page"] { color: var(--text); }
     0 0 6px var(--surface-2),
     0 0 12px var(--surface-2);
 }
+/* ---- Orbiting meteor on hover (.orbit-card: "What I Actually Do") ----
+   Same enter/hold/leave phases and script as .hex-card, but no
+   honeycomb: these cards keep a clean face so the copy stays easy to
+   read, and the four of them don't turn into a wall of lattice. The
+   meteor instead circles the border for as long as the pointer is on
+   the card. It is a conic gradient (transparent for most of the turn,
+   a tail brightening into a glowing head) painted on a layer masked to
+   a 2px ring at the border, with the gradient's start angle animated
+   through 360° — the comet is stationary in the gradient; the gradient
+   spins. It sets off clockwise from the edge the pointer came in on
+   (data-from → --orbit-start) and fades out on leave.
+   orbit-in / orbit-out are the animations script.js watches to end the
+   entering and leaving phases; the orbit itself sits at index 1 in
+   both phases so it carries on across the class change without a
+   restart. */
+@property --orbit-angle {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+.orbit-card {
+  --orbit: var(--accent);
+  --orbit-head: #FFF0C2;
+  --orbit-start: 270deg;         /* conic 0° is the top edge's midpoint; 270° is the left's */
+  position: relative;
+  isolation: isolate;
+  overflow: clip;
+  overflow-clip-margin: 16px;    /* room for the glow to bleed past the border */
+}
+.orbit-card[data-from="top"]    { --orbit-start: 0deg; }
+.orbit-card[data-from="right"]  { --orbit-start: 90deg; }
+.orbit-card[data-from="bottom"] { --orbit-start: 180deg; }
+.orbit-card::after {
+  content: "";
+  position: absolute;
+  inset: -1px;                   /* sit on the border, not inside it */
+  z-index: 1;
+  pointer-events: none;
+  padding: 2px;                  /* ring thickness */
+  border-radius: calc(var(--radius-m) + 1px);
+  opacity: 0;
+  background: conic-gradient(from calc(var(--orbit-start) + var(--orbit-angle)),
+    transparent 0 285deg,
+    color-mix(in srgb, var(--orbit) 35%, transparent) 325deg,
+    var(--orbit) 352deg,
+    var(--orbit-head) 360deg);
+  /* Ring = padding box minus content box. */
+  -webkit-mask: linear-gradient(#000, #000) padding-box, linear-gradient(#000, #000) content-box;
+          mask: linear-gradient(#000, #000) padding-box, linear-gradient(#000, #000) content-box;
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+  filter:
+    drop-shadow(0 0 3px var(--orbit))
+    drop-shadow(0 0 10px color-mix(in srgb, var(--orbit) 55%, transparent));
+}
+.orbit-card.is-lit::after {
+  animation: orbit-in 320ms var(--ease) both, orbit 2400ms linear infinite;
+}
+.orbit-card.is-leaving::after {
+  animation: orbit-out 480ms var(--ease) both, orbit 2400ms linear infinite;
+}
+@keyframes orbit {
+  to { --orbit-angle: 360deg; }
+}
+@keyframes orbit-in  { from { opacity: 0; } to { opacity: 1; } }
+@keyframes orbit-out { from { opacity: 1; } to { opacity: 0; } }
 .practice-list .icon { transition: filter var(--t-med) var(--ease); }
 .practice-list > div:hover .icon,
 .practice-list > div:focus-within .icon {

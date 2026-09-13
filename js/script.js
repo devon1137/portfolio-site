@@ -33,9 +33,33 @@ document.addEventListener('DOMContentLoaded', () => {
   // The CSS names which animations close each phase: practice-wipe-in* /
   // orbit-in end the entering phase, practice-meteor-out* / orbit-out end
   // the leaving one.
+  const ORBIT_TAIL = 34; // tail dashes behind the head (see .orbit-card in the CSS)
   document.querySelectorAll('.hex-card, .orbit-card').forEach((card) => {
     let entering = false;    // wipe-in still running
     let pendingLeave = null; // edge to leave toward once it has
+    const orbits = card.classList.contains('orbit-card');
+
+    // Orbit cards get their comet: a wrapper holding the head dash plus
+    // the tail, each dash numbered so the CSS can stagger and fade it.
+    if (orbits) {
+      const train = document.createElement('span');
+      train.className = 'orbit';
+      train.setAttribute('aria-hidden', 'true');
+      train.style.setProperty('--orbit-n', ORBIT_TAIL);
+      for (let i = 0; i <= ORBIT_TAIL; i++) {
+        const dash = document.createElement('i');
+        dash.style.setProperty('--i', i);
+        train.appendChild(dash);
+      }
+      card.appendChild(train);
+    }
+    // Where along the border (clockwise from the top-left corner, as a
+    // fraction of the perimeter) the midpoint of a given edge sits.
+    const edgeStart = (edge) => {
+      const w = card.offsetWidth, h = card.offsetHeight, p = 2 * (w + h);
+      const at = { top: w / 2, right: w + h / 2, bottom: 1.5 * w + h, left: 2 * w + 1.5 * h };
+      return `${(100 * at[edge] / p).toFixed(2)}%`;
+    };
 
     const nearestEdge = (e) => {
       const r = card.getBoundingClientRect();
@@ -54,6 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
       card.classList.remove('is-leaving');
       delete card.dataset.to;
       card.dataset.from = from;
+      if (orbits) card.style.setProperty('--orbit-from', edgeStart(from));
       entering = true;
       card.classList.add('is-lit');
     };

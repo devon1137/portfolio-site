@@ -915,67 +915,79 @@ nav.primary a[aria-current="page"] { color: var(--text); }
    honeycomb: these cards keep a clean face so the copy stays easy to
    read, and the four of them don't turn into a wall of lattice. The
    meteor instead circles the border for as long as the pointer is on
-   the card. It is a conic gradient (transparent for most of the turn,
-   a tail brightening into a glowing head) painted on a layer masked to
-   a 2px ring at the border, with the gradient's start angle animated
-   through 360° — the comet is stationary in the gradient; the gradient
-   spins. It sets off clockwise from the edge the pointer came in on
-   (data-from → --orbit-start) and fades out on leave.
-   orbit-in / orbit-out are the animations script.js watches to end the
-   entering and leaving phases; the orbit itself sits at index 1 in
-   both phases so it carries on across the class change without a
-   restart. */
-@property --orbit-angle {
-  syntax: "<angle>";
-  inherits: false;
-  initial-value: 0deg;
-}
+   the card.
+   It travels on a CSS motion path — an inset() rectangle tracing the
+   card's border — so its speed is constant in pixels per second
+   regardless of the card's shape (a spinning conic gradient, the usual
+   trick, moves at constant *angle* and visibly races along the long
+   edges and crawls round the short ones). The comet is a train of
+   short dashes that script.js appends (one head, then --orbit-n tail
+   dashes), each following the same path a few ms behind the one in
+   front and a little fainter, so the tail bends round the corners
+   instead of swinging out. One drop-shadow on the train's wrapper
+   gives the whole thing its glow.
+   It sets off clockwise from the edge the pointer came in on
+   (script.js sets --orbit-from as a fraction of the perimeter) and
+   fades out on leave. orbit-in / orbit-out run on the wrapper and are
+   what script.js watches to end the entering and leaving phases; the
+   lap animation on the dashes is declared once for both phases so it
+   carries on across the class change without a restart. */
 .orbit-card {
   --orbit: var(--accent);
   --orbit-head: #FFF0C2;
-  --orbit-start: 270deg;         /* conic 0° is the top edge's midpoint; 270° is the left's */
+  --orbit-lap: 2600ms;          /* one full circuit */
+  --orbit-gap: 7ms;             /* lag between consecutive dashes */
+  --orbit-from: 0%;             /* start point along the perimeter (0 = top-left corner) */
   position: relative;
   isolation: isolate;
   overflow: clip;
-  overflow-clip-margin: 16px;    /* room for the glow to bleed past the border */
+  overflow-clip-margin: 16px;   /* room for the glow to bleed past the border */
 }
-.orbit-card[data-from="top"]    { --orbit-start: 0deg; }
-.orbit-card[data-from="right"]  { --orbit-start: 90deg; }
-.orbit-card[data-from="bottom"] { --orbit-start: 180deg; }
-.orbit-card::after {
-  content: "";
+.orbit-card .orbit {
   position: absolute;
-  inset: -1px;                   /* sit on the border, not inside it */
+  inset: -1px;                  /* the path runs on the border, not inside it */
   z-index: 1;
   pointer-events: none;
-  padding: 2px;                  /* ring thickness */
-  border-radius: calc(var(--radius-m) + 1px);
   opacity: 0;
-  background: conic-gradient(from calc(var(--orbit-start) + var(--orbit-angle)),
-    transparent 0 285deg,
-    color-mix(in srgb, var(--orbit) 35%, transparent) 325deg,
-    var(--orbit) 352deg,
-    var(--orbit-head) 360deg);
-  /* Ring = padding box minus content box. */
-  -webkit-mask: linear-gradient(#000, #000) padding-box, linear-gradient(#000, #000) content-box;
-          mask: linear-gradient(#000, #000) padding-box, linear-gradient(#000, #000) content-box;
-  -webkit-mask-composite: xor;
-          mask-composite: exclude;
   filter:
     drop-shadow(0 0 3px var(--orbit))
     drop-shadow(0 0 10px color-mix(in srgb, var(--orbit) 55%, transparent));
 }
-.orbit-card.is-lit::after {
-  animation: orbit-in 320ms var(--ease) both, orbit 2400ms linear infinite;
-}
-.orbit-card.is-leaving::after {
-  animation: orbit-out 480ms var(--ease) both, orbit 2400ms linear infinite;
-}
-@keyframes orbit {
-  to { --orbit-angle: 360deg; }
-}
+.orbit-card.is-lit .orbit     { animation: orbit-in 320ms var(--ease) both; }
+.orbit-card.is-leaving .orbit { animation: orbit-out 480ms var(--ease) both; }
 @keyframes orbit-in  { from { opacity: 0; } to { opacity: 1; } }
 @keyframes orbit-out { from { opacity: 1; } to { opacity: 0; } }
+.orbit-card .orbit > i {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 6px;
+  height: 2px;
+  border-radius: 1px;
+  background: var(--orbit);
+  /* Fade along the tail: --i is the dash's index, head = 0. */
+  opacity: calc(0.95 - 0.95 * var(--i) / var(--orbit-n));
+  offset-path: inset(0 round calc(var(--radius-m) + 1px));
+  offset-rotate: auto;
+  offset-distance: var(--orbit-from);
+}
+.orbit-card .orbit > i:first-child {
+  width: 9px;
+  height: 3px;
+  border-radius: 1.5px;
+  background: var(--orbit-head);
+}
+.orbit-card:is(.is-lit, .is-leaving) .orbit > i {
+  animation: orbit-lap var(--orbit-lap) linear infinite;
+  animation-delay: calc(var(--i) * var(--orbit-gap));
+}
+@keyframes orbit-lap {
+  from { offset-distance: var(--orbit-from); }
+  to   { offset-distance: calc(var(--orbit-from) + 100%); }  /* closed path: wraps */
+}
+@supports not (offset-path: inset(0)) {
+  .orbit-card .orbit { display: none; }
+}
 .practice-list .icon { transition: filter var(--t-med) var(--ease); }
 .practice-list > div:hover .icon,
 .practice-list > div:focus-within .icon {

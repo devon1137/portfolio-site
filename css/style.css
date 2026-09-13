@@ -1426,14 +1426,14 @@ dialog.lightbox .close:hover { background: var(--ink-2); }
 /* ---------- Services / Launch Package ---------- */
 .offer {
   display: grid;
-  grid-template-columns: 1.1fr 0.9fr;
+  grid-template-columns: 1fr 1fr;
   gap: var(--space-3xl);
   align-items: start;
 }
 .offer > div:first-child h2 { margin-bottom: var(--space-m); }
 .offer > div:first-child p { color: var(--text-dim); max-width: 48ch; }
 .offer > div:first-child p + p { margin-top: var(--space-m); }
-@media (max-width: 900px) { .offer { grid-template-columns: 1fr; gap: var(--space-xl); } }
+@media (max-width: 1023px) { .offer { grid-template-columns: 1fr; gap: var(--space-xl); } }
 
 /* Card recipe above. The card's own padding is a narrow ring — the
    part the hover honeycomb lights (see .pkg.hex-card::before) — and
@@ -1460,7 +1460,10 @@ dialog.lightbox .close:hover { background: var(--ink-2); }
 .pkg ul { list-style: none; margin-top: var(--space-m); }
 .pkg li { position: relative; padding: 0.35rem 0 0.35rem 1.4rem; font-size: var(--step--1); }
 .pkg li::before { content: "✓"; position: absolute; left: 0; color: var(--pine); font-weight: 600; }
-.pkg .actions { margin-top: var(--space-l); }
+.pkg .actions { margin-top: var(--space-l); gap: var(--space-s); }
+/* The two buttons share a row wherever the panel is wide enough (~345px)
+   and stack to full width below that. */
+.pkg .actions .btn { flex: 1 1 auto; justify-content: center; padding-inline: 0.85rem; white-space: nowrap; }
 .pkg .fine { margin-top: var(--space-m); font-size: 0.8rem; color: var(--text-dim); }
 
 .steps { list-style: none; counter-reset: step; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr)); gap: var(--space-xl); }

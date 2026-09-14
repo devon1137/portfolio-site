@@ -67,7 +67,7 @@ $head = @'
         <a href="../../projects.html" aria-current="page">Work</a>
         <button class="sub-toggle" type="button" aria-expanded="false" aria-controls="work-sub" aria-label="Show case studies"></button>
         <ul class="submenu" id="work-sub" aria-label="Case studies">
-          <li class="sub-group"><span class="sub-label eyebrow">Client work</span>
+          <li class="sub-group"><span class="sub-label eyebrow">Featured Client Work</span>
             <ul>
             <li><a href="../../work/the-northeastland-hotel/">The Northeastland Hotel</a></li>
             <li><a href="../../work/ignitepi/">IgnitePI</a></li>

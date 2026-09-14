@@ -4,27 +4,77 @@
 # advertises the sitemap.
 #   .\tools\build-sitemap.ps1 -Origin https://example.com
 param(
-  [Parameter(Mandatory = $true)][string]$Origin,   # e.g. https://devonkubacki.com (no trailing slash)
+  [string]$Origin = '',   # e.g. https://devonkubacki.com — needed for sitemap.xml; sitemap.html builds without it
   [string]$Root = (Split-Path $PSScriptRoot -Parent)
 )
 $ErrorActionPreference = 'Stop'
 $Origin = $Origin.TrimEnd('/')
 $utf8 = New-Object Text.UTF8Encoding $false
-$skip = @('404.html', 'agreement.html')
+$skip = @('404.html', 'agreement.html', 'sitemap.html')
 
-$entries = New-Object System.Collections.Generic.List[object]
-foreach ($f in Get-ChildItem (Join-Path $Root '*.html') | Where-Object { $_.Name -notin $skip } | Sort-Object Name) {
-  $loc = if ($f.Name -eq 'index.html') { "$Origin/" } else { "$Origin/$($f.Name)" }
-  $pri = switch ($f.Name) { 'index.html' { '1.0' } 'projects.html' { '0.9' } 'services.html' { '0.8' } default { '0.6' } }
-  $entries.Add([pscustomobject]@{ loc = $loc; lastmod = $f.LastWriteTimeUtc.ToString('yyyy-MM-dd'); priority = $pri })
+# Page list: relative path, title (from <title>, minus the site suffix), group.
+$pages = New-Object System.Collections.Generic.List[object]
+$topOrder = @('index.html', 'about.html', 'projects.html', 'services.html', 'gallery.html', 'contact.html', 'privacy.html', 'terms.html')
+$titleOf = { param($path) ([regex]::Match([IO.File]::ReadAllText($path), '<title>(.*?)</title>').Groups[1].Value -replace '\s*—\s*Devon Kubacki\s*$', '') }
+foreach ($name in $topOrder) {
+  $f = Join-Path $Root $name
+  if (-not (Test-Path $f) -or $name -in $skip) { continue }
+  $t = & $titleOf $f; if ($name -eq 'index.html') { $t = 'Home' }
+  $pri = switch ($name) { 'index.html' { '1.0' } 'projects.html' { '0.9' } 'services.html' { '0.8' } 'privacy.html' { '0.3' } 'terms.html' { '0.3' } default { '0.6' } }
+  $pages.Add([pscustomobject]@{ rel = $(if ($name -eq 'index.html') { '' } else { $name }); title = $t; group = 'Pages'; lastmod = (Get-Item $f).LastWriteTimeUtc.ToString('yyyy-MM-dd'); priority = $pri })
 }
-foreach ($d in Get-ChildItem (Join-Path $Root 'work') -Directory | Sort-Object Name) {
-  $idx = Join-Path $d.FullName 'index.html'
-  if (Test-Path $idx) {
-    $entries.Add([pscustomobject]@{ loc = "$Origin/work/$($d.Name)/"; lastmod = (Get-Item $idx).LastWriteTimeUtc.ToString('yyyy-MM-dd'); priority = '0.8' })
-  }
+foreach ($f in Get-ChildItem (Join-Path $Root '*.html') | Where-Object { $_.Name -notin $skip -and $_.Name -notin $topOrder } | Sort-Object Name) {
+  $pages.Add([pscustomobject]@{ rel = $f.Name; title = (& $titleOf $f.FullName); group = 'Pages'; lastmod = $f.LastWriteTimeUtc.ToString('yyyy-MM-dd'); priority = '0.5' })
+}
+# Case studies in build-work order
+$order = @('the-northeastland-hotel', 'ignitepi', 'streamershaven', 'the-law-offices-of-michael-s-lamonsoff', 'brainandspinalcord', 'alpha-pressure-washing')
+$dirs = @($order | Where-Object { Test-Path (Join-Path $Root "work\$_\index.html") }) + @(Get-ChildItem (Join-Path $Root 'work') -Directory | Where-Object { $_.Name -notin $order } | Select-Object -ExpandProperty Name)
+foreach ($slug in $dirs) {
+  $idx = Join-Path $Root "work\$slug\index.html"
+  $t = (& $titleOf $idx) -replace '\s*—\s*Case Study\s*$', ''
+  $pages.Add([pscustomobject]@{ rel = "work/$slug/"; title = $t; group = 'Case studies'; lastmod = (Get-Item $idx).LastWriteTimeUtc.ToString('yyyy-MM-dd'); priority = '0.8' })
 }
 
+# ---- sitemap.html (human-readable; relative links, so no origin needed) ----
+$tpl = [IO.File]::ReadAllText((Join-Path $Root 'privacy.html'))   # borrow the chrome from a simple page
+$groups = $pages | Group-Object group
+$lists = foreach ($g in $groups) {
+  $items = ($g.Group | ForEach-Object { "          <li><a href=`"$(if ($_.rel) { $_.rel } else { 'index.html' })`">$([Net.WebUtility]::HtmlEncode($_.title))</a></li>" }) -join "`n"
+  "        <li><a href=`"#$($g.Name.ToLower() -replace '\s','-')`">$($g.Name)</a>`n          <ol>`n$items`n          </ol>`n        </li>"
+}
+$body = @"
+  <section class="page-intro grid-bg">
+    <div class="hex-blinks" aria-hidden="true"></div>
+    <div class="wrap">
+      <h1>Sitemap.</h1>
+      <p>Every page on this site, in one list. The XML version for search engines is at <a href="sitemap.xml">sitemap.xml</a>.</p>
+    </div>
+  </section>
+
+  <section class="band">
+    <div class="wrap">
+      <nav class="toc" aria-label="All pages">
+        <span class="toc-title eyebrow">All pages</span>
+        <ol>
+$($lists -join "`n")
+        </ol>
+      </nav>
+    </div>
+  </section>
+"@
+$html = $tpl
+$html = [regex]::Replace($html, '(?s)<title>.*?</title>', '<title>Sitemap — Devon Kubacki</title>', 1)
+$html = [regex]::Replace($html, '<meta name="description" content="[^"]*">', '<meta name="description" content="Every page on Devon Kubacki&#39;s site, in one list.">', 1)
+$html = [regex]::Replace($html, '<meta property="og:title" content="[^"]*">', '<meta property="og:title" content="Sitemap — Devon Kubacki">', 1)
+$html = [regex]::Replace($html, '<meta property="og:description" content="[^"]*">', '<meta property="og:description" content="Every page on this site, in one list.">', 1)
+$html = [regex]::Replace($html, '(?s)<main id="main">.*?</main>', ('<main id="main">' + "`n" + ($body -replace '\$', '$$') + '</main>'), 1)
+$html = $html.Replace('<body id="top" class="legal">', '<body id="top">')
+[IO.File]::WriteAllText((Join-Path $Root 'sitemap.html'), $html, $utf8)
+"sitemap.html: $($pages.Count) pages"
+
+if (-not $Origin) { "sitemap.xml skipped: pass -Origin https://your-domain to write it (and the robots.txt Sitemap line)"; return }
+
+$entries = $pages | ForEach-Object { [pscustomobject]@{ loc = "$Origin/$($_.rel)"; lastmod = $_.lastmod; priority = $_.priority } }
 $xml = New-Object System.Text.StringBuilder
 [void]$xml.AppendLine('<?xml version="1.0" encoding="UTF-8"?>')
 [void]$xml.AppendLine('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">')

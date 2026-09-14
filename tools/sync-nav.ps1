@@ -5,23 +5,28 @@
 param([string]$Root = (Split-Path $PSScriptRoot -Parent))
 $ErrorActionPreference = 'Stop'
 $order = @(Get-Content (Join-Path $PSScriptRoot 'work-order.txt') | Where-Object { $_.Trim() } | ForEach-Object { $_.Trim() })   # one slug per line: the case-study order, used by every tool
-$titles = @{}
+$titles = @{}; $groupOf = @{}
 foreach ($slug in $order) {
   $raw = [IO.File]::ReadAllText((Join-Path $PSScriptRoot "work-src\$slug.html"))
   $meta = [regex]::Match($raw, '(?s)<!--meta\s*(\{.*?\})\s*-->').Groups[1].Value | ConvertFrom-Json
   $titles[$slug] = [Net.WebUtility]::HtmlEncode($meta.title)
+  $groupOf[$slug] = if ($meta.group) { [string]$meta.group } else { 'Case studies' }
 }
+# Groups in first-seen order (per work-order.txt), each a column in the panel.
+$groupNames = @(); foreach ($slug in $order) { if ($groupNames -notcontains $groupOf[$slug]) { $groupNames += $groupOf[$slug] } }
 
 function Block([string]$pre, [bool]$workCurrent) {
   $cur = if ($workCurrent) { ' aria-current="page"' } else { '' }
-  $items = ($order | ForEach-Object { "          <li><a href=`"${pre}work/$_/`">$($titles[$_])</a></li>" }) -join "`n"
+  $cols = foreach ($g in $groupNames) {
+    $items = ($order | Where-Object { $groupOf[$_] -eq $g } | ForEach-Object { "            <li><a href=`"${pre}work/$_/`">$($titles[$_])</a></li>" }) -join "`n"
+    "          <li class=`"sub-group`"><span class=`"sub-label eyebrow`">$([Net.WebUtility]::HtmlEncode($g))</span>`n            <ul>`n$items`n            </ul>`n          </li>"
+  }
   @"
 <!--worksub--><div class="has-sub">
         <a href="${pre}projects.html"$cur>Work</a>
         <button class="sub-toggle" type="button" aria-expanded="false" aria-controls="work-sub" aria-label="Show case studies"></button>
         <ul class="submenu" id="work-sub" aria-label="Case studies">
-          <li><span class="sub-label eyebrow">Case studies</span></li>
-$items
+$($cols -join "`n")
           <li class="all"><a href="${pre}projects.html">All work &rarr;</a></li>
         </ul>
       </div><!--/worksub-->

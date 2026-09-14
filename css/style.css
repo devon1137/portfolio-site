@@ -423,6 +423,23 @@ nav.primary .submenu a:hover, nav.primary .submenu a:focus-visible { color: var(
 nav.primary .submenu a[aria-current="page"] { color: var(--amber); }
 nav.primary .submenu .sub-label { display: block; padding: 0.4rem 1rem 0.2rem; }
 nav.primary .submenu .all a { border-top: 1px solid var(--line); margin-top: var(--space-xs); color: var(--text); }
+/* Grouped panel: one column per group (Client work / My own sites), the
+   "All work" link spanning underneath. */
+nav.primary .submenu:has(.sub-group) {
+  display: flex;
+  flex-wrap: wrap;
+  left: auto;
+  right: -0.75rem;   /* wide panel hangs left from the item, so it can't run off the viewport */
+  width: max-content;
+  max-width: min(92vw, 40rem);
+  min-width: 0;
+  padding: var(--space-xs) 0;
+}
+nav.primary .sub-group { flex: 1 0 13rem; }
+nav.primary .sub-group ul { list-style: none; margin: 0; padding: 0; }
+nav.primary .sub-group + .sub-group { border-left: 1px solid var(--line); }
+nav.primary .submenu .all { flex-basis: 100%; }
+nav.primary .submenu:has(.sub-group) .all a { margin-top: var(--space-xs); }
 
 /* Toggle: two bars that fold into an X */
 .nav-toggle {
@@ -511,6 +528,11 @@ nav.primary .submenu .all a { border-top: 1px solid var(--line); margin-top: var
   nav.primary .submenu li:last-child a { border-bottom: 0; }
   nav.primary .submenu .sub-label { padding-left: calc(var(--gutter) + 1rem); }
   nav.primary .submenu .all a { margin-top: 0; }
+  /* groups stack in the accordion */
+  nav.primary .submenu:has(.sub-group) { display: none; width: auto; max-width: none; }
+  nav.primary .has-sub.open .submenu:has(.sub-group) { display: block; }
+  nav.primary .sub-group + .sub-group { border-left: 0; border-top: 1px solid var(--line); }
+  nav.primary .sub-group .sub-label { padding-top: 0.75rem; }
 }
 
 /* ---------- 5. Components ---------- */

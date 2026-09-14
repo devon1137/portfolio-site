@@ -221,7 +221,7 @@ section.band {
 .grid-bg::before {
   content: "";
   position: absolute;
-  inset: -70%;              /* oversized so the rotated, parallaxed layer always covers the band */
+  inset: -40%;              /* oversized so the rotated layer always covers the band */
   z-index: -1;
   pointer-events: none;
   background-image: var(--hex-tile);
@@ -232,26 +232,64 @@ section.band {
   opacity: 0.8;
 }
 
-/* Parallax: as a textured section travels up through the viewport, its
-   honeycomb lags behind the content. Scroll-driven, so it runs on the
-   compositor with no scroll listener; browsers without support keep
-   the static texture. The layer is 240% tall, so ±18% of it is a clear
-   drift with the rotated edges still clear of every section corner. */
-@supports (animation-timeline: view()) {
-  .grid-bg { view-timeline: --hex block; }
-  .grid-bg::before {
-    animation: hex-drift linear both;
-    animation-timeline: --hex;
-    animation-range: entry 0% exit 100%;
-    will-change: transform;
-  }
-  @keyframes hex-drift {
-    from { transform: translateY(-18%) rotate(30deg); }
-    to   { transform: translateY(18%) rotate(30deg); }
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .grid-bg::before { animation: none; }
-  }
+/* Heroes (home, and every page intro that carries a .hex-blinks layer):
+   the honeycomb pans endlessly at 30° on screen (up and to the right).
+   The layer is itself rotated 30°, so that's a −60° vector in the
+   layer's own space: (+2 tiles, −2 tiles) = (76.21, −132)px, a whole
+   lattice translation, so the loop point never shows. ~8px/s. The mask
+   is untouched — same radial fade as every other textured band. */
+.hero.grid-bg::before,
+.page-intro.grid-bg:has(> .hex-blinks)::before {
+  animation: hex-pan 20s linear infinite;
+  will-change: background-position;
+}
+@keyframes hex-pan {
+  from { background-position: 0 0; }
+  to   { background-position: 76.21px -132px; }
+}
+
+/* Blinking hexes: a layer that mirrors the hero honeycomb exactly (same
+   box, rotation, mask, and pan — the pan here is a local-space
+   translate, which is what background-position does on the pattern)
+   holding a small pool of hex outlines. script.js parks each one on a
+   lattice cell, flashes it, and moves it to another cell after a random
+   pause, keeping clear of the pan's loop point so nothing jumps. */
+:is(.hero, .page-intro) .hex-blinks {
+  position: absolute;
+  inset: -40%;
+  z-index: -1;
+  pointer-events: none;
+  transform: rotate(30deg);
+  -webkit-mask-image: radial-gradient(ellipse 60% 55% at 40% 35%, #000 20%, transparent 100%);
+          mask-image: radial-gradient(ellipse 60% 55% at 40% 35%, #000 20%, transparent 100%);
+  animation: hex-blinks-pan 20s linear infinite;
+  will-change: transform;
+}
+@keyframes hex-blinks-pan {
+  from { transform: rotate(30deg) translate(0, 0); }
+  to   { transform: rotate(30deg) translate(76.21px, -132px); }
+}
+.hex-blinks .blink {
+  position: absolute;
+  width: 38.105px;
+  height: 44px;
+  opacity: 0;
+  fill: color-mix(in srgb, var(--accent) 14%, transparent);
+  stroke: var(--accent);
+  stroke-width: 1.5;
+  filter: drop-shadow(0 0 4px color-mix(in srgb, var(--accent) 80%, transparent));
+}
+.hex-blinks .blink.on { animation: hex-blink var(--dur, 800ms) ease-in-out both; }
+@keyframes hex-blink {
+  0%   { opacity: 0; }
+  35%  { opacity: 1; }
+  100% { opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  :is(.hero, .page-intro) .hex-blinks { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero.grid-bg::before, .page-intro.grid-bg::before { animation: none; }
 }
 
 /* Ledger: a narrow margin column for dates/marginalia + content column */
@@ -424,7 +462,17 @@ nav.primary a[aria-current="page"] { color: var(--text); }
 .actions { display: flex; gap: var(--space-m); flex-wrap: wrap; }
 
 /* Hero */
-.hero { padding-block: clamp(4rem, 3rem + 6vw, 8rem) clamp(3rem, 2rem + 5vw, 6rem); }
+.hero { padding-block: clamp(3rem, 2rem + 5vw, 6rem); }   /* equal top and bottom */
+/* Two columns: the pitch on the left, the four key stats as a 2×2 of
+   cards on the right, vertically centred against the copy. Stacks with
+   the stats underneath on narrower screens. */
+.hero-grid {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: var(--space-2xl) var(--space-3xl);
+  align-items: center;
+}
+@media (max-width: 960px) { .hero-grid { grid-template-columns: 1fr; } }
 .hero h1 { max-width: 18ch; }
 .hero .lede {
   max-width: 56ch;
@@ -466,38 +514,70 @@ nav.primary a[aria-current="page"] { color: var(--text); }
   100% { box-shadow: 0 0 0 0 rgba(47, 111, 94, 0); }
 }
 
-/* Stats — one headline number per category of work */
+/* Stats — one headline number per category of work, as four cards
+   (the shared card recipe applies; see below). Number → bar → label. */
 .stats {
   list-style: none;
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: var(--space-l);
-  margin-top: var(--space-2xl);
-  padding-top: var(--space-l);
-  border-top: 1px solid var(--line);
 }
-@media (max-width: 900px) { .stats { grid-template-columns: repeat(2, 1fr); } }
+.hero .stats > li { padding: var(--space-l); text-align: center; }   /* compact and centred; overrides the recipe's deeper bottom padding */
+/* Corner accents: amber L-brackets hugging the top-right and bottom-left
+   corners, curved to follow the card's own radius. */
+.hero .stats > li::before,
+.hero .stats > li::after {
+  content: "";
+  position: absolute;
+  width: 22px;
+  height: 22px;
+  border: 0 solid var(--accent);
+  pointer-events: none;
+}
+.hero .stats > li::before {
+  top: -1px;
+  right: -1px;
+  border-top-width: 3px;
+  border-right-width: 3px;
+  border-top-right-radius: var(--radius-m);
+}
+.hero .stats > li::after {
+  bottom: -1px;
+  left: -1px;
+  border-bottom-width: 3px;
+  border-left-width: 3px;
+  border-bottom-left-radius: var(--radius-m);
+}
 .stats .value {
   display: block;
+  position: relative;
   font-family: var(--font-serif);
   font-size: var(--step-3);
   font-weight: 500;
   line-height: 1;
   color: var(--accent);
   letter-spacing: -0.02em;
+  padding-bottom: var(--space-m);   /* room above the bar */
+  margin-bottom: var(--space-m);    /* room below it */
+}
+.stats .value::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 0;
+  width: 60px;
+  height: 4px;
+  background: var(--accent);
+  clip-path: polygon(4px 0, 100% 0, calc(100% - 4px) 100%, 0 100%);
 }
 .stats .label {
   display: block;
-  margin-top: var(--space-xs);
   font-size: var(--step--1);
   color: var(--text-dim);
-  max-width: 22ch;
+  line-height: 1.5;
 }
-@media (max-width: 640px) {
-  .stats { grid-template-columns: 1fr; gap: var(--space-m); }
-  .stats li { display: flex; align-items: baseline; gap: var(--space-m); }
-  .stats .label { margin-top: 0; max-width: none; }
-}
+@media (max-width: 420px) { .stats { grid-template-columns: 1fr; } }
 
 /* Practice list — one card per category of work, deliberately unnumbered */
 /* Two columns at every size above mobile: wide enough that the longest
@@ -514,8 +594,11 @@ nav.primary a[aria-current="page"] { color: var(--text); }
    cards, package cards, How It Works steps, the terms grid, and the
    by-quote list. Fill + hairline + inner top highlight + layered shadow,
    lifting on hover. The heading carries a 60×4 slanted accent bar; if
-   the card has a subtitle (.cat), it sits below the bar. */
+   the card has a subtitle (.cat, or a step number), the order is
+   subtitle → bar → heading, so the bar always sits directly above the
+   heading. */
 .practice-list > div,
+.stats > li,
 .work-card,
 .pkg,
 .steps > li,
@@ -538,6 +621,7 @@ nav.primary a[aria-current="page"] { color: var(--text); }
   transition: transform var(--t-med) var(--ease), box-shadow var(--t-med) var(--ease), border-color var(--t-med) var(--ease);
 }
 .practice-list > div:hover,
+.stats > li:hover,
 .work-card:hover,
 .pkg:hover,
 .steps > li:hover,
@@ -581,10 +665,48 @@ nav.primary a[aria-current="page"] { color: var(--text); }
   /* Slanted ends, caution-tape style */
   clip-path: polygon(4px 0, 100% 0, calc(100% - 4px) 100%, 0 100%);
 }
-/* Subtitle sits between the bar and the body */
+/* Cards with a subtitle read subtitle → bar → heading: the bar moves up
+   under the subtitle and the heading loses its own. */
 .work-card .cat,
 .pkg .cat,
-.quote-list .cat { display: block; margin: 0 0 var(--space-xs); }
+.quote-list .cat {
+  display: block;
+  position: relative;
+  padding-bottom: var(--space-s);
+  margin: 0 0 var(--space-s);
+}
+.work-card .cat { margin-top: var(--space-m); }   /* gap between the frame and the subtitle */
+.work-card .cat::after,
+.pkg .cat::after,
+.quote-list .cat::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 60px;
+  height: 4px;
+  background: var(--accent);
+  clip-path: polygon(4px 0, 100% 0, calc(100% - 4px) 100%, 0 100%);
+}
+.work-card .cat + h3,
+.pkg .cat + h3,
+.quote-list .cat + h3 { margin-top: 0; padding-bottom: 0; }
+.work-card .cat + h3::after,
+.pkg .cat + h3::after,
+.quote-list .cat + h3::after { content: none; }
+/* Steps: the number is the subtitle, so number → bar → heading. The
+   number is itself a pseudo, so its bar is painted as backgrounds: two
+   4px slanted corners and a 52px middle. */
+.steps li::before {
+  padding-bottom: var(--space-s);
+  margin-bottom: var(--space-s);
+  background:
+    linear-gradient(to top right, transparent 50%, var(--accent) 50%) no-repeat 0 100% / 4px 4px,
+    linear-gradient(var(--accent), var(--accent)) no-repeat 4px 100% / 52px 4px,
+    linear-gradient(to bottom left, transparent 50%, var(--accent) 50%) no-repeat 56px 100% / 4px 4px;
+}
+.steps h3 { padding-bottom: 0; }
+.steps h3::after { content: none; }
 .practice-list .icon {
   flex: none;
   width: 1.15em;
@@ -685,14 +807,16 @@ nav.primary a[aria-current="page"] { color: var(--text); }
   -webkit-mask-position: 100% 0;
           mask-position: 100% 0;
 }
-/* Launch Package: the honeycomb only lights the ring between the card
-   edge and an inner panel (.pkg-inner), so it reads as a hex border.
+/* Launch Package and Recent Work: the honeycomb only lights the ring
+   between the card edge and an inner panel (.pkg-inner / .card-inner),
+   so it reads as a hex border and the text stays on clear ground.
    Two solid layers, clipped to the layer's padding box and content box
    and composited with exclude, make the ring; the wipe intersects it.
    The layer's padding equals the card's, so its content box is exactly
    the inner panel. Solid layers ignore the size/position the wipe
    animates, so nothing else changes. */
-.pkg.hex-card::before {
+.pkg.hex-card::before,
+.work-card.hex-card::before {
   padding: inherit;
   -webkit-mask-image: var(--wipe), linear-gradient(#000, #000), linear-gradient(#000, #000);
           mask-image: var(--wipe), linear-gradient(#000, #000), linear-gradient(#000, #000);
@@ -1079,6 +1203,20 @@ nav.primary a[aria-current="page"] { color: var(--text); }
   gap: var(--space-xl);
 }
 .work-card { display: flex; flex-direction: column; }
+/* Same construction as the Launch Package card: the card's own padding
+   is a narrow ring (the part the hover honeycomb lights) and the content
+   sits in an inner panel with a hairline of its own. */
+.work-card.hex-card { --ring: 16px; padding: var(--ring); }
+.work-card .card-inner {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-l);
+  border: 1px solid var(--line);
+  border-radius: calc(var(--radius-m) - 3px);
+  transition: border-color var(--t-med) var(--ease);
+}
+.work-card:is(.is-lit, .is-leaving) .card-inner { border-color: var(--line-strong); }
 .work-card .frame-link { display: block; text-decoration: none; color: inherit; }
 .work-card h3 { margin-top: var(--space-m); }
 .work-card h3 a { text-decoration: none; transition: color var(--t-fast) var(--ease); }
@@ -1091,16 +1229,45 @@ nav.primary a[aria-current="page"] { color: var(--text); }
 }
 .band .actions.after { margin-top: var(--space-2xl); }
 
-/* Track record — a ledger of results: number | what it was | when */
+/* Track record — a ledger of results: number | category, what it was | when.
+   Four quiet layers of life, none of them simultaneous:
+     - rows slide in as they enter the viewport (scroll-driven);
+     - the number then counts up from zero (script.js, once per row);
+     - each row carries its category label + icon;
+     - on hover the row gets a wash, the number a glow, and a slanted
+       bar slides in at the left edge. */
+.category-intro.record-intro { max-width: none; }   /* the Track Record intro runs the full container width */
 .record { list-style: none; margin-top: var(--space-xl); }
 .record li {
+  position: relative;
   display: grid;
   grid-template-columns: 9rem 1fr auto;
   gap: var(--space-xl);
   align-items: start;
-  padding-block: var(--space-l);
+  padding: var(--space-l) var(--space-m);
+  margin-inline: calc(-1 * var(--space-m));   /* wash bleeds past the text edge, text stays aligned */
   border-top: 1px solid var(--line);
+  border-radius: var(--radius-s);
+  /* Hover grows via `scale`, not `transform`, so it composes with the
+     scroll-driven slide-in animation (which owns `transform`). */
+  transition: background var(--t-med) var(--ease), scale var(--t-med) var(--ease);
 }
+.record li:hover { scale: 1.02; }
+.record li::before {                          /* hover bar, slides in at the left edge */
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 4px;
+  height: 56%;
+  background: var(--accent);
+  clip-path: polygon(0 4px, 100% 0, 100% calc(100% - 4px), 0 100%);
+  transform: translateY(-50%) scaleY(0);
+  transform-origin: center;
+  transition: transform var(--t-med) var(--ease);
+}
+.record li:hover { background: color-mix(in srgb, var(--surface-2) 55%, transparent); }
+.record li:hover::before { transform: translateY(-50%) scaleY(1); }
 .record .value {
   font-family: var(--font-serif);
   font-size: var(--step-3);
@@ -1109,6 +1276,18 @@ nav.primary a[aria-current="page"] { color: var(--text); }
   color: var(--accent);
   font-variant-numeric: tabular-nums;
   padding-top: 0.1em;
+  transition: text-shadow var(--t-med) var(--ease);
+}
+.record li:hover .value { text-shadow: 0 0 14px color-mix(in srgb, var(--accent) 55%, transparent); }
+.record .cat { display: inline-flex; align-items: center; gap: 0.4rem; margin-bottom: var(--space-2xs); }
+.record .cat .icon {
+  width: 1.1rem;
+  height: 1.1rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 .record h3 { font-size: var(--step-1); }
 .record p { margin-top: var(--space-xs); color: var(--text-dim); font-size: var(--step--1); max-width: 60ch; }
@@ -1123,15 +1302,72 @@ nav.primary a[aria-current="page"] { color: var(--text); }
   .record li { grid-template-columns: 1fr; gap: var(--space-xs); }
   .record .when { order: -1; padding-top: 0; }
 }
+/* Reveal: each row fades and rises as it enters the viewport. Scroll-
+   driven, so later rows naturally follow earlier ones. */
+@supports (animation-timeline: view()) {
+  .record li {
+    animation: record-in linear both;
+    animation-timeline: view();
+    animation-range: entry 0% entry 55%;
+  }
+  @keyframes record-in {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: none; }
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .record li { animation: none; }
+}
 
 /* Work page: one category per band, entries stacked inside as ledger rows */
 .category-intro { max-width: 60ch; color: var(--text-dim); font-size: var(--step-1); margin-top: calc(-1 * var(--space-m)); }
 .entries { list-style: none; margin-top: var(--space-xl); }
+/* Same treatment as the home page's Track Record rows: each entry
+   slides in as it enters the viewport, gets a wash / slight scale /
+   left-edge bar on hover, and its tag pills appear one at a time
+   (script.js marks the entry .is-in once it's in view). */
 .entries > .entry {
-  padding-block: var(--space-2xl);
+  position: relative;
+  padding: var(--space-2xl) var(--space-m);
+  margin-inline: calc(-1 * var(--space-m));
   border-top: 1px solid var(--line);
+  border-radius: var(--radius-s);
+  transition: background var(--t-med) var(--ease), scale var(--t-med) var(--ease);
 }
 .entries > .entry:last-child { padding-bottom: 0; }
+.entries > .entry::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 4px;
+  height: 56%;
+  background: var(--accent);
+  clip-path: polygon(0 4px, 100% 0, 100% calc(100% - 4px), 0 100%);
+  transform: translateY(-50%) scaleY(0);
+  transform-origin: center;
+  transition: transform var(--t-med) var(--ease);
+}
+.entries > .entry:hover { background: color-mix(in srgb, var(--surface-2) 55%, transparent); scale: 1.01; }
+.entries > .entry:hover::before { transform: translateY(-50%) scaleY(1); }
+@supports (animation-timeline: view()) {
+  .entries > .entry {
+    animation: record-in linear both;
+    animation-timeline: view();
+    animation-range: entry 0% entry 45%;
+  }
+}
+/* Pills: hidden until the entry is in view, then in one at a time */
+.entry .tags li { opacity: 0; transform: translateY(6px); }
+.entry.is-in .tags li { animation: pill-in 900ms var(--ease) both; animation-delay: calc(var(--i, 0) * 260ms); }
+@keyframes pill-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .entries > .entry { animation: none; }
+  .entry .tags li, .entry.is-in .tags li { opacity: 1; transform: none; animation: none; }
+}
 .entry h3 { font-size: var(--step-2); }
 .entry .role {
   color: var(--accent);
@@ -1139,7 +1375,13 @@ nav.primary a[aria-current="page"] { color: var(--text); }
   font-weight: 500;
   margin-top: var(--space-xs);
 }
-.entry .desc { max-width: 64ch; margin-top: var(--space-m); color: var(--text-dim); }
+.entry .desc { margin-top: var(--space-m); color: var(--text-dim); }   /* no measure cap: Work-page text runs the full content column */
+/* Mirror the date column on the right so the text is inset by the same
+   amount on both sides (date column + gap). Collapses with .ledger on mobile. */
+.entries > .entry { padding-right: calc(var(--space-m) + 8.5rem + var(--space-xl)); }
+@media (max-width: 720px) { .entries > .entry { padding-right: var(--space-m); } }
+.category-intro:has(+ .entries) { max-width: none; }
+.entry .desc + .desc { margin-top: var(--space-s); }
 .entry .links { margin-top: var(--space-l); display: flex; gap: var(--space-m); flex-wrap: wrap; }
 
 .link-arrow {
@@ -1367,6 +1609,7 @@ nav.primary a[aria-current="page"] { color: var(--text); }
   padding: 0.6rem 0.75rem;
   border-bottom: 1px solid var(--line);
 }
+.frame .dots { display: flex; gap: 0.35rem; flex: none; }
 .frame .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--rule); opacity: 0.5; }
 .frame .url {
   margin-left: 0.5rem;
@@ -1376,7 +1619,15 @@ nav.primary a[aria-current="page"] { color: var(--text); }
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  min-width: 0;   /* as a flex item, allow it to shrink so the ellipsis actually engages */
 }
+/* The URL is a real link to the source page (live, or the exact Wayback
+   capture) so a screenshot can be checked against what it claims to show.
+   Clicking it must not open the lightbox (script.js ignores clicks on it). */
+.frame a.url { text-decoration: none; position: relative; z-index: 1; transition: color var(--t-fast) var(--ease); }
+.frame a.url::after { content: " ↗"; opacity: 0; transition: opacity var(--t-fast) var(--ease); }
+.frame a.url:hover, .frame a.url:focus-visible { color: var(--accent); text-decoration: underline; text-underline-offset: 2px; }
+.frame a.url:hover::after, .frame a.url:focus-visible::after { opacity: 1; }
 .frame .shot { aspect-ratio: 16 / 10; width: 100%; object-fit: cover; object-position: top; }
 .frame .pending {
   aspect-ratio: 16 / 10;
@@ -1424,8 +1675,11 @@ nav.primary a[aria-current="page"] { color: var(--text); }
 }
 
 /* Gallery */
+.gallery-band > .wrap > h2,
+.category-intro.gallery-intro { max-width: none; }   /* gallery bands: title and intro run the grid's full width */
 .gallery-grid {
   display: grid;
+  margin-top: var(--space-xl);
   grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
   gap: var(--space-xl) var(--space-l);
 }
@@ -1464,8 +1718,21 @@ dialog.lightbox img {
   width: auto;
   border: 1px solid var(--line);
   border-radius: var(--radius-s);
+  cursor: zoom-in;
 }
-dialog.lightbox .close {
+/* 1:1 mode — the image at its true pixel size, scrolling inside the stage.
+   Toggled by the 1:1 button, or by clicking the image. */
+dialog.lightbox.is-actual .stage { display: block; overflow: auto; padding: var(--space-xl); }
+dialog.lightbox.is-actual img {
+  display: block;
+  max-width: none;
+  max-height: none;
+  width: auto;
+  margin: 0 auto;
+  cursor: zoom-out;
+}
+dialog.lightbox .close,
+dialog.lightbox .lb-zoom {
   position: fixed;
   top: var(--space-m);
   right: var(--space-m);
@@ -1476,7 +1743,105 @@ dialog.lightbox .close {
   padding: 0.5rem 0.9rem;
   border-radius: var(--radius-s);
 }
-dialog.lightbox .close:hover { background: var(--ink-2); }
+dialog.lightbox .lb-zoom { right: auto; left: var(--space-m); font-family: var(--font-mono); }
+dialog.lightbox .lb-zoom[aria-pressed="true"] { border-color: var(--accent); color: var(--accent); }
+dialog.lightbox .close:hover, dialog.lightbox .lb-zoom:hover { background: var(--ink-2); }
+/* Prev / next within the opened image's group, plus a caption */
+dialog.lightbox .lb-nav {
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3rem;
+  height: 3rem;
+  display: grid;
+  place-items: center;
+  font-size: 1.8rem;
+  line-height: 1;
+  background: rgba(27, 31, 29, 0.7);
+  border: 1px solid var(--line-strong);
+  color: var(--text);
+  border-radius: 50%;
+  transition: background var(--t-fast) var(--ease), border-color var(--t-fast) var(--ease);
+}
+dialog.lightbox .lb-nav:hover { background: var(--ink-2); border-color: var(--accent); }
+dialog.lightbox .lb-prev { left: var(--space-m); }
+dialog.lightbox .lb-next { right: var(--space-m); }
+dialog.lightbox .lb-nav[hidden] { display: none; }
+dialog.lightbox .lb-caption {
+  position: fixed;
+  left: 50%;
+  bottom: var(--space-m);
+  transform: translateX(-50%);
+  max-width: min(92vw, 78ch);
+  padding: 0.4rem 0.9rem;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--text);
+  background: rgba(27, 31, 29, 0.7);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-s);
+  text-align: center;
+}
+dialog.lightbox .lb-caption:empty { display: none; }
+dialog.lightbox .lb-caption .lb-source {
+  margin-left: 0.9rem;
+  padding-left: 0.9rem;
+  border-left: 1px solid var(--line);
+  color: var(--accent);
+  text-decoration: none;
+  white-space: nowrap;
+}
+dialog.lightbox .lb-caption .lb-source:hover,
+dialog.lightbox .lb-caption .lb-source:focus-visible { text-decoration: underline; text-underline-offset: 2px; }
+
+/* Entry galleries (Work page) — product-gallery style, above the job's
+   title: a main image with a row of thumbnails under it. script.js
+   builds the main slot (.eg-main) from the active figure; clicking a
+   thumbnail swaps it in, clicking the main image opens the lightbox at
+   that shot. The figures in .eg-track are the thumbnails and also the
+   lightbox's set. */
+.entry > div { min-width: 0; }
+.entry-gallery { margin-bottom: var(--space-l); }   /* full content-column width, same as the text under it */
+.entry-gallery .eg-main {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  text-align: left;
+  cursor: zoom-in;
+  border-radius: var(--radius-m);
+}
+.entry-gallery .eg-main .frame { transition: transform var(--t-med) var(--ease), border-color var(--t-med) var(--ease); }
+.entry-gallery .eg-main:hover .frame,
+.entry-gallery .eg-main:focus-visible .frame { transform: translateY(-3px); border-color: var(--line-strong); }
+.entry-gallery .eg-caption { display: block; margin-top: var(--space-xs); font-size: 0.8rem; color: var(--text-dim); }
+/* Thumbnails */
+.entry-gallery .eg-track {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+  margin-top: var(--space-s);
+}
+.entry-gallery .eg-track[hidden] { display: none; }
+.entry-gallery .eg-track > li { flex: 0 0 4.5rem; min-width: 0; }
+.entry-gallery .eg-track figure {
+  margin: 0;
+  cursor: pointer;
+  border-radius: var(--radius-s);
+  opacity: 0.55;
+  outline: 1px solid transparent;
+  outline-offset: 2px;
+  transition: opacity var(--t-fast) var(--ease), outline-color var(--t-fast) var(--ease);
+}
+.entry-gallery .eg-track figure:hover,
+.entry-gallery .eg-track figure:focus-visible { opacity: 0.85; }
+.entry-gallery .eg-track figure.is-active { opacity: 1; outline-color: var(--accent); }
+.entry-gallery .eg-track .frame { border-radius: var(--radius-s); }
+.entry-gallery .eg-track .frame .bar,
+.entry-gallery .eg-track figcaption { display: none; }   /* thumbs are just the image; captions feed the lightbox */
 
 /* Contact */
 .contact-grid {
@@ -1528,9 +1893,18 @@ dialog.lightbox .close:hover { background: var(--ink-2); }
 .cta .actions { margin-top: var(--space-xl); }
 
 /* Page intro (About/Projects/Gallery/Contact headers) */
-.page-intro { padding-block: clamp(3rem, 2rem + 4vw, 5.5rem) clamp(1.5rem, 1rem + 2vw, 2.5rem); }
-.page-intro h1 { font-size: var(--step-4); max-width: 18ch; }
-.page-intro p { margin-top: var(--space-m); max-width: 58ch; color: var(--text-dim); font-size: var(--step-1); }
+/* Every page intro is the same height (the tallest one's, Services with
+   its eyebrow and two-line title, plus a little headroom), with the
+   content centred in it. Equal padding top and bottom. Content taller
+   than the minimum (narrow screens) simply grows the band. */
+.page-intro {
+  display: flex;
+  align-items: center;
+  min-height: 28rem;
+  padding-block: clamp(3rem, 2rem + 4vw, 5.5rem);
+}
+.page-intro h1 { font-size: var(--step-4); }
+.page-intro p { margin-top: var(--space-m); color: var(--text-dim); font-size: var(--step-1); }
 
 /* ---------- Services / Launch Package ---------- */
 .offer {

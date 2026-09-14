@@ -1935,17 +1935,16 @@ dialog.lightbox .lb-nav {
   border-radius: 50%;
   transition: background var(--t-fast) var(--ease), border-color var(--t-fast) var(--ease), box-shadow var(--t-fast) var(--ease);
 }
-/* Chevron: a rotated square outline, nudged so its visual centre (not its
-   box) sits on the circle's centre. */
+/* Chevron: a clip-path shape drawn symmetrically inside a 16px box, so the
+   box's centre is the arrow's centre and grid centring is exact. */
 dialog.lightbox .lb-nav::before {
   content: "";
-  width: 0.7rem;
-  height: 0.7rem;
-  border-left: 2px solid currentColor;
-  border-bottom: 2px solid currentColor;
+  width: 16px;
+  height: 16px;
+  background: currentColor;
+  clip-path: polygon(68.75% 12.5%, 81.25% 25%, 43.75% 50%, 81.25% 75%, 68.75% 87.5%, 18.75% 50%);
 }
-dialog.lightbox .lb-prev::before { transform: translateX(0.18rem) rotate(45deg); }
-dialog.lightbox .lb-next::before { transform: translateX(-0.18rem) rotate(-135deg); }
+dialog.lightbox .lb-next::before { transform: scaleX(-1); }
 dialog.lightbox .lb-nav:hover,
 dialog.lightbox .lb-nav:focus-visible { background: var(--ink-2); border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); color: var(--accent); }   /* 1px border + 1px ring = 2px, no layout shift */
 dialog.lightbox .lb-prev { left: var(--space-m); }

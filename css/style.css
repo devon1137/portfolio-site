@@ -1674,6 +1674,69 @@ nav.primary a[aria-current="page"] { color: var(--text); }
   max-width: 24ch;
 }
 
+/* ---------- Table of contents (Work index, Gallery, case studies) ----------
+   A thin band under the page intro: categories in columns, entries under
+   each. Targets get scroll-margin so the sticky header doesn't cover them. */
+[id] { scroll-margin-top: 5.5rem; }
+section.band.toc-band { padding-block: var(--space-l); }
+.toc {
+  padding: var(--space-l) var(--space-xl);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-m);
+  background: color-mix(in srgb, var(--surface-2) 62%, transparent);
+  backdrop-filter: blur(2px);
+}
+.toc-title { display: block; margin-bottom: var(--space-m); }
+.toc-title::after { content: ""; display: block; width: 60px; height: 4px; margin-top: var(--space-xs); background: var(--accent); clip-path: polygon(4px 0, 100% 0, calc(100% - 4px) 100%, 0 100%); }
+.toc > ol {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+  gap: var(--space-m) var(--space-xl);
+}
+.toc a { color: var(--text-dim); text-decoration: none; transition: color var(--t-fast) var(--ease); }
+.toc a:hover, .toc a:focus-visible { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+.toc > ol > li > a { color: var(--text); font-weight: 600; }
+.toc ol ol { list-style: none; margin-top: var(--space-xs); font-size: var(--step--1); }
+.toc ol ol li { padding-left: var(--space-s); border-left: 2px solid var(--line); margin-top: 0.3rem; }
+.toc ol ol li.has-case a::after { content: " ›"; color: var(--accent); }
+.toc.toc-flat > ol { grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr)); }   /* single-level lists (Gallery, case pages) */
+
+/* ---------- Case study pages (/work/<slug>/) ---------- */
+.case-facts {
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+  gap: var(--space-l) var(--space-xl);
+}
+.case-facts dt { font-family: var(--font-mono); font-size: var(--step--1); letter-spacing: 0.04em; text-transform: uppercase; color: var(--text-dim); }
+.case-facts dd { margin: var(--space-xs) 0 0; }
+.case-facts dd a { display: inline-flex; align-items: center; gap: 0.3em; }
+.case-facts .tags { margin-top: var(--space-xs); }
+.prose > p + p, .prose > p + ul, .prose > ul + p, .prose > p + h3, .prose > ul + h3 { margin-top: var(--space-m); }
+.prose h3 { margin-top: var(--space-xl); font-size: var(--step-1); }
+.prose ul { padding-left: 1.2em; color: var(--text-dim); }
+.prose li + li { margin-top: var(--space-xs); }
+.prose p { color: var(--text-dim); }
+.prose p strong { color: var(--text); }
+.case .stats { margin-top: var(--space-xl); grid-template-columns: repeat(4, 1fr); }
+@media (max-width: 900px) { .case .stats { grid-template-columns: repeat(2, 1fr); } }
+.case-nav {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-l);
+  flex-wrap: wrap;
+  margin-top: var(--space-2xl);
+  padding-top: var(--space-l);
+  border-top: 1px solid var(--line);
+}
+.case-nav a { text-decoration: none; color: var(--text); display: flex; flex-direction: column; gap: 0.2rem; max-width: 22rem; }
+.case-nav a:hover .case-nav-title { color: var(--accent); }
+.case-nav .case-nav-title { font-weight: 600; transition: color var(--t-fast) var(--ease); }
+.case-nav .next { text-align: right; margin-left: auto; }
+/* Screens grid on a case page: bigger tiles than the Gallery page */
+.case .gallery-grid { grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr)); }
+
 /* Gallery */
 .gallery-band > .wrap > h2,
 .category-intro.gallery-intro { max-width: none; }   /* gallery bands: title and intro run the grid's full width */

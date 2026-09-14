@@ -258,6 +258,20 @@ document.addEventListener('DOMContentLoaded', () => {
     window.matchMedia('(min-width: 721px)').addEventListener('change', (mq) => { if (mq.matches) setOpen(false); });
   }
 
+  // ---- Work submenu (case studies) ----
+  // Hover/focus-within open it on desktop via CSS; the caret button toggles
+  // it for touch and keyboard, and is the only way it opens on mobile.
+  document.querySelectorAll('nav.primary .has-sub').forEach((item) => {
+    const btn = item.querySelector('.sub-toggle');
+    if (!btn) return;
+    const set = (open) => { item.classList.toggle('open', open); btn.setAttribute('aria-expanded', open ? 'true' : 'false'); };
+    btn.addEventListener('click', (e) => { e.stopPropagation(); set(!item.classList.contains('open')); });
+    document.addEventListener('click', (e) => { if (item.classList.contains('open') && !item.contains(e.target)) set(false); });
+    item.addEventListener('keydown', (e) => { if (e.key === 'Escape' && item.classList.contains('open')) { set(false); btn.focus(); } });
+    // Mouse leaving a hover-opened menu shouldn't leave the caret stuck open.
+    item.addEventListener('mouseleave', () => { if (!item.contains(document.activeElement)) set(false); });
+  });
+
   // ---- Agreement form (agreement.html) — submits to Netlify Forms via fetch ----
   const agreement = document.querySelector('form[data-agreement]');
   if (agreement) {

@@ -370,6 +370,60 @@ nav.primary a:hover::after,
 nav.primary a[aria-current="page"]::after { transform: scaleX(1); }
 nav.primary a[aria-current="page"] { color: var(--text); }
 
+/* Submenu under Work: the case studies. Opens on hover / focus-within on
+   desktop, or via the caret button (touch, keyboard, mobile). */
+nav.primary .has-sub { position: relative; display: flex; align-items: center; gap: 0.15rem; }
+nav.primary .sub-toggle {
+  display: inline-grid;
+  place-items: center;
+  width: 1.4rem; height: 1.4rem;
+  padding: 0;
+  background: none;
+  border: 0;
+  color: var(--text-dim);
+  cursor: pointer;
+  border-radius: var(--radius-s);
+  transition: color var(--t-fast) var(--ease), transform var(--t-med) var(--ease);
+}
+nav.primary .sub-toggle::before { content: ""; width: 0.4rem; height: 0.4rem; border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor; transform: translateY(-2px) rotate(45deg); }
+nav.primary .has-sub:hover .sub-toggle, nav.primary .sub-toggle[aria-expanded="true"] { color: var(--text); }
+nav.primary .sub-toggle[aria-expanded="true"] { transform: rotate(180deg); }
+nav.primary .submenu {
+  list-style: none;
+  position: absolute;
+  top: calc(100% + 0.6rem);
+  left: -0.75rem;
+  min-width: 18rem;
+  padding: var(--space-xs) 0;
+  background: color-mix(in srgb, var(--ink-2, var(--ink)) 92%, transparent);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-m);
+  box-shadow: 0 24px 48px -20px rgba(0, 0, 0, 0.7);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-6px);
+  transition: opacity var(--t-med) var(--ease), transform var(--t-med) var(--ease), visibility 0s linear var(--t-med);
+  z-index: 30;
+}
+/* keep the hover bridge: pointer can travel from the link down into the menu */
+nav.primary .submenu::before { content: ""; position: absolute; left: 0; right: 0; top: -0.7rem; height: 0.7rem; }
+nav.primary .has-sub:hover .submenu,
+nav.primary .has-sub:focus-within .submenu,
+nav.primary .has-sub.open .submenu { opacity: 1; visibility: visible; transform: none; transition-delay: 0s; }
+nav.primary .submenu li { margin: 0; }
+nav.primary .submenu a {
+  display: block;
+  padding: 0.55rem 1rem;
+  color: var(--text-dim);
+  font-weight: 500;
+}
+nav.primary .submenu a::after { display: none; }
+nav.primary .submenu a:hover, nav.primary .submenu a:focus-visible { color: var(--text); background: color-mix(in srgb, var(--amber) 10%, transparent); }
+nav.primary .submenu a[aria-current="page"] { color: var(--amber); }
+nav.primary .submenu .sub-label { display: block; padding: 0.4rem 1rem 0.2rem; }
+nav.primary .submenu .all a { border-top: 1px solid var(--line); margin-top: var(--space-xs); color: var(--text); }
+
 /* Toggle: two bars that fold into an X */
 .nav-toggle {
   display: none;
@@ -432,6 +486,31 @@ nav.primary a[aria-current="page"] { color: var(--text); }
   }
   nav.primary a::after { display: none; }
   nav.primary a[aria-current="page"] { color: var(--amber); }
+  /* Submenu becomes an accordion inside the column */
+  nav.primary .has-sub { display: grid; grid-template-columns: 1fr auto; align-items: stretch; gap: 0; }
+  nav.primary .has-sub > a { border-bottom: 0; }
+  nav.primary .sub-toggle { width: 3.25rem; height: auto; border-left: 1px solid var(--line); border-radius: 0; }
+  nav.primary .has-sub { border-bottom: 1px solid var(--line); }
+  nav.primary .submenu {
+    grid-column: 1 / -1;
+    position: static;
+    min-width: 0;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+    background: color-mix(in srgb, var(--amber) 5%, transparent);
+    backdrop-filter: none;
+    display: none;
+    opacity: 1; visibility: visible; transform: none;
+  }
+  nav.primary .submenu::before { display: none; }
+  nav.primary .has-sub:hover .submenu, nav.primary .has-sub:focus-within .submenu { display: none; }
+  nav.primary .has-sub.open .submenu { display: block; }
+  nav.primary .submenu a { padding: 0.75rem var(--gutter) 0.75rem calc(var(--gutter) + 1rem); font-size: var(--step--1); border-bottom: 1px solid var(--line); }
+  nav.primary .submenu li:last-child a { border-bottom: 0; }
+  nav.primary .submenu .sub-label { padding-left: calc(var(--gutter) + 1rem); }
+  nav.primary .submenu .all a { margin-top: 0; }
 }
 
 /* ---------- 5. Components ---------- */

@@ -81,6 +81,7 @@ $head = @'
             <li><a href="../../work/streamershaven/">Streamershaven</a></li>
             <li><a href="../../work/notes-of-yore/">Notes of Yore</a></li>
             <li><a href="../../work/the-trail-of-tales/">The Trail of Tales</a></li>
+            <li><a href="../../work/a-moon-of-cheese/">A Moon of Cheese</a></li>
             </ul>
           </li>
           <li class="all"><a href="../../projects.html">All work &rarr;</a></li>
@@ -203,7 +204,7 @@ for ($i = 0; $i -lt $order.Count; $i++) {
     "<a class=`"link-arrow`" href=`"$($_.url)`" target=`"_blank`" rel=`"noopener`" title=`"$lbl`">$(Html $_.label) <span class=`"arrow`" aria-hidden=`"true`">&#8599;</span></a>"
   }) -join '<br>'
   $archivedN = @($m.links | Where-Object { $_.archived }).Count
-  $linksLabel = if ($m.links.Count -gt 0 -and $archivedN -eq $m.links.Count) { 'Archived at' } elseif ($archivedN -gt 0) { 'Links' } else { 'Live site' }
+  $linksLabel = if ($m.links.Count -gt 0 -and $archivedN -eq $m.links.Count) { 'Archived at' } elseif ($archivedN -gt 0 -or $m.links.Count -gt 1) { 'Links' } else { 'Live site' }
 
   $prevHtml = if ($prev) { "        <a class=`"prev`" href=`"../$($prev.slug)/`"><span class=`"eyebrow`">&larr; Previous</span><span class=`"case-nav-title`">$(Html $prev.title)</span></a>" } else { '        <span></span>' }
   $nextHtml = if ($next) { "        <a class=`"next`" href=`"../$($next.slug)/`"><span class=`"eyebrow`">Next &rarr;</span><span class=`"case-nav-title`">$(Html $next.title)</span></a>" } else { '        <span></span>' }

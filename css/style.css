@@ -1848,7 +1848,19 @@ section.band.toc-band { padding-block: var(--space-l); }
 /* Creative work (ads, posts, print) rather than page captures: show the
    whole image at its own aspect ratio, and the frame bar is a label. */
 .gallery-grid.creative .frame .shot { aspect-ratio: auto; height: auto; object-fit: contain; }
-.gallery-grid.creative .frame { align-self: start; }
+/* Masonry via CSS columns: mixed portrait/square/landscape tiles pack
+   without the row gaps a grid leaves. Reading order runs down each column;
+   the lightbox still steps through DOM order. */
+.gallery-grid.creative {
+  display: block;
+  column-width: 300px;
+  column-gap: var(--space-l);
+}
+.gallery-grid.creative figure {
+  break-inside: avoid;
+  margin: 0 0 var(--space-l);
+}
+.gallery-grid.creative figure:last-child { margin-bottom: 0; }
 
 /* Gallery */
 .gallery-band > .wrap > h2,

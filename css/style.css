@@ -1845,6 +1845,10 @@ section.band.toc-band { padding-block: var(--space-l); }
 .case-nav .next { text-align: right; margin-left: auto; }
 /* Screens grid on a case page: bigger tiles than the Gallery page */
 .case .gallery-grid { grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr)); }
+/* Creative work (ads, posts, print) rather than page captures: show the
+   whole image at its own aspect ratio, and the frame bar is a label. */
+.gallery-grid.creative .frame .shot { aspect-ratio: auto; height: auto; object-fit: contain; }
+.gallery-grid.creative .frame { align-self: start; }
 
 /* Gallery */
 .gallery-band > .wrap > h2,

@@ -17,7 +17,7 @@ foreach ($slug in $order) {
   $raw = [IO.File]::ReadAllText($path)
   $meta = [regex]::Match($raw, '(?s)<!--meta\s*(\{.*?\})\s*-->').Groups[1].Value | ConvertFrom-Json
   $secs = [regex]::Matches($raw, '(?s)<section\s+id="(?<id>[^"]+)"(?:\s+data-title="(?<t>[^"]*)")?\s*>(?<inner>.*?)</section>')
-  $withGrid = @($secs | Where-Object { $_.Groups['inner'].Value -match '<div class="gallery-grid"' })
+  $withGrid = @($secs | Where-Object { $_.Groups['inner'].Value -match '<div class="gallery-grid[ "]' })
   foreach ($s in $withGrid) {
     $figs = [regex]::Matches($s.Groups['inner'].Value, '(?s)<figure data-full=.*?</figure>') | ForEach-Object { $_.Value }
     if (-not $figs) { continue }
@@ -27,6 +27,7 @@ foreach ($slug in $order) {
     $sets.Add([pscustomobject]@{
       id = ($slug + $(if ($withGrid.Count -gt 1) { '-' + $s.Groups['id'].Value } else { '' }))
       name = $name; figs = $figs
+      gridClass = $(if ($s.Groups['inner'].Value -match '<div class="gallery-grid creative"') { ' creative' } else { '' })
       intro = $intro
       link = "work/$slug/" + $(if ($withGrid.Count -gt 1) { '#' + $s.Groups['id'].Value } else { '' })
       linkLabel = 'Read the case study'
@@ -56,7 +57,7 @@ foreach ($set in $sets) {
     <div class="wrap">
       <h2>$($set.name)</h2>
       <p class="category-intro gallery-intro">$introHtml<a class="link-arrow" href="$($set.link)">$($set.linkLabel) <span class="arrow" aria-hidden="true">&rarr;</span></a></p>
-      <div class="gallery-grid">
+      <div class="gallery-grid$($set.gridClass)">
 
 $items
 

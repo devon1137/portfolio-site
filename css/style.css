@@ -1688,19 +1688,19 @@ section.band.toc-band { padding-block: var(--space-l); }
 }
 .toc-title { display: block; margin-bottom: var(--space-m); }
 .toc-title::after { content: ""; display: block; width: 60px; height: 4px; margin-top: var(--space-xs); background: var(--accent); clip-path: polygon(4px 0, 100% 0, calc(100% - 4px) 100%, 0 100%); }
-.toc > ol {
-  list-style: none;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
-  gap: var(--space-m) var(--space-xl);
-}
+/* Traditional numbered outline: 1. Category / 1.1 Entry, vertical. */
+.toc ol { list-style: none; counter-reset: toc; }
+.toc li { counter-increment: toc; }
+.toc li > a::before { content: counters(toc, ".") ". "; font-family: var(--font-mono); font-size: 0.85em; color: var(--accent); margin-right: 0.25em; }
+.toc > ol > li + li { margin-top: var(--space-s); }
 .toc a { color: var(--text-dim); text-decoration: none; transition: color var(--t-fast) var(--ease); }
 .toc a:hover, .toc a:focus-visible { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
 .toc > ol > li > a { color: var(--text); font-weight: 600; }
-.toc ol ol { list-style: none; margin-top: var(--space-xs); font-size: var(--step--1); }
-.toc ol ol li { padding-left: var(--space-s); border-left: 2px solid var(--line); margin-top: 0.3rem; }
+.toc ol ol { margin-top: 0.3rem; padding-left: 1.6rem; font-size: var(--step--1); }
+.toc ol ol li + li { margin-top: 0.2rem; }
 .toc ol ol li.has-case a::after { content: " ›"; color: var(--accent); }
-.toc.toc-flat > ol { grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr)); }   /* single-level lists (Gallery, case pages) */
+/* Two columns when there's room and the list is long (Work index) */
+@media (min-width: 900px) { .toc.toc-columns > ol { columns: 2; column-gap: var(--space-2xl); } .toc.toc-columns > ol > li { break-inside: avoid; } }
 
 /* ---------- Case study pages (/work/<slug>/) ---------- */
 .case-facts {

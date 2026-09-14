@@ -1804,6 +1804,9 @@ section.band.toc-band { padding-block: var(--space-l); }
 .prose p { color: var(--text-dim); }
 .prose p strong { color: var(--text); }
 .case .stats { margin-top: var(--space-xl); grid-template-columns: repeat(4, 1fr); }
+.case .stats:has(> li:nth-child(6)) { grid-template-columns: repeat(3, 1fr); }   /* six cards: 3×2, not 4+2 */
+.case .stats > li { padding: var(--space-l); text-align: center; }   /* same centred treatment as the hero cards, so the value sits over its bar */
+.case .stats .label { margin-inline: auto; max-width: 22ch; }
 @media (max-width: 900px) { .case .stats { grid-template-columns: repeat(2, 1fr); } }
 .case-nav {
   display: flex;

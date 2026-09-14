@@ -1927,15 +1927,27 @@ dialog.lightbox .lb-nav {
   height: 3rem;
   display: grid;
   place-items: center;
-  font-size: 1.8rem;
-  line-height: 1;
+  font-size: 0;            /* the ‹ › glyphs stay for screen readers' sake; a drawn chevron is what's visible */
+  padding: 0;
   background: rgba(27, 31, 29, 0.7);
   border: 1px solid var(--line-strong);
   color: var(--text);
   border-radius: 50%;
-  transition: background var(--t-fast) var(--ease), border-color var(--t-fast) var(--ease);
+  transition: background var(--t-fast) var(--ease), border-color var(--t-fast) var(--ease), box-shadow var(--t-fast) var(--ease);
 }
-dialog.lightbox .lb-nav:hover { background: var(--ink-2); border-color: var(--accent); }
+/* Chevron: a rotated square outline, nudged so its visual centre (not its
+   box) sits on the circle's centre. */
+dialog.lightbox .lb-nav::before {
+  content: "";
+  width: 0.7rem;
+  height: 0.7rem;
+  border-left: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+}
+dialog.lightbox .lb-prev::before { transform: translateX(0.18rem) rotate(45deg); }
+dialog.lightbox .lb-next::before { transform: translateX(-0.18rem) rotate(-135deg); }
+dialog.lightbox .lb-nav:hover,
+dialog.lightbox .lb-nav:focus-visible { background: var(--ink-2); border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); color: var(--accent); }   /* 1px border + 1px ring = 2px, no layout shift */
 dialog.lightbox .lb-prev { left: var(--space-m); }
 dialog.lightbox .lb-next { right: var(--space-m); }
 dialog.lightbox .lb-nav[hidden] { display: none; }

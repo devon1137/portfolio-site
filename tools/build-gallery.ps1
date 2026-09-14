@@ -10,7 +10,7 @@ $tileSizes = 'sizes="(max-width: 700px) calc(100vw - 3rem), (max-width: 1060px) 
 $sets = New-Object System.Collections.Generic.List[object]
 
 # ---- Case studies, in the same order as build-work.ps1 ----
-$order = @('the-northeastland-hotel', 'ignitepi', 'streamershaven', 'the-law-offices-of-michael-s-lamonsoff', 'brainandspinalcord', 'alpha-pressure-washing')
+$order = @(Get-Content (Join-Path $PSScriptRoot 'work-order.txt') | Where-Object { $_.Trim() } | ForEach-Object { $_.Trim() })   # one slug per line: the case-study order, used by every tool
 foreach ($slug in $order) {
   $path = Join-Path $PSScriptRoot "work-src\$slug.html"
   if (-not (Test-Path $path)) { continue }

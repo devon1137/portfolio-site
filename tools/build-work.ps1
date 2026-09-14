@@ -18,7 +18,7 @@
 param([string]$Root = (Split-Path $PSScriptRoot -Parent))
 $ErrorActionPreference = 'Stop'
 $srcDir = Join-Path $PSScriptRoot 'work-src'
-$order = @('the-northeastland-hotel', 'ignitepi', 'streamershaven', 'the-law-offices-of-michael-s-lamonsoff', 'brainandspinalcord', 'alpha-pressure-washing')
+$order = @(Get-Content (Join-Path $PSScriptRoot 'work-order.txt') | Where-Object { $_.Trim() } | ForEach-Object { $_.Trim() })   # one slug per line: the case-study order, used by every tool
 $utf8 = New-Object Text.UTF8Encoding $false
 
 function Read-Fragment([string]$path) {
@@ -71,6 +71,7 @@ $head = @'
           <li><a href="../../work/the-northeastland-hotel/">The Northeastland Hotel</a></li>
           <li><a href="../../work/ignitepi/">IgnitePI</a></li>
           <li><a href="../../work/streamershaven/">Streamershaven</a></li>
+          <li><a href="../../work/notes-of-yore/">Notes of Yore</a></li>
           <li><a href="../../work/the-law-offices-of-michael-s-lamonsoff/">The Law Offices of Michael S. Lamonsoff</a></li>
           <li><a href="../../work/brainandspinalcord/">BrainandSpinalCord.org</a></li>
           <li><a href="../../work/alpha-pressure-washing/">Alpha Pressure Washing</a></li>

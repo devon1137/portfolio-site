@@ -27,7 +27,7 @@ foreach ($f in Get-ChildItem (Join-Path $Root '*.html') | Where-Object { $_.Name
   $pages.Add([pscustomobject]@{ rel = $f.Name; title = (& $titleOf $f.FullName); group = 'Pages'; lastmod = $f.LastWriteTimeUtc.ToString('yyyy-MM-dd'); priority = '0.5' })
 }
 # Case studies in build-work order
-$order = @('the-northeastland-hotel', 'ignitepi', 'streamershaven', 'the-law-offices-of-michael-s-lamonsoff', 'brainandspinalcord', 'alpha-pressure-washing')
+$order = @(Get-Content (Join-Path $PSScriptRoot 'work-order.txt') | Where-Object { $_.Trim() } | ForEach-Object { $_.Trim() })   # one slug per line: the case-study order, used by every tool
 $dirs = @($order | Where-Object { Test-Path (Join-Path $Root "work\$_\index.html") }) + @(Get-ChildItem (Join-Path $Root 'work') -Directory | Where-Object { $_.Name -notin $order } | Select-Object -ExpandProperty Name)
 foreach ($slug in $dirs) {
   $idx = Join-Path $Root "work\$slug\index.html"

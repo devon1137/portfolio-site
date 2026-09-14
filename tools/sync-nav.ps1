@@ -4,7 +4,7 @@
 # after adding, renaming, or reordering a case study; then run build-work.ps1.
 param([string]$Root = (Split-Path $PSScriptRoot -Parent))
 $ErrorActionPreference = 'Stop'
-$order = @('the-northeastland-hotel', 'ignitepi', 'streamershaven', 'the-law-offices-of-michael-s-lamonsoff', 'brainandspinalcord', 'alpha-pressure-washing')
+$order = @(Get-Content (Join-Path $PSScriptRoot 'work-order.txt') | Where-Object { $_.Trim() } | ForEach-Object { $_.Trim() })   # one slug per line: the case-study order, used by every tool
 $titles = @{}
 foreach ($slug in $order) {
   $raw = [IO.File]::ReadAllText((Join-Path $PSScriptRoot "work-src\$slug.html"))

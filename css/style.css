@@ -1925,10 +1925,12 @@ dialog.lightbox .lb-nav {
   transform: translateY(-50%);
   width: 3rem;
   height: 3rem;
-  display: grid;
-  place-items: center;
+  display: flex;           /* flex, not grid: the hidden ‹ › text node would otherwise take a grid cell of its own and push the chevron off-centre */
+  align-items: center;
+  justify-content: center;
   font-size: 0;            /* the ‹ › glyphs stay for screen readers' sake; a drawn chevron is what's visible */
   padding: 0;
+  box-sizing: border-box;
   background: rgba(27, 31, 29, 0.7);
   border: 1px solid var(--line-strong);
   color: var(--text);

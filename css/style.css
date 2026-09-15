@@ -1924,6 +1924,8 @@ section.band.toc-band { padding-block: var(--space-l); }
 .reading-text td { color: var(--text-dim); }
 .reading-text tbody tr:hover td { color: var(--text); }
 .reading-text td br + br { display: block; content: ""; margin-top: 0.3rem; }
+/* Excerpt: closing note that the piece continues elsewhere */
+.reading-text .excerpt-end { margin-top: var(--space-l); padding-top: var(--space-m); border-top: 1px solid var(--line); font-size: var(--step--1); font-style: italic; color: var(--text-dim); }
 /* Fiction: point-of-view switch marker inside a scene */
 .reading-text .pov { margin: var(--space-xl) auto var(--space-m); font-family: var(--font-mono); font-size: 0.74rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); }
 .reading-text .pov::before { content: "— "; }

@@ -101,6 +101,11 @@ $head = @'
             <li><a href="../../writing/5e-alternate-combat-rules/">5E Alternate Combat Rules to Speed up Combat</a></li>
             </ul>
           </li>
+          <li class="sub-group"><span class="sub-label eyebrow">Excerpts</span>
+            <ul>
+            <li><a href="../../writing/streamershaven-internet-speed/">Do You Have the Minimum Internet Speed for Live Streaming?</a></li>
+            </ul>
+          </li>
           <li class="sub-group"><span class="sub-label eyebrow">Fiction</span>
             <ul>
             <li><a href="../../writing/powerless-captain-ion/">Captain Ion and the Flammanator <span class="sub-tag">unused scene</span></a></li>
@@ -132,7 +137,7 @@ $head = @'
     <div class="wrap">
       <dl class="case-facts">
         <div><dt>{{PUB_LABEL}}</dt><dd>{{SOURCE}}, {{PUBLISHED}}{{CASE_LINK}}</dd></div>
-        <div><dt>Length</dt><dd>{{WORDS}} words</dd></div>
+        <div><dt>Length</dt><dd>{{LENGTH}}</dd></div>
 {{ARCHIVE_DIV}}
       </dl>
       <p class="sample-note">{{NOTE}}</p>{{CONTENT_NOTE}}
@@ -205,6 +210,7 @@ for ($i = 0; $i -lt $order.Count; $i++) {
   $next = if ($i -lt $order.Count - 1) { $frags[$order[$i + 1]].meta } else { $null }
   $words = Words $fr.body
   $wordsFmt = $words.ToString('N0')
+  $lengthText = if ($m.kind -eq 'Excerpt') { "$wordsFmt-word excerpt" } else { "$wordsFmt words" }
   $contentNote = if ($m.content) { "`n      <p class=`"content-note`"><strong>Content note:</strong> $(Html $m.content)</p>" } else { '' }
   $contentListNote = if ($m.content) { " &middot; <span class=`"content-flag`">$(Html $m.content)</span>" } else { '' }
   $pubLabel = if ($m.archived) { 'Originally published' } else { 'From' }
@@ -227,7 +233,7 @@ for ($i = 0; $i -lt $order.Count; $i++) {
   $map = @{
     '{{TITLE}}' = (Html $m.title); '{{DESC}}' = (Html $m.description); '{{SLUG}}' = $m.slug; '{{OG}}' = $m.og
     '{{KIND}}' = (Html $m.kind); '{{SOURCE}}' = (Html $m.source); '{{PUBLISHED}}' = (Html $m.published); '{{DATETIME}}' = $m.datetime
-    '{{LEDE}}' = $m.lede; '{{NOTE}}' = $m.note; '{{PUB_LABEL}}' = $pubLabel; '{{CONTENT_NOTE}}' = $contentNote; '{{FICTION}}' = $fiction; '{{WORDS}}' = $wordsFmt; '{{CASE_LINK}}' = $caseLink; '{{ARCHIVE_DIV}}' = $archiveDiv
+    '{{LEDE}}' = $m.lede; '{{NOTE}}' = $m.note; '{{PUB_LABEL}}' = $pubLabel; '{{CONTENT_NOTE}}' = $contentNote; '{{FICTION}}' = $fiction; '{{WORDS}}' = $wordsFmt; '{{LENGTH}}' = $lengthText; '{{CASE_LINK}}' = $caseLink; '{{ARCHIVE_DIV}}' = $archiveDiv
     '{{BODY}}' = $fr.body; '{{SCHEMA}}' = $schemaJson; '{{PREV}}' = $prevHtml; '{{NEXT}}' = $nextHtml
   }
   foreach ($kv in $map.GetEnumerator()) { $page = $page.Replace($kv.Key, [string]$kv.Value) }
@@ -246,7 +252,7 @@ for ($i = 0; $i -lt $order.Count; $i++) {
           <div class="margin"><time datetime="$($m.datetime)">$(Html $m.published)</time></div>
           <div>
             <h3><a href="writing/$($m.slug)/">$(Html $m.title)</a></h3>
-            <div class="role">$(Html $m.kind) &middot; $(Html $m.source) &middot; $wordsFmt words$contentListNote</div>
+            <div class="role">$(Html $m.kind) &middot; $(Html $m.source) &middot; $lengthText$contentListNote</div>
             <p class="desc">$($m.lede)</p>
             <div class="links"><a class="link-arrow" href="writing/$($m.slug)/">Read it <span class="arrow" aria-hidden="true">&rarr;</span></a></div>
           </div>

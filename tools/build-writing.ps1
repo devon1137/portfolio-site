@@ -222,7 +222,7 @@ for ($i = 0; $i -lt $order.Count; $i++) {
   if ($m.datetime -match '^\d{4}(-\d{2}-\d{2})?$') { $schema.datePublished = [string]$m.datetime }
   if ($m.kind -eq 'Fiction') { $schema.genre = 'Fiction'; $schema.isPartOf = @{ '@type' = 'Book'; name = 'Powerless'; author = @{ '@id' = "$origin/#devon" } } }
   if ($m.archived) { $schema.sameAs = [string]$m.archived }
-  $schemaJson = '<script type="application/ld+json">' + "`n" + ($schema | ConvertTo-Json -Depth 5) + "`n" + '</script>'
+  $schemaJson = '<script type="application/ld+json">' + "`n" + (($schema | ConvertTo-Json -Depth 5) -replace "\r\n", "\n") + "`n" + '</script>'
   $page = $head + $tail
   $map = @{
     '{{TITLE}}' = (Html $m.title); '{{DESC}}' = (Html $m.description); '{{SLUG}}' = $m.slug; '{{OG}}' = $m.og

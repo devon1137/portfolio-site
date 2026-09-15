@@ -119,7 +119,7 @@
   --water-mid: #0A2230;
   --water-lo: #061520;
   --water-2: #143C4C;
-  --caustic: #7FDDE8;
+  --caustic: #4FA8B6;     /* dimmer than the first cut: the light stays under the text */
 }
 footer.site {
   --surface: var(--water-mid); --surface-2: var(--water-2); --text-dim: #B1C1C4;
@@ -138,8 +138,8 @@ footer.site::before {
     radial-gradient(ellipse 45% 60% at 20% 30%, color-mix(in srgb, var(--caustic) 26%, transparent) 0%, transparent 55%),
     radial-gradient(ellipse 50% 40% at 80% 70%, color-mix(in srgb, var(--caustic) 22%, transparent) 0%, transparent 55%);
   background-size: 420px 300px, 360px 260px, 300px 220px;
-  filter: blur(14px) contrast(140%);
-  opacity: 0.55;
+  filter: blur(16px) contrast(130%);
+  opacity: 0.38;
   animation: caustic-a 26s ease-in-out infinite alternate;
 }
 /* Layer B: smaller, brighter cells, drifting down-right; the two beat against each other */
@@ -148,8 +148,8 @@ footer.site::after {
     radial-gradient(ellipse 45% 35% at 50% 50%, color-mix(in srgb, var(--caustic) 40%, transparent) 0%, transparent 55%),
     radial-gradient(ellipse 35% 45% at 70% 25%, color-mix(in srgb, var(--caustic) 30%, transparent) 0%, transparent 50%);
   background-size: 260px 190px, 200px 160px;
-  filter: blur(10px) contrast(160%);
-  opacity: 0.45;
+  filter: blur(12px) contrast(140%);
+  opacity: 0.3;
   animation: caustic-b 19s ease-in-out infinite alternate;
 }
 @keyframes caustic-a {

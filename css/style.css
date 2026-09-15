@@ -2640,3 +2640,15 @@ footer.site {
   .footer-grid { grid-template-columns: 1fr 1fr; }
   .footer-grid > div:first-child { grid-column: 1 / -1; }
 }
+
+/* ---------- Full-width content ----------
+   Every text block runs the full width of its .wrap column: no reading-measure
+   caps on intros, ledes, headings, prose, cards' copy, or the document-style
+   containers (resume, contract, reading card). Kept: tile/label caps inside
+   components and the lightbox. */
+.measure, .band-title, .band > .wrap > h2,
+.hero h1, .hero .lede,
+.record p, .category-intro, .timeline p, .quote-menu p, .aside p, .cta p, .offer > div:first-child p, .form-done p,
+figure.video, .legal .prose, .reading-text > *, .faq, .faq details p, .quote, .script, .cv, .contract { max-width: none; }
+.reading-text > * { margin-inline: 0; }
+.cv { margin-inline: 0; }

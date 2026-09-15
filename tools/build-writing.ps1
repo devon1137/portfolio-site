@@ -83,7 +83,7 @@ $head = @'
           </li>
           <li class="sub-group"><span class="sub-label eyebrow">My Own Projects</span>
             <ul>
-            <li><a href="../../work/streamershaven/">Streamershaven</a></li>
+            <li><a href="../../work/streamershaven/">Streamer&#39;s Haven</a></li>
             <li><a href="../../work/notes-of-yore/">Notes of Yore</a></li>
             <li><a href="../../work/the-trail-of-tales/">The Trail of Tales</a></li>
             <li><a href="../../work/a-moon-of-cheese/">A Moon of Cheese</a></li>

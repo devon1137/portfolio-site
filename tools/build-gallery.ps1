@@ -18,21 +18,23 @@ foreach ($slug in $order) {
   $meta = [regex]::Match($raw, '(?s)<!--meta\s*(\{.*?\})\s*-->').Groups[1].Value | ConvertFrom-Json
   $secs = [regex]::Matches($raw, '(?s)<section\s+id="(?<id>[^"]+)"(?:\s+data-title="(?<t>[^"]*)")?\s*>(?<inner>.*?)</section>')
   $withGrid = @($secs | Where-Object { $_.Groups['inner'].Value -match '<div class="gallery-grid[ "]' })
+  # One band per case study: several galleries in a case study (e.g. build + writing) are merged.
+  $figs = @(); $intros = @(); $creative = $false
   foreach ($s in $withGrid) {
-    $figs = [regex]::Matches($s.Groups['inner'].Value, '(?s)<figure data-full=.*?</figure>') | ForEach-Object { $_.Value }
-    if (-not $figs) { continue }
+    $f = [regex]::Matches($s.Groups['inner'].Value, '(?s)<figure data-full=.*?</figure>') | ForEach-Object { $_.Value }
+    if (-not $f) { continue }
+    $figs += $f
     $intro = [regex]::Match($s.Groups['inner'].Value, '<p class="category-intro gallery-intro">(.*?)</p>').Groups[1].Value
-    $name = $meta.title
-    if ($withGrid.Count -gt 1) { $name = "$($meta.title) &mdash; $($s.Groups['t'].Value)" }
-    $sets.Add([pscustomobject]@{
-      id = ($slug + $(if ($withGrid.Count -gt 1) { '-' + $s.Groups['id'].Value } else { '' }))
-      name = $name; figs = $figs
-      gridClass = $(if ($s.Groups['inner'].Value -match '<div class="gallery-grid creative"') { ' creative' } else { '' })
-      intro = $intro
-      link = "work/$slug/" + $(if ($withGrid.Count -gt 1) { '#' + $s.Groups['id'].Value } else { '' })
-      linkLabel = 'Read the case study'
-    })
+    if ($intro) { $intros += $intro }
+    if ($s.Groups['inner'].Value -match '<div class="gallery-grid creative"') { $creative = $true }
   }
+  if (-not $figs) { continue }
+  $sets.Add([pscustomobject]@{
+    id = $slug; name = $meta.title; figs = $figs
+    gridClass = $(if ($creative) { ' creative' } else { '' })
+    intro = ($intros | Select-Object -First 1)
+    link = "work/$slug/"; linkLabel = 'Read the case study'
+  })
 }
 
 # ---- Work-page entries that still carry a gallery but have no case study ----

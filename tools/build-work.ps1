@@ -146,7 +146,11 @@ $head = @'
     </div>
   </section>
 
-  <div class="case-body">
+'@
+
+# The rail's TOC. It lives inside .case-body, which wraps only the text
+# block, so the sticky card starts level with the block, not the tiles.
+$tocRail = @'
     <aside class="toc-rail">
       <nav class="toc toc-flat" aria-label="On this page">
         <span class="toc-title eyebrow">On this page</span>
@@ -158,7 +162,6 @@ $head = @'
 '@
 
 $tail = @'
-  </div><!-- /.case-body -->
   <section class="band">
     <div class="wrap">
       <nav class="case-nav" aria-label="More case studies">
@@ -243,7 +246,7 @@ for ($i = 0; $i -lt $order.Count; $i++) {
     $inner = $s.Groups['inner'].Value.Trim()
     $sm = [regex]::Match($inner, '(?s)\s*(<ul class="stats".*</ul>)\s*$')
     if ($sm.Success) {
-      $numbers = "      <div class=`"case-numbers`">`n        <p class=`"eyebrow`">By the numbers</p>`n        $($sm.Groups[1].Value)`n      </div>"
+      $numbers = "    <div class=`"wrap case-numbers`">`n      $($sm.Groups[1].Value)`n    </div>"
       $inner = $inner.Substring(0, $sm.Index).Trim()
       if ($inner -match '(?s)^\s*<h2>.*?</h2>\s*$') { continue }   # heading + tiles only: nothing left to read here
     }
@@ -252,7 +255,7 @@ for ($i = 0; $i -lt $order.Count; $i++) {
       $toc.Add("          <li><a href=`"#$id`">$title</a></li>")
     }
   }
-  $bands = @("  <section class=`"band on-slate grid-bg case-band`">`n    <div class=`"wrap`">`n$numbers`n<div class=`"case-text`">`n$($parts -join "`n")`n</div>`n    </div>`n  </section>`n")
+  $bands = @("  <section class=`"band on-slate grid-bg case-band`">`n$numbers`n  <div class=`"case-body`">`n$tocRail    <div class=`"wrap`">`n<div class=`"case-text`">`n$($parts -join "`n")`n</div>`n    </div>`n  </div><!-- /.case-body -->`n  </section>`n")
 
   $stack = ($m.stack | ForEach-Object { "<li>$(Html $_)</li>" }) -join ''
   $links = ($m.links | ForEach-Object {

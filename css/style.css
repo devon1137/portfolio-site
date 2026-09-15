@@ -1957,7 +1957,7 @@ section.band.toc-band { padding-block: var(--space-l); }
 .toc-rail { padding: var(--space-l) var(--gutter) 0; }
 @media (min-width: 1100px) {
   .case-body { --rail: 15rem; --rail-gap: var(--space-2xl); }
-  .case-body > .band > .wrap, .case-body > article.band > .wrap { padding-right: calc(var(--gutter) + var(--rail) + var(--rail-gap)); }
+  .case-body > .band > .wrap, .case-body > article.band > .wrap, .case-body > .wrap { padding-right: calc(var(--gutter) + var(--rail) + var(--rail-gap)); }
   .toc-rail {
     position: absolute; top: 0; bottom: 0; z-index: 2;
     right: max(var(--gutter), calc((100% - var(--max)) / 2 + var(--gutter)));
@@ -2061,12 +2061,17 @@ section.band.toc-band { padding-block: var(--space-l); }
    them, since the block is what reads as the unit. */
 .case-text > section + section { margin-top: var(--space-3xl); }
 .case-text > section > h2 { margin-bottom: var(--space-l); max-width: 22ch; }
-/* "By the numbers": the stat tiles open the honeycomb band, ahead of the
-   block, so a skimmer gets the outcome first. Four across for a set of
+/* The stat tiles open the honeycomb band, ahead of the block, so a skimmer
+   gets the outcome first. They run the full container width (the row is
+   its own .wrap, outside .case-body, so it doesn't reserve the rail
+   column); the rail starts at the block below. Four across for a set of
    four, three across for six; two on narrower screens. */
 .case-numbers { margin-bottom: var(--space-2xl); }
-.case-numbers .eyebrow { margin-bottom: var(--space-m); }
 .case-numbers .stats > li { background: color-mix(in srgb, var(--ink-2) 62%, transparent); }   /* stone, like the block and the rail, not the band's earth */
+/* Inside the band, .case-body wraps only the block: the rail's card starts
+   at its top and its bottom padding is the band's own, so no offsets. */
+.case-band .toc-rail .toc { margin-top: 0; }
+.case-band .toc-rail { padding-bottom: 0; }
 .case-numbers .stats { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 .case-numbers .stats:has(> li:nth-child(5)) { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 @media (max-width: 900px) { .case-numbers .stats, .case-numbers .stats:has(> li:nth-child(5)) { grid-template-columns: repeat(2, minmax(0, 1fr)); } }

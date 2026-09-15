@@ -47,6 +47,7 @@ $head = @'
 <meta property="og:type" content="article">
 <meta property="og:title" content="{{TITLE}} — Case Study — Devon Kubacki">
 <meta property="og:description" content="{{DESC}}">
+<!--og--><!-- canonical + og:image: set "origin" in tools/site.json --><!--/og-->
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 fill=%22%231B1F1D%22/><text x=%2250%22 y=%2268%22 font-size=%2260%22 text-anchor=%22middle%22 fill=%22%23D9A63E%22 font-family=%22Georgia,serif%22>D</text></svg>">
 <link rel="stylesheet" href="../../css/style.css">
 </head>

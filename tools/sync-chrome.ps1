@@ -5,6 +5,12 @@
 # sync-nav.ps1 (run at the end of this script) fills the case-study submenu.
 # aria-current="page" is set on the nav link that matches the page.
 #
+# chrome/og.html is the <head> block (canonical, og:url, og:image, twitter:card),
+# stamped between <!--og--> markers; it renders as a placeholder comment until
+# tools/site.json has an "origin", because those tags need absolute URLs.
+# Top-level pages use images/og-card.jpg; case studies get their own screenshot
+# via the build-work template ({{OG}}); 404 gets none.
+#
 # Pages get <!--header-->…<!--/header--> and <!--footer-->…<!--/footer-->
 # markers on first run (migrating a bare <header class="site">/<footer class="site">);
 # after that only the marked region is replaced. The case-study template in
@@ -21,6 +27,24 @@ foreach ($pair in @(@($hdrSrc, 'header'), @($ftrSrc, 'footer'))) {
   if ($pair[0] -notmatch "^<!--$($pair[1])-->" -or $pair[0] -notmatch "<!--/$($pair[1])-->$") { throw "chrome/$($pair[1]).html must start with <!--$($pair[1])--> and end with <!--/$($pair[1])-->" }
 }
 $navPages = @('index.html', 'about.html', 'services.html', 'gallery.html', 'contact.html')
+
+# <head> block (canonical + og:image) from chrome/og.html, only once tools/site.json has an origin.
+$site = Get-Content (Join-Path $PSScriptRoot 'site.json') -Raw | ConvertFrom-Json
+$origin = ([string]$site.origin).TrimEnd('/')
+$ogSrc = [IO.File]::ReadAllText((Join-Path $PSScriptRoot 'chrome\og.html')).Trim()
+function RenderOg([string]$path, [string]$image) {
+  if (-not $origin) { return '<!--og--><!-- canonical + og:image: set "origin" in tools/site.json --><!--/og-->' }
+  $ogSrc.Replace('{{ORIGIN}}', $origin).Replace('{{PATH}}', $path).Replace('{{IMAGE}}', $image)
+}
+function StampOg([string]$c, [string]$rendered) {
+  $rep = $rendered -replace '\$', '$$'
+  $marked = [regex]'(?s)<!--og-->.*?<!--/og-->'
+  if ($marked.IsMatch($c)) { return $marked.Replace($c, $rep, 1) }
+  # First run: insert above the icon link (every page has one).
+  $anchor = '<link rel="icon"'
+  $i = $c.IndexOf($anchor); if ($i -lt 0) { throw 'no <link rel="icon"> to anchor the og block' }
+  $c.Substring(0, $i) + $rendered + "`n" + $c.Substring($i)
+}
 
 function Render([string]$src, [string]$pre, [string]$homeHref, [string]$page) {
   $out = $src
@@ -53,6 +77,11 @@ foreach ($f in $targets) {
   $page = if ($isWork) { 'work' } else { $f.Name }
   $new = Stamp $c 'header' (Render $hdrSrc $pre $homeHref $page)
   $new = Stamp $new 'footer' (Render $ftrSrc $pre $homeHref $page)
+  # Top-level pages share the og card; case studies get theirs from the template (own screenshot), 404 gets none.
+  if (-not $isWork -and $f.Name -ne '404.html') {
+    $path = if ($f.Name -eq 'index.html') { '/' } else { '/' + $f.Name }
+    $new = StampOg $new (RenderOg $path 'og-card.jpg')
+  }
   if ((Norm $new) -ne (Norm $c)) {
     $drift += $f.FullName.Replace($Root + '\', '')
     if (-not $Check) { [IO.File]::WriteAllText($f.FullName, $new, $utf8); $changed++ }
@@ -64,6 +93,7 @@ $tpl = Join-Path $PSScriptRoot 'build-work.ps1'
 $t = [IO.File]::ReadAllText($tpl, [Text.Encoding]::UTF8)
 $t2 = Stamp $t 'header' (Render $hdrSrc '../../' '../../index.html' 'work')
 $t2 = Stamp $t2 'footer' (Render $ftrSrc '../../' '../../index.html' 'work')
+$t2 = StampOg $t2 (RenderOg '/work/{{SLUG}}/' '{{OG}}')   # build-work fills the slug and the page's own screenshot
 if ((Norm $t2) -ne (Norm $t)) {
   $drift += 'tools/build-work.ps1'
   if (-not $Check) { [IO.File]::WriteAllText($tpl, $t2, (New-Object Text.UTF8Encoding $true)) }

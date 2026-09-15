@@ -2,6 +2,7 @@
 # WebP, capped at -MaxWidth, via headless Edge canvas. Then run
 # resize-images.ps1 to make the 960/480 variants.
 #   .\tools\import-images.ps1 -Map @{ 'apw-cubs-wash' = 'S:\...\The Cub''s Washv3.jpg'; ... }
+#   .\tools\import-images.ps1 -Map @{ 'devon' = @{ path = '...jpg'; crop = 'x,y,w,h' } } -MaxWidth 960   (crop first)
 param(
   [Parameter(Mandatory = $true)][hashtable]$Map,   # name (no extension) -> source path
   [int]$MaxWidth = 1440,
@@ -34,17 +35,23 @@ try {
     }
   }
   foreach ($name in $Map.Keys) {
-    $src = (Resolve-Path $Map[$name]).Path
+    # A value is a path, or @{ path = '...'; crop = 'x,y,w,h' } (crop in source pixels, applied before scaling).
+    $spec = $Map[$name]
+    $srcPath = if ($spec -is [hashtable]) { $spec.path } else { $spec }
+    $crop = if ($spec -is [hashtable] -and $spec.crop) { ($spec.crop -split ',') | ForEach-Object { [int]$_ } } else { $null }
+    $src = (Resolve-Path $srcPath).Path
     # Feed the image as a data: URL so no file:// or server access is needed.
     $ext = [IO.Path]::GetExtension($src).ToLower().TrimStart('.'); if ($ext -eq 'jpg') { $ext = 'jpeg' }
     $b64 = [Convert]::ToBase64String([IO.File]::ReadAllBytes($src))
+    $cropJs = if ($crop) { "const sx = $($crop[0]), sy = $($crop[1]), sw = $($crop[2]), sh = $($crop[3]);" } else { 'const sx = 0, sy = 0, sw = img.naturalWidth, sh = img.naturalHeight;' }
     $js = @"
 (async () => {
   const img = new Image(); img.src = 'data:image/$ext;base64,$b64'; await img.decode();
-  const s = Math.min(1, $MaxWidth / img.naturalWidth);
-  const w = Math.round(img.naturalWidth * s), h = Math.round(img.naturalHeight * s);
+  $cropJs
+  const s = Math.min(1, $MaxWidth / sw);
+  const w = Math.round(sw * s), h = Math.round(sh * s);
   const c = document.createElement('canvas'); c.width = w; c.height = h;
-  const ctx = c.getContext('2d'); ctx.imageSmoothingQuality = 'high'; ctx.drawImage(img, 0, 0, w, h);
+  const ctx = c.getContext('2d'); ctx.imageSmoothingQuality = 'high'; ctx.drawImage(img, sx, sy, sw, sh, 0, 0, w, h);
   return w + 'x' + h + '|' + c.toDataURL('image/webp', $Quality).split(',')[1];
 })()
 "@

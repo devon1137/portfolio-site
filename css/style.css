@@ -2150,6 +2150,18 @@ dialog.lightbox .lb-caption .lb-source:focus-visible { text-decoration: underlin
 }
 .page-intro h1 { font-size: var(--step-4); }
 .page-intro p { margin-top: var(--space-m); color: var(--text-dim); font-size: var(--step-1); }
+/* About: text-led intro with a small portrait beside it (above it on phones) */
+.intro-with-photo { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: var(--space-2xl); align-items: center; }
+.intro-with-photo .portrait {
+  width: clamp(9rem, 16vw, 14rem); height: auto; aspect-ratio: 1; object-fit: cover;
+  border-radius: var(--radius-m); border: 1px solid var(--line-strong);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
+  position: relative; z-index: 1;   /* above the honeycomb blinks */
+}
+@media (max-width: 700px) {
+  .intro-with-photo { grid-template-columns: 1fr; gap: var(--space-l); }
+  .intro-with-photo .portrait { order: -1; width: 9rem; }
+}
 
 /* ---------- Services / Launch Package ---------- */
 .offer {

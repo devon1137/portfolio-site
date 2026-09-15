@@ -69,6 +69,7 @@ $html = [regex]::Replace($html, '<meta property="og:title" content="[^"]*">', '<
 $html = [regex]::Replace($html, '<meta property="og:description" content="[^"]*">', '<meta property="og:description" content="Every page on this site, in one list.">', 1)
 $html = [regex]::Replace($html, '(?s)<main id="main">.*?</main>', ('<main id="main">' + "`n" + ($body -replace '\$', '$$') + '</main>'), 1)
 $html = $html.Replace('<body id="top" class="legal">', '<body id="top">')
+$html = $html.Replace('/privacy.html"', '/sitemap.html"')   # the borrowed canonical / og:url (only present once site.json has an origin)
 [IO.File]::WriteAllText((Join-Path $Root 'sitemap.html'), $html, $utf8)
 "sitemap.html: $($pages.Count) pages"
 

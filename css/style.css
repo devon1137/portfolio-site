@@ -32,7 +32,6 @@
   --slate-gradient: linear-gradient(175deg, var(--slate-hi) 0%, var(--slate-lo) 100%);
   --rust: #B23D17;        /* errors only (form validation) */
   --pine: #2F6F5E;
-  --mint: #64C494;        /* Kokiri lifted: the light on the earth-band cards (Recent Work, Launch Package honeycomb) */
   --amber: #E0B23F;       /* Triforce gold: the accent, warmer than the earth band so it reads on both grounds */
   --amber-bright: #F0C455; /* solid-button hover */
   --rule: #8A7F68;
@@ -965,10 +964,8 @@ nav.primary .submenu:has(.sub-group) .all a { margin-top: var(--space-xs); }
                   from that edge, then holds fully lit while hovering.
      .is-leaving  pointer left toward data-to — the lit area wipes off the
                   card toward that edge, then the class comes off.
-   Colour is per card via --hex-lit (the tile), --meteor and
-   --meteor-head: Triforce gold by default, Kokiri green (--mint) on the
-   earth-band cards (Recent Work, Launch Package) so the light is the
-   band's complement rather than a second warm on warm.
+   Colour is via --hex-lit (the tile), --meteor and --meteor-head:
+   Triforce gold on every band.
    The honeycomb is the same 22px hex tile the textured bands use. The
    tile is authored flat-top (the section tile rotated 30°,
    transposed into its own 66×38.105 repeat) because this layer is
@@ -994,10 +991,8 @@ nav.primary .submenu:has(.sub-group) .all a { margin-top: var(--space-xs); }
    border, vertical ones down the right border.
    The icon glow stays on :hover for instant feedback. */
 :root {
-  /* Same path, two strokes: Triforce gold (--amber, #E0B23F) and Kokiri
-     green (--mint, #64C494). Keep these in step with the tokens. */
-  --hex-tile-lit:      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='66' height='38.105' viewBox='0 0 66 38.105'%3E%3Cpath d='M11 0L0 19.053L11 38.105M11 0H33M11 38.105H33M33 0L44 19.053L33 38.105M44 19.053H66' fill='none' stroke='%23E0B23F' stroke-opacity='0.5' stroke-width='1'/%3E%3C/svg%3E");
-  --hex-tile-lit-mint: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='66' height='38.105' viewBox='0 0 66 38.105'%3E%3Cpath d='M11 0L0 19.053L11 38.105M11 0H33M11 38.105H33M33 0L44 19.053L33 38.105M44 19.053H66' fill='none' stroke='%2364C494' stroke-opacity='0.5' stroke-width='1'/%3E%3C/svg%3E");
+  /* Stroke is Triforce gold (--amber, #E0B23F); keep it in step with the token. */
+  --hex-tile-lit: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='66' height='38.105' viewBox='0 0 66 38.105'%3E%3Cpath d='M11 0L0 19.053L11 38.105M11 0H33M11 38.105H33M33 0L44 19.053L33 38.105M44 19.053H66' fill='none' stroke='%23E0B23F' stroke-opacity='0.5' stroke-width='1'/%3E%3C/svg%3E");
   /* One soft edge, lit side first (wipe-in) or clear side first
      (wipe-out). The -rev variants are the same gradients reflected
      (105° → 255°, 185° → 355°) for the opposite travel direction. */
@@ -1018,14 +1013,6 @@ nav.primary .submenu:has(.sub-group) .all a { margin-top: var(--space-xs); }
   isolation: isolate;
   overflow: clip;
   overflow-clip-margin: 16px; /* room for the meteor's glow to bleed past the border */
-}
-/* On the earth band (Recent Work, Launch Package): green variant. Text
-   and halo colours already flip with the band's surface tokens; only
-   the light source changes. */
-.on-slate .hex-card {
-  --hex-lit: var(--hex-tile-lit-mint);
-  --meteor: var(--mint);
-  --meteor-head: #EAFFF1;
 }
 .hex-card::before {
   content: "";

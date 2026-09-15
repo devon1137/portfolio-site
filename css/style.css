@@ -2073,16 +2073,9 @@ section.band.toc-band { padding-block: var(--space-l); }
 }
 .quote blockquote { margin: 0; }
 .quote blockquote p { margin: 0; font-family: var(--font-serif); font-size: var(--step-1); line-height: 1.55; color: var(--text); }
-/* Hover: the card lifts and warms, the quotation mark swells, and a slanted
-   amber bar sweeps across the bottom edge. */
-.quote { overflow: hidden; transition: transform var(--t-med) var(--ease), border-color var(--t-med) var(--ease), box-shadow var(--t-med) var(--ease), background var(--t-med) var(--ease); }
+/* Hover: the card lifts and warms, and the quotation mark swells. */
+.quote { transition: transform var(--t-med) var(--ease), border-color var(--t-med) var(--ease), box-shadow var(--t-med) var(--ease), background var(--t-med) var(--ease); }
 .quote::before { transition: transform var(--t-med) var(--ease), color var(--t-med) var(--ease), opacity var(--t-med) var(--ease); transform-origin: left top; }
-.quote::after {
-  content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 4px;
-  background: linear-gradient(90deg, var(--accent), #FFF0C2);
-  clip-path: polygon(0 0, 100% 0, calc(100% - 4px) 100%, 4px 100%);
-  transform: scaleX(0); transform-origin: left; transition: transform 420ms var(--ease);
-}
 .quote:hover, .quote:focus-within {
   transform: translateY(-4px);
   border-color: color-mix(in srgb, var(--accent) 60%, var(--line));
@@ -2090,10 +2083,9 @@ section.band.toc-band { padding-block: var(--space-l); }
   box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35), 0 0 0 1px color-mix(in srgb, var(--accent) 25%, transparent), 0 0 32px color-mix(in srgb, var(--accent) 18%, transparent);
 }
 .quote:hover::before, .quote:focus-within::before { transform: scale(1.35) rotate(-6deg); color: #FFF0C2; opacity: 1; }
-.quote:hover::after, .quote:focus-within::after { transform: scaleX(1); }
 .quote:hover blockquote p, .quote:focus-within blockquote p { color: #FFF8E8; }
 @media (prefers-reduced-motion: reduce) {
-  .quote, .quote::before, .quote::after { transition: none; }
+  .quote, .quote::before { transition: none; }
   .quote:hover { transform: none; }
   .quote:hover::before { transform: none; }
 }

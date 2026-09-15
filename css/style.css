@@ -2671,6 +2671,10 @@ dialog.lightbox .lb-caption .lb-source:focus-visible { text-decoration: underlin
 .pkg ul { list-style: none; margin-top: var(--space-m); }
 .pkg li { position: relative; padding: 0.35rem 0 0.35rem 1.4rem; font-size: var(--step--1); }
 .pkg li::before { content: "✓"; position: absolute; left: 0; color: var(--pine); font-weight: 600; }
+/* Services: the card runs the height of the copy plus the testimonial, so
+   the checklist steps up to body size and breathes to fill it. */
+.offer:has(.quote) .pkg li { font-size: var(--step-0); line-height: 1.6; padding-block: 0.6rem; }
+.offer:has(.quote) .pkg ul { margin-top: var(--space-l); }
 .pkg .actions { margin-top: auto; padding-top: var(--space-l); gap: var(--space-s); }   /* spare height sits above the button, not under the fine print */
 /* The two buttons share a row wherever the panel is wide enough (~345px)
    and stack to full width below that. */

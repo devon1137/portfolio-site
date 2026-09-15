@@ -2058,13 +2058,18 @@ section.band.toc-band { padding-block: var(--space-l); }
 .case-text > :first-child { margin-top: 0; }
 /* Case studies: one earth honeycomb band, one block. The sections stack
    inside the block with their h2s; a generous gap and no rule between
-   them, since the block is what reads as the unit. The "By the numbers"
-   tiles (with their own heading when that's all the section holds) sit
-   on the band below the block. */
+   them, since the block is what reads as the unit. */
 .case-text > section + section { margin-top: var(--space-3xl); }
 .case-text > section > h2 { margin-bottom: var(--space-l); max-width: 22ch; }
-.case-text + .stats, .case-text + .case-stats { margin-top: var(--space-2xl); }
-.case-stats > h2 { margin-bottom: var(--space-xl); }
+/* "By the numbers": the stat tiles sit under the facts strip, before the
+   story, so a skimmer gets the outcome first. Four across for a set of
+   four, three across for six; two on narrower screens. */
+.case-numbers { margin-top: var(--space-2xl); }
+.case-numbers .eyebrow { margin-bottom: var(--space-m); }
+.case-numbers .stats { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.case-numbers .stats:has(> li:nth-child(5)) { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+@media (max-width: 900px) { .case-numbers .stats, .case-numbers .stats:has(> li:nth-child(5)) { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 480px) { .case-numbers .stats, .case-numbers .stats:has(> li:nth-child(5)) { grid-template-columns: 1fr; } }
 .reading-text > * { max-width: 72ch; margin-inline: auto; }
 .reading-text > .table-wrap { max-width: none; }
 .reading-text > :first-child { margin-top: 0; }

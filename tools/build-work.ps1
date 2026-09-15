@@ -143,6 +143,7 @@ $head = @'
         <div><dt>Stack</dt><dd><ul class="tags" aria-label="Stack">{{STACK}}</ul></dd></div>
 {{LINKS_DIV}}
       </dl>
+{{NUMBERS}}
     </div>
   </section>
 
@@ -225,31 +226,33 @@ for ($i = 0; $i -lt $order.Count; $i++) {
   # Sections -> one band. The whole case study, first h2 to last paragraph,
   # is a single stone glass block (.case-text, the same card the writing
   # samples use) on one earth honeycomb band; the sections stay as sections
-  # inside it (their ids are the TOC targets). A closing stats list (the
-  # "By the numbers" tiles) comes out of the last section and sits on the
-  # band below the block, so it isn't cards inside a card.
+  # inside it (their ids are the TOC targets). The stats list (the "By the
+  # numbers" tiles, authored at the end of the last section) is lifted out
+  # and shown up top under the facts strip, where a skimmer sees it first;
+  # a section that was only a heading plus the tiles disappears with it.
   $secRx = [regex]'(?s)<section\s+id="(?<id>[^"]+)"(?:\s+data-title="(?<t>[^"]*)")?\s*>(?<inner>.*?)</section>'
   $sections = $secRx.Matches($fr.body)
   if ($sections.Count -eq 0) { throw "No sections in $($fr.path)" }
   $parts = New-Object System.Collections.Generic.List[string]
   $toc = New-Object System.Collections.Generic.List[string]
-  $stats = ''
+  $numbers = ''
   foreach ($s in $sections) {
     $id = $s.Groups['id'].Value
     $title = $s.Groups['t'].Value
     if (-not $title) { $title = [regex]::Match($s.Groups['inner'].Value, '<h2>(.*?)</h2>').Groups[1].Value -replace '<[^>]+>', '' }
     $inner = $s.Groups['inner'].Value.Trim()
     $sm = [regex]::Match($inner, '(?s)\s*(<ul class="stats".*</ul>)\s*$')
-    if ($sm.Success) { $stats = $sm.Groups[1].Value; $inner = $inner.Substring(0, $sm.Index).Trim() }
-    if ($sm.Success -and $inner -match '(?s)^\s*<h2>.*?</h2>\s*$') {
-      # Heading straight into the tiles (no prose): the heading goes with them, below the block.
-      $stats = "<section id=`"$id`" class=`"case-stats`">`n$inner`n$stats`n</section>"
-    } elseif ($inner) {
-      $parts.Add("<section id=`"$id`">`n$inner`n</section>")
+    if ($sm.Success) {
+      $numbers = "      <div class=`"case-numbers`">`n        <p class=`"eyebrow`">By the numbers</p>`n        $($sm.Groups[1].Value)`n      </div>"
+      $inner = $inner.Substring(0, $sm.Index).Trim()
+      if ($inner -match '(?s)^\s*<h2>.*?</h2>\s*$') { continue }   # heading + tiles only: nothing left to read here
     }
-    $toc.Add("          <li><a href=`"#$id`">$title</a></li>")
+    if ($inner) {
+      $parts.Add("<section id=`"$id`">`n$inner`n</section>")
+      $toc.Add("          <li><a href=`"#$id`">$title</a></li>")
+    }
   }
-  $bands = @("  <section class=`"band on-slate grid-bg case-band`">`n    <div class=`"wrap`">`n<div class=`"case-text`">`n$($parts -join "`n")`n</div>`n$stats`n    </div>`n  </section>`n")
+  $bands = @("  <section class=`"band on-slate grid-bg case-band`">`n    <div class=`"wrap`">`n<div class=`"case-text`">`n$($parts -join "`n")`n</div>`n    </div>`n  </section>`n")
 
   $stack = ($m.stack | ForEach-Object { "<li>$(Html $_)</li>" }) -join ''
   $links = ($m.links | ForEach-Object {
@@ -284,7 +287,7 @@ for ($i = 0; $i -lt $order.Count; $i++) {
     '{{CATEGORY}}' = (Html $m.category); '{{DATES}}' = (Html $m.dates); '{{LEDE}}' = $m.lede
     '{{ROLE}}' = $m.role; '{{TIMELINE}}' = (Html $m.timeline); '{{STACK}}' = $stack
     '{{LINKS_DIV}}' = $(if ($m.links.Count -gt 0) { "        <div><dt>$linksLabel</dt><dd>$links</dd></div>" } else { '' }); '{{TOC}}' = ($toc -join "`n")
-    '{{PREV}}' = $prevHtml; '{{NEXT}}' = $nextHtml; '{{SCHEMA}}' = $schemaJson
+    '{{PREV}}' = $prevHtml; '{{NEXT}}' = $nextHtml; '{{SCHEMA}}' = $schemaJson; '{{NUMBERS}}' = $numbers
   }
   foreach ($kv in $map.GetEnumerator()) { $page = $page.Replace($kv.Key, [string]$kv.Value) }
   # Site-relative asset paths -> two levels up.

@@ -1588,11 +1588,23 @@ nav.primary .submenu:has(.sub-group) .all a { margin-top: var(--space-xs); }
   .timeline .row { grid-template-columns: 1fr; gap: var(--space-xs); }
   .timeline .year { padding-top: 0; }
 }
-/* Process steps (Services): the timeline layout without the meteor; a plain
-   completed spine, and the amber label is the step number rather than a year. */
-.timeline.steps-timeline::after { display: none; }
-.timeline.steps-timeline::before { background: var(--line-strong); }
+/* Process steps (Services): the timeline layout and meteor, but no bursts;
+   each dot swells as the meteor head passes it and settles slightly larger.
+   The amber label is the step number rather than a year. */
 .timeline.steps-timeline .year { font-size: var(--step-0); font-family: var(--font-mono); letter-spacing: 0.06em; text-transform: uppercase; padding-top: 0.4rem; }
+.timeline.steps-timeline .row::after,
+.timeline.steps-timeline .row:last-child .body::after { display: none; }
+@supports (animation-timeline: view()) {
+  .timeline.steps-timeline .body::before {
+    animation-name: dot-pass;
+    animation-range: cover calc(50vh - 4rem) cover calc(50vh + 4rem);
+  }
+  @keyframes dot-pass {
+    0%   { background: var(--line-strong); transform: scale(0.8); box-shadow: 0 0 0 4px var(--surface); }
+    50%  { background: #FFF0C2; transform: scale(2.1); box-shadow: 0 0 0 4px var(--surface), 0 0 14px var(--accent); }
+    100% { background: var(--accent); transform: scale(1.15); box-shadow: 0 0 0 4px var(--surface); }
+  }
+}
 
 /* Progress: a meteor. The streak is a fixed-length gradient (transparent
    tail → bright glowing head) painted on a transparent full-height layer

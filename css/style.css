@@ -1930,6 +1930,62 @@ section.band.toc-band { padding-block: var(--space-l); }
 .reading-text .pov::after { content: " —"; }
 .entries h3 a { color: inherit; text-decoration: none; }
 .entries h3 a:hover { color: var(--accent); }
+/* ---------- Resume (resume.html; the PDF is printed from this page) ---------- */
+.resume .actions { margin-top: var(--space-l); display: flex; gap: var(--space-s); flex-wrap: wrap; }
+.cv {
+  --paper: #F4EFE4; --ink-on-paper: #1B1F1D; --dim-on-paper: #5B574D; --rule-on-paper: #D9D1C0;
+  max-width: 52rem; margin: 0 auto;
+  padding: clamp(1.75rem, 1rem + 3vw, 3.5rem);
+  background: var(--paper); color: var(--ink-on-paper);
+  border-radius: var(--radius-m);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
+  font-size: 0.95rem; line-height: 1.5;
+}
+.cv a { color: inherit; text-decoration-color: var(--rule-on-paper); text-underline-offset: 2px; }
+.cv a:hover { color: var(--amber); }
+.cv-head { display: flex; justify-content: space-between; gap: var(--space-l); flex-wrap: wrap; padding-bottom: var(--space-m); border-bottom: 2px solid var(--ink-on-paper); }
+.cv-name { font-family: var(--font-serif); font-size: var(--step-3); line-height: 1; margin: 0; }
+.cv-tag { margin: 0.4rem 0 0; color: var(--dim-on-paper); font-family: var(--font-mono); font-size: 0.74rem; letter-spacing: 0.06em; text-transform: uppercase; }
+.cv-contact { list-style: none; margin: 0; padding: 0; font-size: 0.85rem; text-align: right; line-height: 1.55; }
+.cv-section { margin-top: var(--space-l); }
+.cv-section h3 { font-family: var(--font-mono); font-size: 0.74rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--dim-on-paper); margin: 0 0 var(--space-s); padding-bottom: 0.3rem; border-bottom: 1px solid var(--rule-on-paper); }
+.cv-section p { margin: 0; }
+.cv-job { margin-top: var(--space-m); break-inside: avoid; }
+.cv-job:first-of-type { margin-top: 0; }
+.cv-job-head { display: flex; justify-content: space-between; gap: var(--space-m); flex-wrap: wrap; }
+.cv-when { color: var(--dim-on-paper); font-family: var(--font-mono); font-size: 0.78rem; white-space: nowrap; }
+.cv-job ul { margin: 0.35rem 0 0; padding-left: 1.1rem; }
+.cv-job li + li { margin-top: 0.25rem; }
+.cv-skills dl { margin: 0; display: grid; grid-template-columns: max-content 1fr; gap: 0.4rem var(--space-m); }
+.cv-skills dl > div { display: contents; }
+.cv-skills dt { font-weight: 600; }
+.cv-skills dd { margin: 0; }
+.cv-also { margin: var(--space-m) 0 0; color: var(--dim-on-paper); font-size: 0.9em; }
+.cv-foot { margin-top: var(--space-l); color: var(--dim-on-paper); font-family: var(--font-mono); font-size: 0.74rem; text-align: center; }
+.no-screen { display: none; }
+@media (max-width: 720px) {
+  .cv-head { flex-direction: column; }
+  .cv-contact { text-align: left; }
+  .cv-skills dl { grid-template-columns: 1fr; gap: 0.15rem; }
+  .cv-skills dd { margin-bottom: 0.5rem; }
+}
+@media print {
+  .resume .band, .resume .page-intro { padding: 0 !important; border: 0 !important; background: #fff !important; }
+  .resume .wrap { max-width: none; padding: 0; }
+  .cv { max-width: none; margin: 0; padding: 0; background: #fff; color: #000; border-radius: 0; box-shadow: none; font-size: 10.25pt; line-height: 1.4; --dim-on-paper: #444; --rule-on-paper: #bbb; --ink-on-paper: #000; }
+  .cv-name { font-size: 22pt; }
+  .cv-head { flex-direction: row; flex-wrap: nowrap; }
+  .cv-contact { text-align: right; }
+  .cv-skills dl { grid-template-columns: max-content 1fr; gap: 0.3rem 1rem; }
+  .cv-skills dd { margin-bottom: 0; }
+  .cv-section { margin-top: 0.7rem; }
+  .cv-job { margin-top: 0.5rem; }
+  .no-screen { display: block; }
+  .cv a { text-decoration: none; }
+  .cv-section h3 { page-break-after: avoid; }
+}
+@page { size: Letter; margin: 0.6in 0.65in; }
+
 /* Sales script: a dialogue block between prose sections (Washville case study) */
 .script {
   margin: var(--space-l) 0;
@@ -2250,6 +2306,7 @@ dialog.lightbox .lb-caption .lb-source:focus-visible { text-decoration: underlin
 .page-intro h1 { font-size: var(--step-4); }
 .page-intro p { margin-top: var(--space-m); color: var(--text-dim); font-size: var(--step-1); }
 /* About: text-led intro with a small portrait beside it (above it on phones) */
+.intro-with-photo .actions { margin-top: var(--space-l); }
 .intro-with-photo { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: var(--space-2xl); align-items: center; }
 .intro-with-photo .portrait {
   width: clamp(9rem, 16vw, 14rem); height: auto; aspect-ratio: 1; object-fit: cover;

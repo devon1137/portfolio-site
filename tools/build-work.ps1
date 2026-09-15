@@ -174,6 +174,7 @@ $tail = @'
       <span class="footer-label">Site</span>
       <a href="../../privacy.html">Privacy Policy</a>
       <a href="../../terms.html">Terms of Service</a>
+      <a href="../../resume.html">Resume</a>
       <a href="../../sitemap.html">Sitemap</a>
     </nav>
     <div>

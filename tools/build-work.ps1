@@ -8,6 +8,7 @@
 #     "dates": "2025–2026", "lede": "...", "description": "...",
 #     "role": "...", "timeline": "...", "stack": ["WordPress", "..."],
 #     "links": [{ "label": "thenortheastlandhotel.com", "url": "https://...", "archived": false }] }
+#   link flags: "archived": true -> Wayback title; "affiliate": true -> rel="sponsored" + disclosure title (label should say "(affiliate link)")
 #   -->
 #   <section id="overview" data-title="Overview"> <h2>Overview</h2> ... </section>
 #
@@ -200,8 +201,9 @@ for ($i = 0; $i -lt $order.Count; $i++) {
 
   $stack = ($m.stack | ForEach-Object { "<li>$(Html $_)</li>" }) -join ''
   $links = ($m.links | ForEach-Object {
-    $lbl = if ($_.archived) { 'Open the archived page on the Wayback Machine (new tab)' } else { 'Open on the live site (new tab)' }
-    "<a class=`"link-arrow`" href=`"$($_.url)`" target=`"_blank`" rel=`"noopener`" title=`"$lbl`">$(Html $_.label) <span class=`"arrow`" aria-hidden=`"true`">&#8599;</span></a>"
+    $lbl = if ($_.archived) { 'Open the archived page on the Wayback Machine (new tab)' } elseif ($_.affiliate) { 'Affiliate link: as an Amazon Associate I earn from qualifying purchases (new tab)' } else { 'Open on the live site (new tab)' }
+    $rel = if ($_.affiliate) { 'sponsored noopener' } else { 'noopener' }
+    "<a class=`"link-arrow`" href=`"$($_.url)`" target=`"_blank`" rel=`"$rel`" title=`"$lbl`">$(Html $_.label) <span class=`"arrow`" aria-hidden=`"true`">&#8599;</span></a>"
   }) -join '<br>'
   $archivedN = @($m.links | Where-Object { $_.archived }).Count
   $linksLabel = if ($m.links.Count -gt 0 -and $archivedN -eq $m.links.Count) { 'Archived at' } elseif ($archivedN -gt 0 -or $m.links.Count -gt 1) { 'Links' } else { 'Live site' }

@@ -506,6 +506,30 @@ document.addEventListener('DOMContentLoaded', () => {
     if (figs.length < 2) track.hidden = true;
   });
 
+  // ---- Sticky TOC rail: mark the section currently in view ----
+  // The link whose target is the topmost section crossing the reader's line
+  // (a third of the way down the viewport) gets aria-current="location".
+  document.querySelectorAll('.toc-rail .toc').forEach((toc) => {
+    const links = [...toc.querySelectorAll('a[href^="#"]')];
+    const targets = links.map((a) => document.getElementById(decodeURIComponent(a.hash.slice(1)))).filter(Boolean);
+    if (!targets.length) return;
+    let ticking = false;
+    const update = () => {
+      ticking = false;
+      const line = window.innerHeight / 3;
+      let current = targets[0];
+      for (const t of targets) { if (t.getBoundingClientRect().top <= line) current = t; else break; }
+      links.forEach((a) => {
+        const on = a.hash === '#' + current.id;
+        if (on) a.setAttribute('aria-current', 'location'); else a.removeAttribute('aria-current');
+      });
+    };
+    const onScroll = () => { if (!ticking) { ticking = true; requestAnimationFrame(update); } };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    update();
+  });
+
   // ---- Click-to-load video (figure.video[data-video]) ----
   // The page ships a local poster; YouTube's player is only requested when
   // the visitor presses play, so nothing third-party loads on page view. The

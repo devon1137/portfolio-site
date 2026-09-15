@@ -1864,6 +1864,35 @@ section.band.toc-band { padding-block: var(--space-l); }
 .toc ol ol { margin-top: 0.3rem; padding-left: 1.6rem; font-size: var(--step--1); }
 .toc ol ol li + li { margin-top: 0.2rem; }
 .toc ol ol li.has-case a::after { content: " ›"; color: var(--accent); }
+/* On-page TOC rail (case studies, writing samples). The rail is absolutely
+   positioned over the full height of .case-body, so the sticky card inside it
+   travels with the reader and stops when the sections it navigates end. The
+   content column reserves the rail's width. Below 1100px it's a normal
+   centred card above the sections. */
+.case-body { position: relative; }
+.toc-rail { padding: var(--space-l) var(--gutter) 0; }
+@media (min-width: 1100px) {
+  .case-body { --rail: 15rem; --rail-gap: var(--space-2xl); }
+  .case-body > .band > .wrap, .case-body > article.band > .wrap { padding-right: calc(var(--gutter) + var(--rail) + var(--rail-gap)); }
+  .toc-rail {
+    position: absolute; top: 0; bottom: 0; z-index: 2;
+    right: max(var(--gutter), calc((100% - var(--max)) / 2 + var(--gutter)));
+    width: var(--rail); padding: 0; pointer-events: none;
+  }
+  .toc-rail .toc {
+    position: sticky; top: calc(var(--header-h) + 1.5rem);
+    width: 100%; max-width: none; margin: var(--space-section) 0 0;
+    padding: var(--space-m) var(--space-l);
+    pointer-events: auto;
+    max-height: calc(100vh - var(--header-h) - 3rem); overflow-y: auto;
+  }
+  .toc-rail .toc-title { margin-bottom: var(--space-s); }
+  .toc-rail .toc > ol > li + li { margin-top: var(--space-xs); }
+  .toc-rail .toc > ol > li > a { font-weight: 500; }
+}
+/* Scroll-spy: the section in view (script.js sets aria-current="location") */
+.toc-rail .toc a[aria-current="location"] { color: var(--accent); }
+.toc-rail .toc > ol > li > a[aria-current="location"]::before { color: var(--text); }
 /* Centred, narrower TOC (writing samples): sits under the facts, above the text */
 .toc.toc-centered { margin-top: var(--space-xl); padding: var(--space-m) var(--space-l); }
 /* Two columns when there's room and the list is long (Work index) */

@@ -147,18 +147,22 @@ $head = @'
         <div><dt>Stack</dt><dd><ul class="tags" aria-label="Stack">{{STACK}}</ul></dd></div>
 {{LINKS_DIV}}
       </dl>
-      <nav class="toc toc-flat" aria-label="On this page" style="margin-top: var(--space-xl)">
+    </div>
+  </section>
+
+  <div class="case-body">
+    <aside class="toc-rail">
+      <nav class="toc toc-flat" aria-label="On this page">
         <span class="toc-title eyebrow">On this page</span>
         <ol>
 {{TOC}}
         </ol>
       </nav>
-    </div>
-  </section>
-
+    </aside>
 '@
 
 $tail = @'
+  </div><!-- /.case-body -->
   <section class="band">
     <div class="wrap">
       <nav class="case-nav" aria-label="More case studies">

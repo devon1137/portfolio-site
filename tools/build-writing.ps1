@@ -141,10 +141,11 @@ $head = @'
 {{ARCHIVE_DIV}}
       </dl>
       <p class="sample-note">{{NOTE}}</p>{{CONTENT_NOTE}}
-{{TOC}}
     </div>
   </section>
 
+  <div class="case-body">
+{{TOC}}
   <article class="band on-slate grid-bg" id="text">
     <div class="wrap">
       <div class="prose reading-text{{FICTION}}">
@@ -152,6 +153,7 @@ $head = @'
       </div>
     </div>
   </article>
+  </div><!-- /.case-body -->
 
 '@
 
@@ -225,7 +227,7 @@ for ($i = 0; $i -lt $order.Count; $i++) {
     })
     if ($script:openSub) { $items.Add('            </ol></li>') } elseif ($items.Count -gt 0) { $items.Add('          </li>') }
     if ($items.Count -gt 0) {
-      $tocHtml = "      <nav class=`"toc toc-centered`" aria-label=`"In this piece`">`n        <span class=`"toc-title eyebrow`">In this piece</span>`n        <ol>`n" + ($items -join "`n") + "`n        </ol>`n      </nav>"
+      $tocHtml = "    <aside class=`"toc-rail`">`n      <nav class=`"toc toc-flat`" aria-label=`"In this piece`">`n        <span class=`"toc-title eyebrow`">In this piece</span>`n        <ol>`n" + ($items -join "`n") + "`n        </ol>`n      </nav>`n    </aside>"
     }
   }
   $words = Words $body

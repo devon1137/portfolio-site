@@ -70,22 +70,21 @@ $items
 
 $tocItems = ($sets | ForEach-Object { "          <li><a href=`"#g-$($_.id)`">$($_.name) <span class=`"dim`">($($_.figs.Count))</span></a></li>" }) -join "`n"
 $toc = @"
-  <section class="band toc-band">
-    <div class="wrap">
+  <div class="case-body">
+    <aside class="toc-rail">
       <nav class="toc toc-flat" aria-label="Gallery index">
         <span class="toc-title eyebrow">On this page</span>
         <ol>
 $tocItems
         </ol>
       </nav>
-    </div>
-  </section>
+    </aside>
 
 "@
 
-$newBody = $toc + ($bands -join "`n`n")
+$newBody = $toc + ($bands -join "`n`n") + "`n  </div><!-- /.case-body -->"
 # Everything from the first band after the page intro to the end of <main> is generated.
-$rx = [regex]'(?s)(?<=</section>\r?\n\r?\n)  <section class="band.*?</section>\r?\n</main>'
+$rx = [regex]'(?s)(?<=</section>\r?\n\r?\n)  (?:<div class="case-body">|<section class="band).*?\n</main>'
 if (-not $rx.IsMatch($gal)) { throw 'gallery body not found' }
 $gal = $rx.Replace($gal, ($newBody -replace '\$', '$$') + "`n</main>", 1)
 [IO.File]::WriteAllText((Join-Path $root 'gallery.html'), $gal, $utf8)

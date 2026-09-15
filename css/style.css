@@ -1888,8 +1888,10 @@ section.band.toc-band { padding-block: var(--space-l); }
     max-height: calc(100vh - var(--header-h) - 3rem); overflow-y: auto;
   }
   .toc-rail .toc-title { margin-bottom: var(--space-s); }
-  .toc-rail .toc > ol > li + li { margin-top: var(--space-xs); }
-  .toc-rail .toc > ol > li > a { font-weight: 500; }
+  .toc-rail .toc > ol > li + li { margin-top: 0.3rem; }
+  .toc-rail .toc > ol > li > a { font-weight: 500; font-size: var(--step--1); line-height: 1.4; overflow-wrap: anywhere; }
+  .toc-rail .toc ol ol { margin-top: 0.15rem; padding-left: 1.2rem; }
+  .toc-rail .toc { scrollbar-width: thin; scrollbar-color: var(--line-strong) transparent; }
 }
 /* Rail labels: at most two lines, then an ellipsis (the full title is in the tooltip) */
 .toc-rail .toc li > a {

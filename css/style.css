@@ -110,7 +110,61 @@
   color: var(--text);
 }
 .hero, .page-intro { --surface: var(--pine-mid); --surface-2: var(--pine-2); --text-dim: #C0BBAC; background: var(--pine-gradient); color: var(--text); }
-/* Footer mirrors the hero: the same forest, but rising (dark at the top edge`n   where it meets the page, lightest at the bottom), so the page ends the way`n   it began. Honeycomb via .grid-bg on the element. */`nfooter.site { --surface: var(--pine-mid); --surface-2: var(--pine-2); --text-dim: #C0BBAC; background: linear-gradient(175deg, var(--pine-mid) 0%, var(--pine-lo) 100%); }
+/* Footer: Zora's Domain. Deep water with slow caustic light: two tiled layers
+   of soft bright cells drifting in different directions, screened onto the
+   blue, with the water tokens declared here. Pure CSS; still under
+   prefers-reduced-motion. */
+:root {
+  --water-hi: #0F3140;
+  --water-mid: #0A2230;
+  --water-lo: #061520;
+  --water-2: #143C4C;
+  --caustic: #7FDDE8;
+}
+footer.site {
+  --surface: var(--water-mid); --surface-2: var(--water-2); --text-dim: #B1C1C4;
+  --line: rgba(220, 236, 240, 0.14); --line-strong: rgba(220, 236, 240, 0.3);
+  background: linear-gradient(175deg, var(--water-hi) 0%, var(--water-lo) 100%);
+  position: relative; isolation: isolate; overflow: clip;
+}
+footer.site::before, footer.site::after {
+  content: ""; position: absolute; inset: -20%; z-index: -1; pointer-events: none;
+  mix-blend-mode: screen;
+}
+/* Layer A: larger cells, drifting up-left */
+footer.site::before {
+  background-image:
+    radial-gradient(ellipse 60% 45% at 50% 50%, color-mix(in srgb, var(--caustic) 34%, transparent) 0%, transparent 60%),
+    radial-gradient(ellipse 45% 60% at 20% 30%, color-mix(in srgb, var(--caustic) 26%, transparent) 0%, transparent 55%),
+    radial-gradient(ellipse 50% 40% at 80% 70%, color-mix(in srgb, var(--caustic) 22%, transparent) 0%, transparent 55%);
+  background-size: 420px 300px, 360px 260px, 300px 220px;
+  filter: blur(14px) contrast(140%);
+  opacity: 0.55;
+  animation: caustic-a 26s ease-in-out infinite alternate;
+}
+/* Layer B: smaller, brighter cells, drifting down-right; the two beat against each other */
+footer.site::after {
+  background-image:
+    radial-gradient(ellipse 45% 35% at 50% 50%, color-mix(in srgb, var(--caustic) 40%, transparent) 0%, transparent 55%),
+    radial-gradient(ellipse 35% 45% at 70% 25%, color-mix(in srgb, var(--caustic) 30%, transparent) 0%, transparent 50%);
+  background-size: 260px 190px, 200px 160px;
+  filter: blur(10px) contrast(160%);
+  opacity: 0.45;
+  animation: caustic-b 19s ease-in-out infinite alternate;
+}
+@keyframes caustic-a {
+  0%   { background-position: 0 0, 0 0, 0 0; transform: scale(1) rotate(0deg); }
+  50%  { background-position: -160px -90px, 120px -60px, -80px 100px; transform: scale(1.06) rotate(1.5deg); }
+  100% { background-position: -320px -180px, 240px -120px, -160px 200px; transform: scale(1) rotate(0deg); }
+}
+@keyframes caustic-b {
+  0%   { background-position: 0 0, 0 0; transform: scale(1.04) rotate(0deg); }
+  50%  { background-position: 130px 80px, -100px 60px; transform: scale(1) rotate(-1.5deg); }
+  100% { background-position: 260px 160px, -200px 120px; transform: scale(1.04) rotate(0deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+  footer.site::before, footer.site::after { animation: none; }
+}
 
 .on-slate {
   --surface: var(--slate);
@@ -341,11 +395,17 @@ header.site {
   position: sticky;
   top: 0;
   z-index: 40;
-  background: rgba(27, 31, 29, 0.86);
-  -webkit-backdrop-filter: blur(12px) saturate(140%);
-          backdrop-filter: blur(12px) saturate(140%);
+  background: rgba(26, 26, 22, 0.86);
   border-bottom: 1px solid transparent;
   transition: border-color var(--t-med) var(--ease), box-shadow var(--t-med) var(--ease);
+}
+/* The header's own blur lives on a pseudo-element, not the header: an element
+   with backdrop-filter becomes the "backdrop root" for its descendants, which
+   would leave the submenus blurring nothing but the bar itself. */
+header.site::before {
+  content: ""; position: absolute; inset: 0; z-index: -1;
+  -webkit-backdrop-filter: blur(12px) saturate(140%);
+          backdrop-filter: blur(12px) saturate(140%);
 }
 header.site.is-scrolled {
   border-bottom-color: var(--line);

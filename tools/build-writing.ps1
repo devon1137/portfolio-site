@@ -166,7 +166,7 @@ $tail = @'
 </main>
 
 <!--footer-->
-<footer class="site grid-bg">
+<footer class="site">
   <div class="wrap footer-grid">
     <div>
       <a class="wordmark" href="../../index.html">Devon<span>.</span>Kubacki</a>

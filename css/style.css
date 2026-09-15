@@ -25,10 +25,10 @@
   --ink-2: #1F221E;
   /* Alternate band: desert earth, drawn as a top-to-bottom gradient. --slate is
      the mid value for flat uses (halos, mixes). */
-  --slate-hi: #3D2A1C;     /* Gerudo: desert earth, umber to burnt sand. The warm ground. */
-  --slate: #2C1E14;
+  --slate-hi: #34241A;     /* Gerudo: desert earth, umber to burnt sand. The warm ground. */
+  --slate: #2A1C13;
   --slate-lo: #1A120B;
-  --slate-2: #4A3524;     /* raised elements on the band (frames, cards) */
+  --slate-2: #382820;     /* raised elements on the band (frames, cards) */
   --slate-gradient: linear-gradient(175deg, var(--slate-hi) 0%, var(--slate-lo) 100%);
   --rust: #B23D17;        /* errors only (form validation) */
   --pine: #2F6F5E;
@@ -92,31 +92,31 @@
    of earth palettes; gold sits between them. Token names (--pine-*, --slate-*)
    are historical; the values are what matter. */
 :root {
-  --pine-hi: #1F3B2B;      /* Kokiri: forest green. Hero, page intros, footer. The cool ground. */
-  --pine-mid: #16291F;
+  --pine-hi: #183024;      /* Kokiri: forest green. Hero, page intros, footer. The cool ground. */
+  --pine-mid: #14261D;
   --pine-lo: #0D1A13;
-  --pine-2: #264A36;      /* raised elements on the band (cards) */
+  --pine-2: #193125;      /* raised elements on the band (cards) */
   --pine-gradient: linear-gradient(175deg, var(--pine-hi) 0%, var(--pine-lo) 100%);
 }
 .on-pine {
   --surface: var(--pine-mid);
   --surface-2: var(--pine-2);
   --text: #EDE6D6;
-  --text-dim: #B9B5A6;
+  --text-dim: #C0BBAC;
   --line: rgba(237, 230, 214, 0.14);
   --line-strong: rgba(237, 230, 214, 0.3);
   --accent: var(--amber);
   background: var(--pine-gradient);
   color: var(--text);
 }
-.hero, .page-intro { --surface: var(--pine-mid); --surface-2: var(--pine-2); --text-dim: #B9B5A6; background: var(--pine-gradient); color: var(--text); }
-footer.site { --surface: var(--pine-mid); --surface-2: var(--pine-2); --text-dim: #B9B5A6; background: var(--pine-gradient); }
+.hero, .page-intro { --surface: var(--pine-mid); --surface-2: var(--pine-2); --text-dim: #C0BBAC; background: var(--pine-gradient); color: var(--text); }
+footer.site { --surface: var(--pine-mid); --surface-2: var(--pine-2); --text-dim: #C0BBAC; background: var(--pine-gradient); }
 
 .on-slate {
   --surface: var(--slate);
   --surface-2: var(--slate-2);
   --text: #F0E8D8;
-  --text-dim: #C4B7A2;
+  --text-dim: #C8BBA6;
   --line: rgba(240, 232, 216, 0.14);
   --line-strong: rgba(240, 232, 216, 0.3);
   --accent: var(--amber);

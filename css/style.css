@@ -87,6 +87,30 @@
   --font-mono: ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
 }
 
+/* Third surface: deep pine, for the hero / page intros and the footer, so the
+   top and bottom of every page share a colour that sits opposite the amber
+   accent. Same gradient treatment as slate. */
+:root {
+  --pine-hi: #17322C;
+  --pine-mid: #112621;
+  --pine-lo: #0B1917;
+  --pine-2: #1E3D36;      /* raised elements on the band (buttons' hover, cards) */
+  --pine-gradient: linear-gradient(175deg, var(--pine-hi) 0%, var(--pine-lo) 100%);
+}
+.on-pine {
+  --surface: var(--pine-mid);
+  --surface-2: var(--pine-2);
+  --text: #EDE6D6;
+  --text-dim: #B9B7A4;
+  --line: rgba(237, 230, 214, 0.14);
+  --line-strong: rgba(237, 230, 214, 0.3);
+  --accent: var(--amber);
+  background: var(--pine-gradient);
+  color: var(--text);
+}
+.hero, .page-intro { --surface: var(--pine-mid); --surface-2: var(--pine-2); --text-dim: #B9B7A4; background: var(--pine-gradient); color: var(--text); }
+footer.site { --surface: var(--pine-mid); --surface-2: var(--pine-2); --text-dim: #B9B7A4; background: var(--pine-gradient); }
+
 .on-slate {
   --surface: var(--slate);
   --surface-2: var(--slate-2);

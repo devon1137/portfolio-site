@@ -2066,6 +2066,7 @@ section.band.toc-band { padding-block: var(--space-l); }
    four, three across for six; two on narrower screens. */
 .case-numbers { margin-bottom: var(--space-2xl); }
 .case-numbers .eyebrow { margin-bottom: var(--space-m); }
+.case-numbers .stats > li { background: color-mix(in srgb, var(--ink-2) 62%, transparent); }   /* stone, like the block and the rail, not the band's earth */
 .case-numbers .stats { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 .case-numbers .stats:has(> li:nth-child(5)) { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 @media (max-width: 900px) { .case-numbers .stats, .case-numbers .stats:has(> li:nth-child(5)) { grid-template-columns: repeat(2, minmax(0, 1fr)); } }

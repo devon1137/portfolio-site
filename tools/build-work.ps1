@@ -235,6 +235,9 @@ for ($i = 0; $i -lt $order.Count; $i++) {
     if (-not $title) { $title = [regex]::Match($s.Groups['inner'].Value, '<h2>(.*?)</h2>').Groups[1].Value -replace '<[^>]+>', '' }
     $cls = if ($k % 2 -eq 0) { 'band on-slate grid-bg' } else { 'band' }
     $inner = $s.Groups['inner'].Value.Trim()
+    # Everything after the band's h2 goes in a stone glass card (.case-text),
+    # the same card the writing samples use; the h2 stays as the band title.
+    $inner = ([regex]'(?s)^(.*?</h2>)\s*(.+)$').Replace($inner, '$1' + "`n" + '<div class="case-text">' + "`n" + '$2' + "`n" + '</div>', 1)
     $bands.Add("  <section class=`"$cls`" id=`"$id`">`n    <div class=`"wrap`">`n$inner`n    </div>`n  </section>`n")
     $toc.Add("          <li><a href=`"#$id`">$title</a></li>")
     $k++

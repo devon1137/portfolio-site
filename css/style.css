@@ -858,6 +858,10 @@ nav.primary .submenu:has(.sub-group) .all a { margin-top: var(--space-xs); }
     0 12px 28px -18px rgba(0, 0, 0, 0.7);
   transition: transform var(--t-med) var(--ease), box-shadow var(--t-med) var(--ease), border-color var(--t-med) var(--ease);
 }
+/* The hex-border cards (Recent Work, Launch Package) sit on the earth band
+   but take stone, like the TOC rail and the reading cards, so the glass is
+   one material across the site rather than the band's own colour. */
+.work-card, .pkg { background: color-mix(in srgb, var(--ink-2) 62%, transparent); }
 .practice-list > div:hover,
 .stats > li:hover,
 .work-card:hover,
@@ -1224,9 +1228,9 @@ nav.primary .submenu:has(.sub-group) .all a { margin-top: var(--space-xs); }
 .hex-card:is(.is-lit, .is-leaving) :is(p, .terms, .fine) { color: var(--text); }
 .hex-card:is(.is-lit, .is-leaving) :is(h3, p, li, .cat, .more, .price, .fine) {
   text-shadow:
-    0 0 2px var(--surface-2),
-    0 0 6px var(--surface-2),
-    0 0 12px var(--surface-2);
+    0 0 2px var(--ink-2),
+    0 0 6px var(--ink-2),
+    0 0 12px var(--ink-2);   /* the card's fill is stone whatever band it's on */
 }
 /* ---- Orbiting meteor on hover (.orbit-card: "What I Actually Do") ----
    Same enter/hold/leave phases and script as .hex-card, but no
@@ -2028,11 +2032,9 @@ section.band.toc-band { padding-block: var(--space-l); }
    the copy keeps a reading measure, centred, while tables use the full card.
    The glass is stone (--ink-2), not the earth band's own surface, so it
    matches the TOC rail beside it, which sits outside the band and takes
-   the root tokens. */
-.reading-text {
-  max-width: none;
-  font-size: var(--step-0);
-  line-height: 1.75;
+   the root tokens. Case studies use the same card (.case-text, wrapped by
+   build-work.ps1 around everything after each band's h2). */
+.reading-text, .case-text {
   padding: clamp(1.5rem, 1rem + 3vw, 3.5rem);
   border-radius: var(--radius-m);
   background: color-mix(in srgb, var(--ink-2) 78%, transparent);
@@ -2042,12 +2044,18 @@ section.band.toc-band { padding-block: var(--space-l); }
     inset 0 1px 0 color-mix(in srgb, var(--text) 14%, transparent);
 }
 @supports (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px)) {
-  .reading-text {
+  .reading-text, .case-text {
     background: color-mix(in srgb, var(--ink-2) 62%, transparent);
     -webkit-backdrop-filter: blur(14px) saturate(120%);
     backdrop-filter: blur(14px) saturate(120%);
   }
 }
+.reading-text {
+  max-width: none;
+  font-size: var(--step-0);
+  line-height: 1.75;
+}
+.case-text > :first-child { margin-top: 0; }
 .reading-text > * { max-width: 72ch; margin-inline: auto; }
 .reading-text > .table-wrap { max-width: none; }
 .reading-text > :first-child { margin-top: 0; }

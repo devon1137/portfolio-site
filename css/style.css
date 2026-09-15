@@ -434,7 +434,9 @@ nav.primary .submenu .sub-tag {
   color: var(--text-dim); border: 1px solid var(--line); border-radius: var(--radius-s); white-space: nowrap;
 }
 nav.primary .submenu a:hover .sub-tag, nav.primary .submenu a[aria-current="page"] .sub-tag { color: var(--text); border-color: var(--line-strong); }
-nav.primary .submenu .sub-label { display: block; padding: 0.4rem 1rem 0.2rem; font-weight: 700; color: var(--text); }
+nav.primary .submenu .sub-label { display: block; padding: 0.4rem 1rem 0.35rem; font-weight: 700; color: var(--text); }
+/* The same slanted amber rule the TOC titles carry */
+nav.primary .submenu .sub-label::after { content: ""; display: block; width: 40px; height: 3px; margin-top: 0.4rem; background: var(--accent); clip-path: polygon(3px 0, 100% 0, calc(100% - 3px) 100%, 0 100%); }
 nav.primary .submenu .all a { border-top: 1px solid var(--line); margin-top: var(--space-xs); color: var(--text); }
 /* Grouped panel: one column per group (Client work / My own sites), the
    "All work" link spanning underneath. */

@@ -1448,7 +1448,9 @@ nav.primary .submenu:has(.sub-group) .all a { margin-top: var(--space-xs); }
   border-radius: var(--radius-s);
   transition: background var(--t-med) var(--ease), scale var(--t-med) var(--ease);
 }
-.entries > .entry:last-child { padding-bottom: 0; }
+/* The last entry keeps its bottom padding so the hover wash and the accent bar
+   cover it evenly; the list pulls the band up by the same amount instead. */
+.entries { margin-bottom: calc(-1 * var(--space-2xl)); }
 .entries > .entry::before {
   content: "";
   position: absolute;

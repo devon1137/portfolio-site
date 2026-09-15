@@ -291,6 +291,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
     agreement.querySelector('[data-print]')?.addEventListener('click', () => window.print());
 
+    // Package selector: the sections carry [data-pkg="launch"|"starter"]
+    // variants; only the chosen package's show (and print). ?package=starter
+    // in the URL preselects, so each services-page button lands on its own
+    // terms. The heading follows.
+    const pkgRadios = [...agreement.querySelectorAll('input[name="package"]')];
+    if (pkgRadios.length) {
+      const names = { launch: 'Launch Package', starter: 'Starter Site' };
+      const applyPkg = () => {
+        const pkg = agreement.elements.package.value;
+        document.querySelectorAll('[data-pkg]').forEach((el) => { el.hidden = el.dataset.pkg !== pkg; });
+        document.querySelectorAll('[data-pkg-name]').forEach((el) => { el.textContent = names[pkg]; });
+        document.title = `${names[pkg]} Agreement — Devon Kubacki`;
+      };
+      const wanted = new URLSearchParams(location.search).get('package');
+      const pre = pkgRadios.find((r) => r.value === wanted);
+      if (pre) pre.checked = true;
+      pkgRadios.forEach((r) => r.addEventListener('change', applyPkg));
+      applyPkg();
+    }
+
     const norm = (s) => s.trim().replace(/\s+/g, ' ').toLowerCase();
     const sigMatches = () => norm(sig.value) === norm(printed.value);
 

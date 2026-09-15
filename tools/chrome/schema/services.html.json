@@ -1,20 +1,43 @@
 {
   "@context": "https://schema.org",
-  "@type": "Service",
-  "@id": "{{ORIGIN}}/services.html#launch-package",
-  "url": "{{ORIGIN}}/services.html",
-  "name": "The Launch Package",
-  "serviceType": "Website design, development, and copywriting",
-  "description": "A designed, built, and written small-business website in about three weeks, delivered with full ownership and a 14-day bug-fix period.",
-  "provider": { "@id": "{{ORIGIN}}/#devon" },
-  "areaServed": { "@type": "Country", "name": "United States" },
-  "availableChannel": { "@type": "ServiceChannel", "serviceUrl": "{{ORIGIN}}/agreement.html" },
-  "offers": {
-    "@type": "Offer",
-    "price": "2000",
-    "priceCurrency": "USD",
-    "url": "{{ORIGIN}}/services.html",
-    "availability": "https://schema.org/InStock",
-    "description": "Flat price, 50% at signing and 50% at handover. Optional white-label add-on: USD 300."
-  }
+  "@graph": [
+    {
+      "@type": "Service",
+      "@id": "{{ORIGIN}}/services.html#launch-package",
+      "url": "{{ORIGIN}}/services.html#launch",
+      "name": "The Launch Package",
+      "serviceType": "Website design, development, and copywriting",
+      "description": "A designed, built, and written small-business WordPress website in about three weeks, delivered with full ownership and a 14-day bug-fix period.",
+      "provider": { "@id": "{{ORIGIN}}/#devon" },
+      "areaServed": { "@type": "Country", "name": "United States" },
+      "availableChannel": { "@type": "ServiceChannel", "serviceUrl": "{{ORIGIN}}/agreement.html" },
+      "offers": {
+        "@type": "Offer",
+        "price": "2000",
+        "priceCurrency": "USD",
+        "url": "{{ORIGIN}}/services.html#launch",
+        "availability": "https://schema.org/InStock",
+        "description": "Flat price, 50% at signing and 50% at handover. Optional white-label add-on: USD 300."
+      }
+    },
+    {
+      "@type": "Service",
+      "@id": "{{ORIGIN}}/services.html#starter-site",
+      "url": "{{ORIGIN}}/services.html#starter",
+      "name": "The Starter Site",
+      "serviceType": "Website design, development, and copywriting",
+      "description": "A hand-coded static website of up to four pages, designed, built, and written in about a week, with no CMS and free hosting; delivered with full ownership and a 14-day bug-fix period.",
+      "provider": { "@id": "{{ORIGIN}}/#devon" },
+      "areaServed": { "@type": "Country", "name": "United States" },
+      "availableChannel": { "@type": "ServiceChannel", "serviceUrl": "{{ORIGIN}}/agreement.html?package=starter" },
+      "offers": {
+        "@type": "Offer",
+        "price": "1000",
+        "priceCurrency": "USD",
+        "url": "{{ORIGIN}}/services.html#starter",
+        "availability": "https://schema.org/InStock",
+        "description": "Flat price, 50% at signing and 50% at handover. Optional white-label add-on: USD 150."
+      }
+    }
+  ]
 }

@@ -319,9 +319,8 @@ section.band, article.band {
    band's whole run: 20vh + 10% of the layer, and the layer is 2× the
    band, so 0.2·(viewport + band) — the same ratio whatever the band's
    height. `translate` is applied after `transform`, so the rotated
-   pattern moves straight up the screen. Both the hero honeycomb and
-   its .hex-blinks layer take the same drift, so the blinks stay on
-   their lattice cells. */
+   pattern moves straight up the screen. The hero and page intros opt
+   out (see .hero.grid-bg::before below). */
 @supports (animation-timeline: view()) {
   .grid-bg { view-timeline: --hex block; }
   .grid-bg::before {
@@ -350,21 +349,10 @@ section.band, article.band {
   from { background-position: 0 0; }
   to   { background-position: 76.21px -132px; }
 }
-/* …and the same parallax as every other textured band, stacked as a
-   second animation (the pan is on background-position, the drift on
-   translate, so they don't fight). */
-@supports (animation-timeline: view()) {
-  .hero.grid-bg::before,
-  .page-intro.grid-bg:has(> .hex-blinks)::before {
-    animation-name: hex-pan, hex-parallax;
-    animation-duration: 20s, auto;
-    animation-timing-function: linear, linear;
-    animation-iteration-count: infinite, 1;
-    animation-fill-mode: none, both;
-    animation-timeline: auto, --hex;
-    animation-range: normal, cover 0% cover 100%;
-  }
-}
+/* No scroll parallax here: the hero and page intros already move (the
+   pan), and they sit at the top of the page where the view timeline
+   would start mid-run anyway. The shorthand above resets
+   animation-timeline, so the band rule's drift doesn't reach them. */
 
 /* Blinking hexes: a layer that mirrors the hero honeycomb exactly (same
    box, rotation, mask, and pan — the pan here is a local-space
@@ -386,17 +374,6 @@ section.band, article.band {
 @keyframes hex-blinks-pan {
   from { transform: rotate(30deg) translate(0, 0); }
   to   { transform: rotate(30deg) translate(76.21px, -132px); }
-}
-@supports (animation-timeline: view()) {
-  :is(.hero, .page-intro) .hex-blinks {
-    animation-name: hex-blinks-pan, hex-parallax;
-    animation-duration: 20s, auto;
-    animation-timing-function: linear, linear;
-    animation-iteration-count: infinite, 1;
-    animation-fill-mode: none, both;
-    animation-timeline: auto, --hex;
-    animation-range: normal, cover 0% cover 100%;
-  }
 }
 .hex-blinks .blink {
   position: absolute;

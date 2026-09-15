@@ -44,7 +44,7 @@ $($cols -join "`n")
 
 # ---- Writing ----
 $writing = ReadMeta 'writing-src' 'writing-order.txt'
-$kindLabel = @{ Article = 'Articles'; Fiction = 'Fiction'; Excerpt = 'Excerpts' }
+$kindLabel = @{ Article = 'Articles'; Fiction = 'Fiction'; Excerpt = 'Articles' }   # excerpts list with articles and carry a tag
 $kindOf = @{}; foreach ($slug in $writing.order) { $k = [string]$writing.metas[$slug].kind; $kindOf[$slug] = if ($kindLabel[$k]) { $kindLabel[$k] } else { $k } }
 $kindNames = @(); foreach ($slug in $writing.order) { if ($kindNames -notcontains $kindOf[$slug]) { $kindNames += $kindOf[$slug] } }
 

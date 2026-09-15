@@ -105,11 +105,7 @@ $head = @'
           <li class="sub-group"><span class="sub-label eyebrow">Articles</span>
             <ul>
             <li><a href="../../writing/5e-alternate-combat-rules/">5E Alternate Combat Rules to Speed up Combat</a></li>
-            </ul>
-          </li>
-          <li class="sub-group"><span class="sub-label eyebrow">Excerpts</span>
-            <ul>
-            <li><a href="../../writing/streamershaven-internet-speed/">Do You Have the Minimum Internet Speed for Live Streaming?</a></li>
+            <li><a href="../../writing/streamershaven-internet-speed/">Do You Have the Minimum Internet Speed for Live Streaming? <span class="sub-tag">excerpt</span></a></li>
             </ul>
           </li>
           <li class="sub-group"><span class="sub-label eyebrow">Fiction</span>

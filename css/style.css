@@ -2056,13 +2056,15 @@ section.band.toc-band { padding-block: var(--space-l); }
   line-height: 1.75;
 }
 .case-text > :first-child { margin-top: 0; }
-/* Case-study bands are one continuous stone ground: no hairline between
-   them and a shorter gap, since the h2s and the cards already break it up.
-   The "By the numbers" tiles sit on the band after the card. */
-.case-band { border-top: 0; padding-block: var(--space-2xl); }
-.toc-rail + .case-band { padding-top: var(--space-section); }   /* the rail is the first child */
-.case-band:last-child { padding-bottom: var(--space-section); }
-.case-text + .stats { margin-top: var(--space-xl); }
+/* Case studies: one earth honeycomb band, one block. The sections stack
+   inside the block with their h2s; a generous gap and no rule between
+   them, since the block is what reads as the unit. The "By the numbers"
+   tiles (with their own heading when that's all the section holds) sit
+   on the band below the block. */
+.case-text > section + section { margin-top: var(--space-3xl); }
+.case-text > section > h2 { margin-bottom: var(--space-l); max-width: 22ch; }
+.case-text + .stats, .case-text + .case-stats { margin-top: var(--space-2xl); }
+.case-stats > h2 { margin-bottom: var(--space-xl); }
 .reading-text > * { max-width: 72ch; margin-inline: auto; }
 .reading-text > .table-wrap { max-width: none; }
 .reading-text > :first-child { margin-top: 0; }

@@ -222,31 +222,34 @@ for ($i = 0; $i -lt $order.Count; $i++) {
   $prev = if ($i -gt 0) { $frags[$order[$i - 1]].meta } else { $null }
   $next = if ($i -lt $order.Count - 1) { $frags[$order[$i + 1]].meta } else { $null }
 
-  # Sections -> bands. One continuous stone ground (no alternation, no rules
-  # between them): the case study reads as a single unit, the h2s carry the
-  # structure, and the glass cards do the separating.
+  # Sections -> one band. The whole case study, first h2 to last paragraph,
+  # is a single stone glass block (.case-text, the same card the writing
+  # samples use) on one earth honeycomb band; the sections stay as sections
+  # inside it (their ids are the TOC targets). A closing stats list (the
+  # "By the numbers" tiles) comes out of the last section and sits on the
+  # band below the block, so it isn't cards inside a card.
   $secRx = [regex]'(?s)<section\s+id="(?<id>[^"]+)"(?:\s+data-title="(?<t>[^"]*)")?\s*>(?<inner>.*?)</section>'
   $sections = $secRx.Matches($fr.body)
   if ($sections.Count -eq 0) { throw "No sections in $($fr.path)" }
-  $bands = New-Object System.Collections.Generic.List[string]
+  $parts = New-Object System.Collections.Generic.List[string]
   $toc = New-Object System.Collections.Generic.List[string]
-  $k = 0
+  $stats = ''
   foreach ($s in $sections) {
     $id = $s.Groups['id'].Value
     $title = $s.Groups['t'].Value
     if (-not $title) { $title = [regex]::Match($s.Groups['inner'].Value, '<h2>(.*?)</h2>').Groups[1].Value -replace '<[^>]+>', '' }
-    $cls = 'band case-band'
     $inner = $s.Groups['inner'].Value.Trim()
-    # Everything after the band's h2 goes in a stone glass card (.case-text),
-    # the same card the writing samples use; the h2 stays as the band title.
-    # A closing stats list (the "By the numbers" tiles) stays outside the
-    # card, on the band itself, so it isn't cards inside a card.
-    $inner = ([regex]'(?s)^(.*?</h2>)\s*(.*?)\s*(<ul class="stats".*</ul>)?\s*$').Replace($inner, '$1' + "`n" + '<div class="case-text">' + "`n" + '$2' + "`n" + '</div>' + "`n" + '$3', 1)
-    $inner = $inner -replace '(?s)\s*<div class="case-text">\s*</div>', ''   # h2 straight into stats: no empty card
-    $bands.Add("  <section class=`"$cls`" id=`"$id`">`n    <div class=`"wrap`">`n$inner`n    </div>`n  </section>`n")
+    $sm = [regex]::Match($inner, '(?s)\s*(<ul class="stats".*</ul>)\s*$')
+    if ($sm.Success) { $stats = $sm.Groups[1].Value; $inner = $inner.Substring(0, $sm.Index).Trim() }
+    if ($sm.Success -and $inner -match '(?s)^\s*<h2>.*?</h2>\s*$') {
+      # Heading straight into the tiles (no prose): the heading goes with them, below the block.
+      $stats = "<section id=`"$id`" class=`"case-stats`">`n$inner`n$stats`n</section>"
+    } elseif ($inner) {
+      $parts.Add("<section id=`"$id`">`n$inner`n</section>")
+    }
     $toc.Add("          <li><a href=`"#$id`">$title</a></li>")
-    $k++
   }
+  $bands = @("  <section class=`"band on-slate grid-bg case-band`">`n    <div class=`"wrap`">`n<div class=`"case-text`">`n$($parts -join "`n")`n</div>`n$stats`n    </div>`n  </section>`n")
 
   $stack = ($m.stack | ForEach-Object { "<li>$(Html $_)</li>" }) -join ''
   $links = ($m.links | ForEach-Object {

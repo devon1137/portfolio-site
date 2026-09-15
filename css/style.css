@@ -1958,6 +1958,8 @@ section.band.toc-band { padding-block: var(--space-l); }
 @media (min-width: 1100px) {
   .case-body { --rail: 15rem; --rail-gap: var(--space-2xl); }
   .case-body > .band > .wrap, .case-body > article.band > .wrap, .case-body > .wrap { padding-right: calc(var(--gutter) + var(--rail) + var(--rail-gap)); }
+  /* No rail (the Powerless scenes have no headings): the block takes the full container */
+  .case-body:not(:has(> .toc-rail)) > .wrap { padding-right: var(--gutter); }
   .toc-rail {
     position: absolute; top: 0; bottom: 0; z-index: 2;
     right: max(var(--gutter), calc((100% - var(--max)) / 2 + var(--gutter)));

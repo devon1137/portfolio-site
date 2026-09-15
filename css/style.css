@@ -2061,10 +2061,10 @@ section.band.toc-band { padding-block: var(--space-l); }
    them, since the block is what reads as the unit. */
 .case-text > section + section { margin-top: var(--space-3xl); }
 .case-text > section > h2 { margin-bottom: var(--space-l); max-width: 22ch; }
-/* "By the numbers": the stat tiles sit under the facts strip, before the
-   story, so a skimmer gets the outcome first. Four across for a set of
+/* "By the numbers": the stat tiles open the honeycomb band, ahead of the
+   block, so a skimmer gets the outcome first. Four across for a set of
    four, three across for six; two on narrower screens. */
-.case-numbers { margin-top: var(--space-2xl); }
+.case-numbers { margin-bottom: var(--space-2xl); }
 .case-numbers .eyebrow { margin-bottom: var(--space-m); }
 .case-numbers .stats { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 .case-numbers .stats:has(> li:nth-child(5)) { grid-template-columns: repeat(3, minmax(0, 1fr)); }

@@ -143,7 +143,6 @@ $head = @'
         <div><dt>Stack</dt><dd><ul class="tags" aria-label="Stack">{{STACK}}</ul></dd></div>
 {{LINKS_DIV}}
       </dl>
-{{NUMBERS}}
     </div>
   </section>
 
@@ -228,7 +227,8 @@ for ($i = 0; $i -lt $order.Count; $i++) {
   # samples use) on one earth honeycomb band; the sections stay as sections
   # inside it (their ids are the TOC targets). The stats list (the "By the
   # numbers" tiles, authored at the end of the last section) is lifted out
-  # and shown up top under the facts strip, where a skimmer sees it first;
+  # and shown at the top of the honeycomb band, ahead of the block, where a
+  # skimmer sees it first;
   # a section that was only a heading plus the tiles disappears with it.
   $secRx = [regex]'(?s)<section\s+id="(?<id>[^"]+)"(?:\s+data-title="(?<t>[^"]*)")?\s*>(?<inner>.*?)</section>'
   $sections = $secRx.Matches($fr.body)
@@ -252,7 +252,7 @@ for ($i = 0; $i -lt $order.Count; $i++) {
       $toc.Add("          <li><a href=`"#$id`">$title</a></li>")
     }
   }
-  $bands = @("  <section class=`"band on-slate grid-bg case-band`">`n    <div class=`"wrap`">`n<div class=`"case-text`">`n$($parts -join "`n")`n</div>`n    </div>`n  </section>`n")
+  $bands = @("  <section class=`"band on-slate grid-bg case-band`">`n    <div class=`"wrap`">`n$numbers`n<div class=`"case-text`">`n$($parts -join "`n")`n</div>`n    </div>`n  </section>`n")
 
   $stack = ($m.stack | ForEach-Object { "<li>$(Html $_)</li>" }) -join ''
   $links = ($m.links | ForEach-Object {
@@ -287,7 +287,7 @@ for ($i = 0; $i -lt $order.Count; $i++) {
     '{{CATEGORY}}' = (Html $m.category); '{{DATES}}' = (Html $m.dates); '{{LEDE}}' = $m.lede
     '{{ROLE}}' = $m.role; '{{TIMELINE}}' = (Html $m.timeline); '{{STACK}}' = $stack
     '{{LINKS_DIV}}' = $(if ($m.links.Count -gt 0) { "        <div><dt>$linksLabel</dt><dd>$links</dd></div>" } else { '' }); '{{TOC}}' = ($toc -join "`n")
-    '{{PREV}}' = $prevHtml; '{{NEXT}}' = $nextHtml; '{{SCHEMA}}' = $schemaJson; '{{NUMBERS}}' = $numbers
+    '{{PREV}}' = $prevHtml; '{{NEXT}}' = $nextHtml; '{{SCHEMA}}' = $schemaJson
   }
   foreach ($kv in $map.GetEnumerator()) { $page = $page.Replace($kv.Key, [string]$kv.Value) }
   # Site-relative asset paths -> two levels up.

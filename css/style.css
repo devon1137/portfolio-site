@@ -2094,6 +2094,13 @@ dialog.lightbox .lb-caption .lb-source:focus-visible { text-decoration: underlin
   transition: color var(--t-fast) var(--ease), border-color var(--t-fast) var(--ease);
 }
 .social-row a:hover { color: var(--text); border-color: var(--line-strong); }
+/* Icon-only social links: square tile, SVG mark, name in the title + visually-hidden text */
+.social-row a.social-icon { display: inline-flex; align-items: center; justify-content: center; width: 2.75rem; height: 2.75rem; padding: 0; }
+.social-icon svg { width: 1.35rem; height: 1.35rem; fill: currentColor; }
+.footer-grid .social-links { display: flex; gap: var(--space-s); margin-top: 0.55rem; }
+.footer-grid .social-links a { display: inline-flex; color: var(--text-dim); }
+.footer-grid .social-links a:hover { color: var(--accent); }
+.footer-grid .social-links svg { width: 1.25rem; height: 1.25rem; fill: currentColor; }
 
 /* Aside / smaller sections */
 .aside h2 { font-size: var(--step-2); margin-bottom: var(--space-s); }

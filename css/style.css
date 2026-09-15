@@ -2300,7 +2300,10 @@ section.band.toc-band { padding-block: var(--space-l); }
   .case-nav .prev, .case-nav .next { justify-self: center; text-align: center; }
 }
 /* Screens grid on a case page: bigger tiles than the Gallery page */
-.case .gallery-grid { grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr)); }
+/* Case-study page captures: always two across inside the block (the
+   auto-fill minimum used to drop them to one column next to the rail). */
+.case .gallery-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }   /* minmax(0): the captures' intrinsic width can't push a column wider */
+@media (max-width: 640px) { .case .gallery-grid { grid-template-columns: 1fr; } }
 /* Creative work (ads, posts, print) rather than page captures: show the
    whole image at its own aspect ratio, and the frame bar is a label. */
 .gallery-grid.creative .frame .shot { aspect-ratio: auto; height: auto; object-fit: contain; }

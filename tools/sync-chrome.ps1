@@ -49,12 +49,22 @@ function StampOg([string]$c, [string]$rendered) {
 # Per-page JSON-LD from chrome/schema/<page>.json ({{ORIGIN}} substituted), stamped
 # between <!--schema--> markers right after the og block. Skipped without an origin.
 $schemaDir = Join-Path $PSScriptRoot 'chrome\schema'
-function RenderSchema([string]$page) {
+function Untag([string]$s) { [Net.WebUtility]::HtmlDecode(($s -replace '<[^>]+>', '' -replace '\s+', ' ').Trim()) }
+function RenderSchema([string]$page, [string]$html) {
   $f = Join-Path $schemaDir "$page.json"
-  if (-not (Test-Path $f)) { return $null }
+  # A page with <div class="faq"> of <details><summary>Q</summary><p>A</p></details> also gets FAQPage, built from the markup.
+  $faq = [regex]::Match($html, '(?s)<div class="faq">(.*?)</div>\s*</div>\s*</section>')
+  if (-not (Test-Path $f) -and -not $faq.Success) { return $null }
   if (-not $origin) { return '<!--schema--><!-- JSON-LD: set "origin" in tools/site.json --><!--/schema-->' }
-  $json = [IO.File]::ReadAllText($f, [Text.Encoding]::UTF8).Trim().Replace('{{ORIGIN}}', $origin)
-  "<!--schema-->`n<script type=`"application/ld+json`">`n$json`n</script>`n<!--/schema-->"
+  $blocks = @()
+  if (Test-Path $f) { $blocks += [IO.File]::ReadAllText($f, [Text.Encoding]::UTF8).Trim().Replace('{{ORIGIN}}', $origin) }
+  if ($faq.Success) {
+    $qs = [regex]::Matches($faq.Groups[1].Value, '(?s)<details>\s*<summary>(.*?)</summary>(.*?)</details>') | ForEach-Object {
+      @{ '@type' = 'Question'; name = (Untag $_.Groups[1].Value); acceptedAnswer = @{ '@type' = 'Answer'; text = (Untag $_.Groups[2].Value) } } }
+    $obj = [ordered]@{ '@context' = 'https://schema.org'; '@type' = 'FAQPage'; url = "$origin/$page#faq"; mainEntity = @($qs) }
+    $blocks += ($obj | ConvertTo-Json -Depth 6 -Compress)
+  }
+  "<!--schema-->`n" + (($blocks | ForEach-Object { "<script type=`"application/ld+json`">`n$_`n</script>" }) -join "`n") + "`n<!--/schema-->"
 }
 function StampSchema([string]$c, [string]$rendered) {
   $rep = $rendered -replace '\$', '$$'
@@ -102,7 +112,7 @@ foreach ($f in $targets) {
   if (-not $isWork -and $f.Name -ne '404.html') {
     $path = if ($f.Name -eq 'index.html') { '/' } else { '/' + $f.Name }
     $new = StampOg $new (RenderOg $path 'og-card.jpg')
-    $sch = RenderSchema $f.Name
+    $sch = RenderSchema $f.Name $new
     if ($sch) { $new = StampSchema $new $sch }
   }
   if ((Norm $new) -ne (Norm $c)) {

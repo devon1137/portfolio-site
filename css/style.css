@@ -1932,6 +1932,23 @@ section.band.toc-band { padding-block: var(--space-l); }
 .reading-text .pov::after { content: " —"; }
 .entries h3 a { color: inherit; text-decoration: none; }
 .entries h3 a:hover { color: var(--accent); }
+/* ---------- FAQ (Services): native <details>, styled as a list ---------- */
+.faq { max-width: 72ch; border-top: 1px solid var(--line); }
+.faq details { border-bottom: 1px solid var(--line); }
+.faq summary {
+  list-style: none; cursor: pointer;
+  display: flex; align-items: baseline; justify-content: space-between; gap: var(--space-m);
+  padding: var(--space-m) 0;
+  font-family: var(--font-serif); font-size: var(--step-1); color: var(--text);
+  transition: color var(--t-fast) var(--ease);
+}
+.faq summary::-webkit-details-marker { display: none; }
+.faq summary::after { content: "+"; flex: none; font-family: var(--font-mono); font-size: 1.1rem; color: var(--accent); transition: transform var(--t-med) var(--ease); }
+.faq details[open] summary::after { transform: rotate(45deg); }
+.faq summary:hover, .faq details[open] summary { color: var(--accent); }
+.faq details p { margin: 0 0 var(--space-m); color: var(--text-dim); line-height: 1.65; max-width: 64ch; }
+.faq summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; border-radius: var(--radius-s); }
+
 /* ---------- Testimonial (figure.quote: home, Services, case studies) ---------- */
 .quote {
   position: relative;

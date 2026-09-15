@@ -23,13 +23,13 @@
   /* Palette */
   --ink: #1B1F1D;
   --ink-2: #232826;
-  /* Alternate band: deep blue-grey, drawn as a top-to-bottom gradient
-     that bottoms out near #111. --slate is the mid value for anything
-     that needs a flat color (halos, mixes). */
-  --slate-hi: #1E2836;
-  --slate: #171E28;
-  --slate-lo: #0F131A;
-  --slate-2: #242F3C;     /* raised elements on the band (frames, cards) */
+  /* Alternate band: cool charcoal, a neutral (the blue was pulled out so it
+     doesn't compete with the teal hero/footer), drawn as a top-to-bottom
+     gradient. --slate is the mid value for flat uses (halos, mixes). */
+  --slate-hi: #262B31;
+  --slate: #1C2025;
+  --slate-lo: #121416;
+  --slate-2: #2C3238;     /* raised elements on the band (frames, cards) */
   --slate-gradient: linear-gradient(175deg, var(--slate-hi) 0%, var(--slate-lo) 100%);
   --rust: #B23D17;        /* errors only (form validation) */
   --pine: #2F6F5E;

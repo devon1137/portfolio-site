@@ -21,8 +21,8 @@
 /* ---------- 1. Tokens ---------- */
 :root {
   /* Palette */
-  --ink: #161816;          /* near-black with a breath of green: the forest floor at night */
-  --ink-2: #1F221E;
+  --ink: #1A1A16;          /* stone: warm charcoal with a faint olive cast, the neutral between forest and earth */
+  --ink-2: #22221D;
   /* Alternate band: desert earth, drawn as a top-to-bottom gradient. --slate is
      the mid value for flat uses (halos, mixes). */
   --slate-hi: #34241A;     /* Gerudo: desert earth, umber to burnt sand. The warm ground. */

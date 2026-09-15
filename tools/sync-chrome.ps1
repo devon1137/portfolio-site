@@ -26,7 +26,7 @@ $ftrSrc = [IO.File]::ReadAllText((Join-Path $PSScriptRoot 'chrome\footer.html'))
 foreach ($pair in @(@($hdrSrc, 'header'), @($ftrSrc, 'footer'))) {
   if ($pair[0] -notmatch "^<!--$($pair[1])-->" -or $pair[0] -notmatch "<!--/$($pair[1])-->$") { throw "chrome/$($pair[1]).html must start with <!--$($pair[1])--> and end with <!--/$($pair[1])-->" }
 }
-$navPages = @('index.html', 'about.html', 'services.html', 'gallery.html', 'contact.html')
+$navPages = @('index.html', 'about.html', 'writing.html', 'services.html', 'gallery.html', 'contact.html')
 
 # <head> block (canonical + og:image) from chrome/og.html, only once tools/site.json has an origin.
 $site = Get-Content (Join-Path $PSScriptRoot 'site.json') -Raw | ConvertFrom-Json
@@ -67,14 +67,14 @@ function Stamp([string]$c, [string]$name, [string]$rendered) {
   throw "no <$name class=`"site`"> found"
 }
 
-$targets = @(Get-ChildItem (Join-Path $Root '*.html')) + @(Get-ChildItem (Join-Path $Root 'work\*\index.html') -ErrorAction SilentlyContinue)
+$targets = @(Get-ChildItem (Join-Path $Root '*.html')) + @(Get-ChildItem (Join-Path $Root 'work\*\index.html') -ErrorAction SilentlyContinue) + @(Get-ChildItem (Join-Path $Root 'writing\*\index.html') -ErrorAction SilentlyContinue)
 $changed = 0; $drift = @()
 foreach ($f in $targets) {
   $c = [IO.File]::ReadAllText($f.FullName)
-  $isWork = $f.FullName -like '*\work\*'
+  $isWork = ($f.FullName -like '*\work\*') -or ($f.FullName -like '*\writing\*')   # a two-levels-deep generated page
   $pre = if ($f.Name -eq '404.html') { '/' } elseif ($isWork) { '../../' } else { '' }
   $homeHref = if ($f.Name -eq '404.html') { '/' } else { "${pre}index.html" }
-  $page = if ($isWork) { 'work' } else { $f.Name }
+  $page = if ($f.FullName -like '*\work\*') { 'work' } elseif ($f.FullName -like '*\writing\*') { 'writing.html' } else { $f.Name }   # which nav item is current
   $new = Stamp $c 'header' (Render $hdrSrc $pre $homeHref $page)
   $new = Stamp $new 'footer' (Render $ftrSrc $pre $homeHref $page)
   # Top-level pages share the og card; case studies get theirs from the template (own screenshot), 404 gets none.
@@ -88,20 +88,29 @@ foreach ($f in $targets) {
   }
 }
 
-# The case-study template inside build-work.ps1 (keeps its BOM).
-$tpl = Join-Path $PSScriptRoot 'build-work.ps1'
-$t = [IO.File]::ReadAllText($tpl, [Text.Encoding]::UTF8)
-$t2 = Stamp $t 'header' (Render $hdrSrc '../../' '../../index.html' 'work')
-$t2 = Stamp $t2 'footer' (Render $ftrSrc '../../' '../../index.html' 'work')
-$t2 = StampOg $t2 (RenderOg '/work/{{SLUG}}/' '{{OG}}')   # build-work fills the slug and the page's own screenshot
-if ((Norm $t2) -ne (Norm $t)) {
-  $drift += 'tools/build-work.ps1'
-  if (-not $Check) { [IO.File]::WriteAllText($tpl, $t2, (New-Object Text.UTF8Encoding $true)) }
+# The page templates inside the generators (kept with their BOM). Each builder
+# fills {{SLUG}} and {{OG}} itself; the nav item marked current is the section's.
+$templates = @(
+  @{ file = 'build-work.ps1';    page = 'work';         path = '/work/{{SLUG}}/' }
+  @{ file = 'build-writing.ps1'; page = 'writing.html'; path = '/writing/{{SLUG}}/' }
+)
+$tplChanged = @()
+foreach ($tp in $templates) {
+  $tpl = Join-Path $PSScriptRoot $tp.file
+  if (-not (Test-Path $tpl)) { continue }
+  $t = [IO.File]::ReadAllText($tpl, [Text.Encoding]::UTF8)
+  $t2 = Stamp $t 'header' (Render $hdrSrc '../../' '../../index.html' $tp.page)
+  $t2 = Stamp $t2 'footer' (Render $ftrSrc '../../' '../../index.html' $tp.page)
+  $t2 = StampOg $t2 (RenderOg $tp.path '{{OG}}')
+  if ((Norm $t2) -ne (Norm $t)) {
+    $drift += "tools/$($tp.file)"; $tplChanged += $tp.file
+    if (-not $Check) { [IO.File]::WriteAllText($tpl, $t2, (New-Object Text.UTF8Encoding $true)) }
+  }
 }
 
 if ($Check) {
   if ($drift) { "out of date (run sync-chrome.ps1): " + ($drift -join ', '); exit 1 } else { 'chrome in sync'; exit 0 }
 }
-"chrome stamped: $changed of $($targets.Count) pages changed" + $(if ($drift -contains 'tools/build-work.ps1') { ' + build-work template' } else { '' })
+"chrome stamped: $changed of $($targets.Count) pages changed" + $(if ($tplChanged) { ' + templates: ' + ($tplChanged -join ', ') } else { '' })
 # The Work submenu lives inside the header; fill it now (pages + template).
 & (Join-Path $PSScriptRoot 'sync-nav.ps1') -Root $Root

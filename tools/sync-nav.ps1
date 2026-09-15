@@ -37,10 +37,10 @@ $utf8 = New-Object Text.UTF8Encoding $false
 $linkRx = [regex]'<a href="(?<pre>(?:\.\./\.\./|/)?)projects\.html"(?<cur> aria-current="page")?>Work</a>'
 $blockRx = [regex]'(?s)<!--worksub-->.*?<!--/worksub-->'
 $n = 0
-$targets = @(Get-ChildItem (Join-Path $Root '*.html')) + @(Get-ChildItem (Join-Path $Root 'work\*\index.html') -ErrorAction SilentlyContinue)
+$targets = @(Get-ChildItem (Join-Path $Root '*.html')) + @(Get-ChildItem (Join-Path $Root 'work\*\index.html') -ErrorAction SilentlyContinue) + @(Get-ChildItem (Join-Path $Root 'writing\*\index.html') -ErrorAction SilentlyContinue)
 foreach ($f in $targets) {
   $c = [IO.File]::ReadAllText($f.FullName)
-  $pre = if ($f.Name -eq '404.html') { '/' } elseif ($f.FullName -like '*\work\*') { '../../' } else { '' }
+  $pre = if ($f.Name -eq '404.html') { '/' } elseif (($f.FullName -like '*\work\*') -or ($f.FullName -like '*\writing\*')) { '../../' } else { '' }
   $isWork = ($f.Name -eq 'projects.html') -or ($f.FullName -like '*\work\*')
   $block = Block $pre $isWork
   if ($blockRx.IsMatch($c)) { $c = $blockRx.Replace($c, ($block -replace '\$', '$$'), 1) }
@@ -53,11 +53,14 @@ foreach ($f in $targets) {
   }
   [IO.File]::WriteAllText($f.FullName, $c, $utf8); $n++
 }
-# The case-study template in build-work.ps1 (keeps its BOM)
-$tpl = Join-Path $PSScriptRoot 'build-work.ps1'
-$t = [IO.File]::ReadAllText($tpl, [Text.Encoding]::UTF8)
-$block = (Block '../../' $true) -replace '\$', '$$'
-if ($blockRx.IsMatch($t)) { $t = $blockRx.Replace($t, $block, 1) } else { $t = $linkRx.Replace($t, $block, 1) }
+# The page templates in the generators (keep their BOM). Work is "current" only in the case-study template.
+foreach ($tp in @(@{ file = 'build-work.ps1'; current = $true }, @{ file = 'build-writing.ps1'; current = $false })) {
+  $tpl = Join-Path $PSScriptRoot $tp.file
+  if (-not (Test-Path $tpl)) { continue }
+  $t = [IO.File]::ReadAllText($tpl, [Text.Encoding]::UTF8)
+  $block = (Block '../../' $tp.current) -replace '\$', '$$'
+  if ($blockRx.IsMatch($t)) { $t = $blockRx.Replace($t, $block, 1) } else { $t = $linkRx.Replace($t, $block, 1) }
+  [IO.File]::WriteAllText($tpl, $t, (New-Object Text.UTF8Encoding $true))
+}
 # build-work marks the current case study itself (see its {{SLUG}} handling)
-[IO.File]::WriteAllText($tpl, $t, (New-Object Text.UTF8Encoding $true))
-"submenu written to $n pages + build-work template ($($order.Count) case studies)"
+"submenu written to $n pages + templates ($($order.Count) case studies)"

@@ -9,6 +9,7 @@ $t = $PSScriptRoot
 if (-not $Origin) { $Origin = ([string](Get-Content (Join-Path $t 'site.json') -Raw | ConvertFrom-Json).origin).TrimEnd('/') }
 & (Join-Path $t 'sync-chrome.ps1')      # header/footer from tools/chrome, then sync-nav.ps1 for the Work submenu
 & (Join-Path $t 'build-work.ps1')       # work/<slug>/index.html from tools/work-src
+& (Join-Path $t 'build-writing.ps1')    # writing/<slug>/index.html + the list on writing.html, from tools/writing-src
 & (Join-Path $t 'build-gallery.ps1')    # gallery.html bands from the case-study galleries
 & (Join-Path $t 'build-sitemap.ps1') -Origin $Origin
 & (Join-Path $t 'sync-chrome.ps1') -Check   # sanity: nothing left out of sync

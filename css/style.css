@@ -1852,6 +1852,33 @@ section.band.toc-band { padding-block: var(--space-l); }
 .prose p { color: var(--text-dim); }
 .prose p strong { color: var(--text); }
 .prose code { font-family: var(--font-mono); font-size: 0.88em; color: var(--text); }
+/* ---------- Writing samples (/writing/<slug>/) ---------- */
+.reading .sample-note { margin-top: var(--space-l); max-width: 72ch; font-size: var(--step--1); color: var(--text-dim); font-style: italic; }
+.reading-text { max-width: 68ch; font-size: var(--step-0); line-height: 1.75; }
+.reading-text > p + p { margin-top: var(--space-m); }
+.reading-text h2 { margin-top: var(--space-2xl); }
+.reading-text h3 { margin-top: var(--space-xl); }
+.reading-text ul, .reading-text ol { margin-top: var(--space-m); }
+.reading-text hr { border: 0; border-top: 1px solid var(--line); margin: var(--space-xl) 0; }
+.reading-text blockquote {
+  margin: var(--space-l) 0;
+  padding: var(--space-s) var(--space-l);
+  border-left: 2px solid var(--accent);
+  color: var(--text-dim);
+}
+.reading-text blockquote p { margin: 0; }
+.reading-text blockquote cite { display: block; margin-top: var(--space-s); font-family: var(--font-mono); font-size: 0.74rem; font-style: normal; letter-spacing: 0.04em; text-transform: uppercase; }
+.reading-text .table-wrap { margin: var(--space-l) 0; overflow-x: auto; }
+.reading-text table { width: 100%; border-collapse: collapse; font-size: var(--step--1); line-height: 1.55; }
+.reading-text th, .reading-text td { padding: 0.7rem 0.85rem; border-bottom: 1px solid var(--line); vertical-align: top; text-align: left; }
+.reading-text th { font-family: var(--font-mono); font-size: 0.74rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-dim); border-bottom-color: var(--line-strong); }
+.reading-text td:first-child { font-family: var(--font-mono); white-space: nowrap; color: var(--accent); }
+.reading-text td { color: var(--text-dim); }
+.reading-text tbody tr:hover td { color: var(--text); }
+.reading-text td br + br { display: block; content: ""; margin-top: 0.3rem; }
+.entries h3 a { color: inherit; text-decoration: none; }
+.entries h3 a:hover { color: var(--accent); }
+
 /* Sales script: a dialogue block between prose sections (Washville case study) */
 .script {
   margin: var(--space-l) 0;

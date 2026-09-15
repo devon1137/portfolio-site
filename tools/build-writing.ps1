@@ -140,16 +140,16 @@ $head = @'
     </div>
   </section>
 
+  <article class="band on-slate grid-bg case-band" id="text">
   <div class="case-body">
 {{TOC}}
-  <article class="band on-slate grid-bg" id="text">
     <div class="wrap">
       <div class="prose reading-text{{FICTION}}">
 {{BODY}}
       </div>
     </div>
-  </article>
   </div><!-- /.case-body -->
+  </article>
 
 '@
 

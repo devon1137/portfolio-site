@@ -32,7 +32,7 @@ function WorkBlock([string]$pre, [bool]$current) {
   }
   @"
 <!--worksub--><div class="has-sub">
-        <a href="${pre}projects.html"$cur>Work</a>
+        <a href="${pre}projects.html"$cur data-t="Work">Work</a>
         <button class="sub-toggle" type="button" aria-expanded="false" aria-controls="work-sub" aria-label="Show case studies"></button>
         <ul class="submenu" id="work-sub" aria-label="Case studies">
 $($cols -join "`n")
@@ -56,7 +56,7 @@ function WritingBlock([string]$pre, [bool]$current) {
   }
   @"
 <!--writingsub--><div class="has-sub">
-        <a href="${pre}writing.html"$cur>Writing</a>
+        <a href="${pre}writing.html"$cur data-t="Writing">Writing</a>
         <button class="sub-toggle" type="button" aria-expanded="false" aria-controls="writing-sub" aria-label="Show writing samples"></button>
         <ul class="submenu" id="writing-sub" aria-label="Writing samples">
 $($cols -join "`n")
@@ -67,8 +67,8 @@ $($cols -join "`n")
 }
 
 $menus = @(
-  @{ name = 'Work';    blockRx = [regex]'(?s)<!--worksub-->.*?<!--/worksub-->';       linkRx = [regex]'<a href="(?<pre>(?:\.\./\.\./|/)?)projects\.html"(?<cur> aria-current="page")?>Work</a>';    fn = ${function:WorkBlock};    dir = 'work';    page = 'projects.html' }
-  @{ name = 'Writing'; blockRx = [regex]'(?s)<!--writingsub-->.*?<!--/writingsub-->'; linkRx = [regex]'<a href="(?<pre>(?:\.\./\.\./|/)?)writing\.html"(?<cur> aria-current="page")?>Writing</a>'; fn = ${function:WritingBlock}; dir = 'writing'; page = 'writing.html' }
+  @{ name = 'Work';    blockRx = [regex]'(?s)<!--worksub-->.*?<!--/worksub-->';       linkRx = [regex]'<a href="(?<pre>(?:\.\./\.\./|/)?)projects\.html"(?<cur> aria-current="page")?(?: data-t="Work")?>Work</a>';    fn = ${function:WorkBlock};    dir = 'work';    page = 'projects.html' }
+  @{ name = 'Writing'; blockRx = [regex]'(?s)<!--writingsub-->.*?<!--/writingsub-->'; linkRx = [regex]'<a href="(?<pre>(?:\.\./\.\./|/)?)writing\.html"(?<cur> aria-current="page")?(?: data-t="Writing")?>Writing</a>'; fn = ${function:WritingBlock}; dir = 'writing'; page = 'writing.html' }
 )
 
 $n = 0

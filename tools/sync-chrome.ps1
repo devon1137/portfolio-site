@@ -82,7 +82,7 @@ function Render([string]$src, [string]$pre, [string]$homeHref, [string]$page) {
   if ($navPages -contains $page) {
     # Mark the matching top-level nav link current (before substitution so the match is exact).
     $target = if ($page -eq 'index.html') { 'href="{{HOME}}"' } else { "href=`"{{ROOT}}$page`"" }
-    $out = $out.Replace("<a $target>", "<a $target aria-current=`"page`">")
+    $out = [regex]::Replace($out, "<a $([regex]::Escape($target))( data-t=`"[^`"]*`")?>", { param($mm) "<a $target aria-current=`"page`"$($mm.Groups[1].Value)>" }, 1)
   }
   $out.Replace('{{HOME}}', $homeHref).Replace('{{ROOT}}', $pre)
 }

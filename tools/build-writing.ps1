@@ -65,10 +65,10 @@ $head = @'
       <span>Menu</span>
     </button>
     <nav class="primary" id="primary-nav" aria-label="Primary">
-      <a href="../../index.html">Home</a>
-      <a href="../../about.html">About</a>
+      <a href="../../index.html" data-t="Home">Home</a>
+      <a href="../../about.html" data-t="About">About</a>
       <!--worksub--><div class="has-sub">
-        <a href="../../projects.html">Work</a>
+        <a href="../../projects.html" data-t="Work">Work</a>
         <button class="sub-toggle" type="button" aria-expanded="false" aria-controls="work-sub" aria-label="Show case studies"></button>
         <ul class="submenu" id="work-sub" aria-label="Case studies">
           <li class="sub-group"><span class="sub-label eyebrow">Featured Client Work</span>
@@ -93,7 +93,7 @@ $head = @'
         </ul>
       </div><!--/worksub-->
       <!--writingsub--><div class="has-sub">
-        <a href="../../writing.html" aria-current="page">Writing</a>
+        <a href="../../writing.html" aria-current="page" data-t="Writing">Writing</a>
         <button class="sub-toggle" type="button" aria-expanded="false" aria-controls="writing-sub" aria-label="Show writing samples"></button>
         <ul class="submenu" id="writing-sub" aria-label="Writing samples">
           <li class="sub-group"><span class="sub-label eyebrow">Articles</span>
@@ -111,9 +111,9 @@ $head = @'
           <li class="all"><a href="../../writing.html">All writing &rarr;</a></li>
         </ul>
       </div><!--/writingsub-->
-      <a href="../../services.html">Services</a>
-      <a href="../../gallery.html">Gallery</a>
-      <a href="../../contact.html">Contact</a>
+      <a href="../../services.html" data-t="Services">Services</a>
+      <a href="../../gallery.html" data-t="Gallery">Gallery</a>
+      <a href="../../contact.html" data-t="Contact">Contact</a>
     </nav>
   </div>
 </header>

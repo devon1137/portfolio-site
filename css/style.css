@@ -371,6 +371,13 @@ nav.primary a[aria-current="page"]::after { transform: scaleX(1); }
 nav.primary a[aria-current="page"] { color: var(--text); }
 /* Only the active top-level item is bold (submenu entries mark current with colour) */
 nav.primary > a[aria-current="page"], nav.primary .has-sub > a[aria-current="page"] { font-weight: 700; }
+/* Reserve each item's bold width up front (a hidden bold copy of the label from
+   data-t), so nothing shifts when the active page changes. */
+nav.primary > a[data-t]::before, nav.primary .has-sub > a[data-t]::before {
+  content: attr(data-t);
+  display: block; height: 0; overflow: hidden; visibility: hidden;
+  font-weight: 700;
+}
 
 /* Submenu under Work: the case studies. Opens on hover / focus-within on
    desktop, or via the caret button (touch, keyboard, mobile). */

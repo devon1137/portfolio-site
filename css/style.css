@@ -1548,7 +1548,18 @@ nav.primary .submenu:has(.sub-group) .all a { margin-top: var(--space-xs); }
   transform-origin: center;
   transition: transform var(--t-med) var(--ease);
 }
-.entries > .entry:hover { background: color-mix(in srgb, var(--surface-2) 55%, transparent); scale: 1.01; }
+/* Hover wash: gold light spilling from the accent bar on the left edge
+   and fading out across the row, over a faint stone lift, rather than
+   a flat surface tint. */
+.entries > .entry:hover {
+  background:
+    linear-gradient(90deg,
+      color-mix(in srgb, var(--accent) 16%, transparent) 0%,
+      color-mix(in srgb, var(--accent) 6%, transparent) 45%,
+      transparent 100%),
+    color-mix(in srgb, var(--ink-2) 55%, transparent);
+  scale: 1.01;
+}
 .entries > .entry:hover::before { transform: translateY(-50%) scaleY(1); }
 @supports (animation-timeline: view()) {
   .entries > .entry {

@@ -1,0 +1,10 @@
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "@id": "{{ORIGIN}}/#site",
+  "url": "{{ORIGIN}}/",
+  "name": "Devon Kubacki",
+  "description": "Web development, SEO content, sales, and marketing operations. Case studies, writing samples, and a freelance Launch Package.",
+  "author": { "@id": "{{ORIGIN}}/#devon" },
+  "inLanguage": "en"
+}

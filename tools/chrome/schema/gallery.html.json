@@ -1,0 +1,7 @@
+{
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "url": "{{ORIGIN}}/gallery.html",
+  "name": "Gallery: screenshots and creative from the case studies",
+  "author": { "@id": "{{ORIGIN}}/#devon" }
+}

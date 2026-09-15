@@ -1,0 +1,7 @@
+{
+  "@context": "https://schema.org",
+  "@type": "ProfilePage",
+  "url": "{{ORIGIN}}/resume.html",
+  "name": "Devon Kubacki, resume",
+  "mainEntity": { "@id": "{{ORIGIN}}/#devon" }
+}

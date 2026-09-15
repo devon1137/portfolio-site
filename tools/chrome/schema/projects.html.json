@@ -1,0 +1,7 @@
+{
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "url": "{{ORIGIN}}/projects.html",
+  "name": "Work: web development, SEO content, sales, and marketing operations",
+  "author": { "@id": "{{ORIGIN}}/#devon" }
+}

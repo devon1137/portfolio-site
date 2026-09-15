@@ -46,6 +46,27 @@ function StampOg([string]$c, [string]$rendered) {
   $c.Substring(0, $i) + $rendered + "`n" + $c.Substring($i)
 }
 
+# Per-page JSON-LD from chrome/schema/<page>.json ({{ORIGIN}} substituted), stamped
+# between <!--schema--> markers right after the og block. Skipped without an origin.
+$schemaDir = Join-Path $PSScriptRoot 'chrome\schema'
+function RenderSchema([string]$page) {
+  $f = Join-Path $schemaDir "$page.json"
+  if (-not (Test-Path $f)) { return $null }
+  if (-not $origin) { return '<!--schema--><!-- JSON-LD: set "origin" in tools/site.json --><!--/schema-->' }
+  $json = [IO.File]::ReadAllText($f, [Text.Encoding]::UTF8).Trim().Replace('{{ORIGIN}}', $origin)
+  "<!--schema-->`n<script type=`"application/ld+json`">`n$json`n</script>`n<!--/schema-->"
+}
+function StampSchema([string]$c, [string]$rendered) {
+  $rep = $rendered -replace '\$', '$$'
+  $marked = [regex]'(?s)<!--schema-->.*?<!--/schema-->'
+  if ($marked.IsMatch($c)) { return $marked.Replace($c, $rep, 1) }
+  # First run: right after the og block (which every page has by now).
+  $anchor = '<!--/og-->'
+  $i = $c.IndexOf($anchor); if ($i -lt 0) { throw 'no og block to anchor the schema block' }
+  $i += $anchor.Length
+  $c.Substring(0, $i) + "`n" + $rendered + $c.Substring($i)
+}
+
 function Render([string]$src, [string]$pre, [string]$homeHref, [string]$page) {
   $out = $src
   if ($navPages -contains $page) {
@@ -81,6 +102,8 @@ foreach ($f in $targets) {
   if (-not $isWork -and $f.Name -ne '404.html') {
     $path = if ($f.Name -eq 'index.html') { '/' } else { '/' + $f.Name }
     $new = StampOg $new (RenderOg $path 'og-card.jpg')
+    $sch = RenderSchema $f.Name
+    if ($sch) { $new = StampSchema $new $sch }
   }
   if ((Norm $new) -ne (Norm $c)) {
     $drift += $f.FullName.Replace($Root + '\', '')

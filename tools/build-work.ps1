@@ -21,6 +21,7 @@ $ErrorActionPreference = 'Stop'
 $srcDir = Join-Path $PSScriptRoot 'work-src'
 $order = @(Get-Content (Join-Path $PSScriptRoot 'work-order.txt') | Where-Object { $_.Trim() } | ForEach-Object { $_.Trim() })   # one slug per line: the case-study order, used by every tool
 $utf8 = New-Object Text.UTF8Encoding $false
+$origin = ([string](Get-Content (Join-Path $PSScriptRoot 'site.json') -Raw | ConvertFrom-Json).origin).TrimEnd('/')   # for JSON-LD URLs; no origin, no schema
 
 function Read-Fragment([string]$path) {
   $raw = [IO.File]::ReadAllText($path)
@@ -55,6 +56,7 @@ $head = @'
 <!--/og-->
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 fill=%22%231B1F1D%22/><text x=%2250%22 y=%2268%22 font-size=%2260%22 text-anchor=%22middle%22 fill=%22%23D9A63E%22 font-family=%22Georgia,serif%22>D</text></svg>">
 <link rel="stylesheet" href="../../css/style.css">
+{{SCHEMA}}
 </head>
 <body id="top" class="case">
 
@@ -250,13 +252,28 @@ for ($i = 0; $i -lt $order.Count; $i++) {
   $prevHtml = if ($prev) { "        <a class=`"prev`" href=`"../$($prev.slug)/`"><span class=`"eyebrow`">&larr; Previous</span><span class=`"case-nav-title`">$(Html $prev.title)</span></a>" } else { '        <span></span>' }
   $nextHtml = if ($next) { "        <a class=`"next`" href=`"../$($next.slug)/`"><span class=`"eyebrow`">Next &rarr;</span><span class=`"case-nav-title`">$(Html $next.title)</span></a>" } else { '        <span></span>' }
 
+  # JSON-LD: the case study as an Article about the client/project, plus breadcrumbs.
+  $schemaJson = ''
+  if ($origin) {
+    $pageUrl = "$origin/work/$($m.slug)/"
+    $article = [ordered]@{ '@context' = 'https://schema.org'; '@type' = 'Article'; '@id' = "$pageUrl#article"; headline = "$($m.title): case study"
+      description = [string]$m.description; url = $pageUrl; image = "$origin/images/$($m.og)"; inLanguage = 'en'
+      author = @{ '@type' = 'Person'; '@id' = "$origin/#devon"; name = 'Devon Kubacki' }
+      about = @{ '@type' = 'Organization'; name = [string]$m.title }; keywords = (($m.stack | ForEach-Object { [string]$_ }) -join ', ') }
+    $crumbs = [ordered]@{ '@context' = 'https://schema.org'; '@type' = 'BreadcrumbList'; itemListElement = @(
+      @{ '@type' = 'ListItem'; position = 1; name = 'Home'; item = "$origin/" },
+      @{ '@type' = 'ListItem'; position = 2; name = 'Work'; item = "$origin/projects.html" },
+      @{ '@type' = 'ListItem'; position = 3; name = [string]$m.title; item = $pageUrl }) }
+    $schemaJson = '<script type="application/ld+json">' + "`n" + (($article | ConvertTo-Json -Depth 5).Replace("`r`n", "`n")) + "`n" + '</script>' + "`n" +
+                  '<script type="application/ld+json">' + "`n" + (($crumbs | ConvertTo-Json -Depth 5).Replace("`r`n", "`n")) + "`n" + '</script>'
+  }
   $page = $head + ($bands -join "`n") + "`n" + $tail
   $map = @{
     '{{TITLE}}' = (Html $m.title); '{{DESC}}' = (Html $m.description); '{{SLUG}}' = $m.slug; '{{OG}}' = $m.og
     '{{CATEGORY}}' = (Html $m.category); '{{DATES}}' = (Html $m.dates); '{{LEDE}}' = $m.lede
     '{{ROLE}}' = $m.role; '{{TIMELINE}}' = (Html $m.timeline); '{{STACK}}' = $stack
     '{{LINKS_DIV}}' = $(if ($m.links.Count -gt 0) { "        <div><dt>$linksLabel</dt><dd>$links</dd></div>" } else { '' }); '{{TOC}}' = ($toc -join "`n")
-    '{{PREV}}' = $prevHtml; '{{NEXT}}' = $nextHtml
+    '{{PREV}}' = $prevHtml; '{{NEXT}}' = $nextHtml; '{{SCHEMA}}' = $schemaJson
   }
   foreach ($kv in $map.GetEnumerator()) { $page = $page.Replace($kv.Key, [string]$kv.Value) }
   # Site-relative asset paths -> two levels up.

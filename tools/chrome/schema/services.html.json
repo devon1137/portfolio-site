@@ -1,0 +1,20 @@
+{
+  "@context": "https://schema.org",
+  "@type": "Service",
+  "@id": "{{ORIGIN}}/services.html#launch-package",
+  "url": "{{ORIGIN}}/services.html",
+  "name": "The Launch Package",
+  "serviceType": "Website design, development, and copywriting",
+  "description": "A designed, built, and written small-business website in about three weeks, delivered with full ownership and a 14-day bug-fix period.",
+  "provider": { "@id": "{{ORIGIN}}/#devon" },
+  "areaServed": { "@type": "Country", "name": "United States" },
+  "availableChannel": { "@type": "ServiceChannel", "serviceUrl": "{{ORIGIN}}/agreement.html" },
+  "offers": {
+    "@type": "Offer",
+    "price": "2000",
+    "priceCurrency": "USD",
+    "url": "{{ORIGIN}}/services.html",
+    "availability": "https://schema.org/InStock",
+    "description": "Flat price, 50% at signing and 50% at handover. Optional white-label add-on: ."
+  }
+}

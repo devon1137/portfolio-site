@@ -1,0 +1,7 @@
+{
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "url": "{{ORIGIN}}/writing.html",
+  "name": "Writing samples",
+  "author": { "@id": "{{ORIGIN}}/#devon" }
+}

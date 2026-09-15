@@ -1,0 +1,7 @@
+{
+  "@context": "https://schema.org",
+  "@type": "AboutPage",
+  "url": "{{ORIGIN}}/about.html",
+  "name": "About Devon Kubacki",
+  "mainEntity": { "@id": "{{ORIGIN}}/#devon" }
+}

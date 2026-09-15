@@ -48,30 +48,38 @@ foreach ($m in $entryRx.Matches($proj)) {
 }
 
 # ---- Render ----
-$bands = New-Object System.Collections.Generic.List[string]
-$i = 0
+# Same shape as a case study: a stone strip under the intro, then one
+# honeycomb band holding every group, with the rail beside them.
+$groups = New-Object System.Collections.Generic.List[string]
 foreach ($set in $sets) {
   $items = ($set.figs | ForEach-Object { "        " + ($_ -replace 'sizes="4\.5rem"', $tileSizes) -replace 'sizes="\(max-width: 700px\)[^"]*"', $tileSizes }) -join "`n`n"
-  $cls = if ($i % 2 -eq 1) { 'band gallery-band on-slate grid-bg' } else { 'band gallery-band' }
   $introHtml = if ($set.intro) { $set.intro + ' ' } else { '' }
-  $bands.Add(@"
-  <section class="$cls" id="g-$($set.id)">
-    <div class="wrap">
-      <h2>$($set.name)</h2>
-      <p class="category-intro gallery-intro">$introHtml<a class="link-arrow" href="$($set.link)">$($set.linkLabel) <span class="arrow" aria-hidden="true">&rarr;</span></a></p>
-      <div class="gallery-grid$($set.gridClass)">
+  $groups.Add(@"
+      <section class="gallery-group" id="g-$($set.id)">
+        <h2>$($set.name)</h2>
+        <p class="category-intro gallery-intro">$introHtml<a class="link-arrow" href="$($set.link)">$($set.linkLabel) <span class="arrow" aria-hidden="true">&rarr;</span></a></p>
+        <div class="gallery-grid$($set.gridClass)">
 
 $items
 
-      </div>
-    </div>
-  </section>
+        </div>
+      </section>
 "@)
-  $i++
 }
 
+$figTotal = ($sets | ForEach-Object { $_.figs.Count } | Measure-Object -Sum).Sum
 $tocItems = ($sets | ForEach-Object { "          <li><a href=`"#g-$($_.id)`">$($_.name) <span class=`"dim`">($($_.figs.Count))</span></a></li>" }) -join "`n"
-$toc = @"
+$newBody = @"
+  <section class="band" id="facts">
+    <div class="wrap">
+      <dl class="case-facts">
+        <div><dt>Projects</dt><dd>$($sets.Count)</dd></div>
+        <div><dt>Captures</dt><dd>$figTotal</dd></div>
+      </dl>
+    </div>
+  </section>
+
+  <section class="band on-slate grid-bg case-band gallery-band">
   <div class="case-body">
     <aside class="toc-rail">
       <nav class="toc toc-flat" aria-label="Gallery index">
@@ -81,10 +89,12 @@ $tocItems
         </ol>
       </nav>
     </aside>
-
+    <div class="wrap">
+$($groups -join "`n`n")
+    </div>
+  </div><!-- /.case-body -->
+  </section>
 "@
-
-$newBody = $toc + ($bands -join "`n`n") + "`n  </div><!-- /.case-body -->"
 # Everything from the first band after the page intro to the end of <main> is generated.
 $rx = [regex]'(?s)(?<=</section>\r?\n\r?\n)  (?:<div class="case-body">|<section class="band).*?\n</main>'
 if (-not $rx.IsMatch($gal)) { throw 'gallery body not found' }

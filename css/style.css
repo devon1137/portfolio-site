@@ -2336,9 +2336,12 @@ section.band.toc-band { padding-block: var(--space-l); }
 }
 .gallery-grid.creative figure:last-child { margin-bottom: 0; }
 
-/* Gallery */
-.gallery-band > .wrap > h2,
-.category-intro.gallery-intro { max-width: none; }   /* gallery bands: title and intro run the grid's full width */
+/* Gallery: one honeycomb band, one group per case study stacked inside it
+   (spacing, no rules, like the case-study block), the rail alongside. */
+.gallery-group > h2,
+.category-intro.gallery-intro { max-width: none; }   /* title and intro run the grid's full width */
+.gallery-group > h2 { margin-bottom: var(--space-xl); }
+.gallery-group + .gallery-group { margin-top: var(--space-section); }
 .gallery-grid {
   display: grid;
   margin-top: var(--space-xl);

@@ -1588,6 +1588,11 @@ nav.primary .submenu:has(.sub-group) .all a { margin-top: var(--space-xs); }
   .timeline .row { grid-template-columns: 1fr; gap: var(--space-xs); }
   .timeline .year { padding-top: 0; }
 }
+/* Process steps (Services): the timeline layout without the meteor; a plain
+   completed spine, and the amber label is the step number rather than a year. */
+.timeline.steps-timeline::after { display: none; }
+.timeline.steps-timeline::before { background: var(--line-strong); }
+.timeline.steps-timeline .year { font-size: var(--step-0); font-family: var(--font-mono); letter-spacing: 0.06em; text-transform: uppercase; padding-top: 0.4rem; }
 
 /* Progress: a meteor. The streak is a fixed-length gradient (transparent
    tail → bright glowing head) painted on a transparent full-height layer

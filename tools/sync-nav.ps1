@@ -1,4 +1,4 @@
-# Rewrites the two header submenus in every page and in the page templates:
+﻿# Rewrites the two header submenus in every page and in the page templates:
 #   Work    -> case studies from tools/work-src, grouped by "group", ordered by work-order.txt
 #   Writing -> samples from tools/writing-src, grouped by "kind" (Articles / Fiction), ordered by writing-order.txt
 # Each block sits between markers (<!--worksub-->…<!--/worksub-->, <!--writingsub-->…<!--/writingsub-->);
@@ -51,7 +51,7 @@ $kindNames = @(); foreach ($slug in $writing.order) { if ($kindNames -notcontain
 function WritingBlock([string]$pre, [bool]$current) {
   $cur = if ($current) { ' aria-current="page"' } else { '' }
   $cols = foreach ($g in $kindNames) {
-    $items = ($writing.order | Where-Object { $kindOf[$_] -eq $g } | ForEach-Object { "            <li><a href=`"${pre}writing/$_/`">$(Enc $writing.metas[$_].title)</a></li>" }) -join "`n"
+    $items = ($writing.order | Where-Object { $kindOf[$_] -eq $g } | ForEach-Object { $tag = if ($writing.metas[$_].tag) { " <span class=`"sub-tag`">$(Enc $writing.metas[$_].tag)</span>" } else { '' }; "            <li><a href=`"${pre}writing/$_/`">$(Enc $writing.metas[$_].title)$tag</a></li>" }) -join "`n"
     "          <li class=`"sub-group`"><span class=`"sub-label eyebrow`">$(Enc $g)</span>`n            <ul>`n$items`n            </ul>`n          </li>"
   }
   @"

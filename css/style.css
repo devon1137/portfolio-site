@@ -1949,6 +1949,36 @@ section.band.toc-band { padding-block: var(--space-l); }
 .reading-text .pov::after { content: " —"; }
 .entries h3 a { color: inherit; text-decoration: none; }
 .entries h3 a:hover { color: var(--accent); }
+/* ---------- Quote menu (Services): by-quote services as a ledger with a CTA per row ---------- */
+.quote-menu { list-style: none; margin-top: var(--space-xl); border-top: 1px solid var(--line); counter-reset: qm; }
+.quote-menu > li {
+  counter-increment: qm;
+  position: relative;
+  display: grid;
+  grid-template-columns: 9rem minmax(0, 1fr) auto;
+  gap: var(--space-l) var(--space-xl);
+  align-items: start;
+  padding: var(--space-l) var(--space-m);
+  margin-inline: calc(-1 * var(--space-m));
+  border-bottom: 1px solid var(--line);
+  border-radius: var(--radius-s);
+  transition: background var(--t-med) var(--ease);
+}
+.quote-menu > li:hover { background: color-mix(in srgb, var(--surface-2) 55%, transparent); }
+.quote-menu .qm-cat { font-family: var(--font-mono); font-size: 0.74rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-dim); padding-top: 0.45rem; }
+.quote-menu .qm-cat::before { content: counter(qm, decimal-leading-zero) "  "; color: var(--accent); }
+.quote-menu h3 { font-size: var(--step-1); }
+.quote-menu p { margin-top: var(--space-xs); color: var(--text-dim); max-width: 58ch; }
+.quote-menu .qm-proof { display: inline-block; margin-top: var(--space-s); font-family: var(--font-mono); font-size: 0.78rem; color: var(--text-dim); text-decoration: none; border-bottom: 1px solid var(--line); transition: color var(--t-fast) var(--ease), border-color var(--t-fast) var(--ease); }
+.quote-menu .qm-proof:hover { color: var(--accent); border-color: var(--accent); }
+.quote-menu .qm-cta { align-self: center; white-space: nowrap; }
+.quote-menu > li:hover .qm-cta { border-color: var(--accent); color: var(--accent); }
+@media (max-width: 720px) {
+  .quote-menu > li { grid-template-columns: 1fr; gap: var(--space-s); }
+  .quote-menu .qm-cat { padding-top: 0; }
+  .quote-menu .qm-cta { justify-self: start; }
+}
+
 /* ---------- FAQ (Services): native <details>, styled as a list ---------- */
 .faq { max-width: 72ch; border-top: 1px solid var(--line); }
 .faq details { border-bottom: 1px solid var(--line); }

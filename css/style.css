@@ -87,29 +87,30 @@
   --font-mono: ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
 }
 
-/* Third surface: deep pine, for the hero / page intros and the footer, so the
-   top and bottom of every page share a colour that sits opposite the amber
-   accent. Same gradient treatment as slate. */
+/* Third surface: deep teal, for the hero / page intros and the footer, so the
+   top and bottom of every page share one colour. Amber sits at ~40deg; its
+   split-complements are blue-violet (~220deg, the slate bands) and teal
+   (~190deg, this), so the three surfaces form one scheme. */
 :root {
-  --pine-hi: #17322C;
-  --pine-mid: #112621;
-  --pine-lo: #0B1917;
-  --pine-2: #1E3D36;      /* raised elements on the band (buttons' hover, cards) */
+  --pine-hi: #133338;
+  --pine-mid: #0E262A;
+  --pine-lo: #08171A;
+  --pine-2: #183E44;      /* raised elements on the band (cards) */
   --pine-gradient: linear-gradient(175deg, var(--pine-hi) 0%, var(--pine-lo) 100%);
 }
 .on-pine {
   --surface: var(--pine-mid);
   --surface-2: var(--pine-2);
   --text: #EDE6D6;
-  --text-dim: #B9B7A4;
+  --text-dim: #B4B9B3;
   --line: rgba(237, 230, 214, 0.14);
   --line-strong: rgba(237, 230, 214, 0.3);
   --accent: var(--amber);
   background: var(--pine-gradient);
   color: var(--text);
 }
-.hero, .page-intro { --surface: var(--pine-mid); --surface-2: var(--pine-2); --text-dim: #B9B7A4; background: var(--pine-gradient); color: var(--text); }
-footer.site { --surface: var(--pine-mid); --surface-2: var(--pine-2); --text-dim: #B9B7A4; background: var(--pine-gradient); }
+.hero, .page-intro { --surface: var(--pine-mid); --surface-2: var(--pine-2); --text-dim: #B4B9B3; background: var(--pine-gradient); color: var(--text); }
+footer.site { --surface: var(--pine-mid); --surface-2: var(--pine-2); --text-dim: #B4B9B3; background: var(--pine-gradient); }
 
 .on-slate {
   --surface: var(--slate);

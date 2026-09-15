@@ -2056,6 +2056,13 @@ section.band.toc-band { padding-block: var(--space-l); }
   line-height: 1.75;
 }
 .case-text > :first-child { margin-top: 0; }
+/* Case-study bands are one continuous stone ground: no hairline between
+   them and a shorter gap, since the h2s and the cards already break it up.
+   The "By the numbers" tiles sit on the band after the card. */
+.case-band { border-top: 0; padding-block: var(--space-2xl); }
+.toc-rail + .case-band { padding-top: var(--space-section); }   /* the rail is the first child */
+.case-band:last-child { padding-bottom: var(--space-section); }
+.case-text + .stats { margin-top: var(--space-xl); }
 .reading-text > * { max-width: 72ch; margin-inline: auto; }
 .reading-text > .table-wrap { max-width: none; }
 .reading-text > :first-child { margin-top: 0; }

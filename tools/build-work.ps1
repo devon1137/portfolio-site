@@ -222,7 +222,9 @@ for ($i = 0; $i -lt $order.Count; $i++) {
   $prev = if ($i -gt 0) { $frags[$order[$i - 1]].meta } else { $null }
   $next = if ($i -lt $order.Count - 1) { $frags[$order[$i + 1]].meta } else { $null }
 
-  # Sections -> alternating bands (the facts band is ink, so start on slate).
+  # Sections -> bands. One continuous stone ground (no alternation, no rules
+  # between them): the case study reads as a single unit, the h2s carry the
+  # structure, and the glass cards do the separating.
   $secRx = [regex]'(?s)<section\s+id="(?<id>[^"]+)"(?:\s+data-title="(?<t>[^"]*)")?\s*>(?<inner>.*?)</section>'
   $sections = $secRx.Matches($fr.body)
   if ($sections.Count -eq 0) { throw "No sections in $($fr.path)" }
@@ -233,11 +235,14 @@ for ($i = 0; $i -lt $order.Count; $i++) {
     $id = $s.Groups['id'].Value
     $title = $s.Groups['t'].Value
     if (-not $title) { $title = [regex]::Match($s.Groups['inner'].Value, '<h2>(.*?)</h2>').Groups[1].Value -replace '<[^>]+>', '' }
-    $cls = if ($k % 2 -eq 0) { 'band on-slate grid-bg' } else { 'band' }
+    $cls = 'band case-band'
     $inner = $s.Groups['inner'].Value.Trim()
     # Everything after the band's h2 goes in a stone glass card (.case-text),
     # the same card the writing samples use; the h2 stays as the band title.
-    $inner = ([regex]'(?s)^(.*?</h2>)\s*(.+)$').Replace($inner, '$1' + "`n" + '<div class="case-text">' + "`n" + '$2' + "`n" + '</div>', 1)
+    # A closing stats list (the "By the numbers" tiles) stays outside the
+    # card, on the band itself, so it isn't cards inside a card.
+    $inner = ([regex]'(?s)^(.*?</h2>)\s*(.*?)\s*(<ul class="stats".*</ul>)?\s*$').Replace($inner, '$1' + "`n" + '<div class="case-text">' + "`n" + '$2' + "`n" + '</div>' + "`n" + '$3', 1)
+    $inner = $inner -replace '(?s)\s*<div class="case-text">\s*</div>', ''   # h2 straight into stats: no empty card
     $bands.Add("  <section class=`"$cls`" id=`"$id`">`n    <div class=`"wrap`">`n$inner`n    </div>`n  </section>`n")
     $toc.Add("          <li><a href=`"#$id`">$title</a></li>")
     $k++

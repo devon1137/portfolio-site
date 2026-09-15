@@ -21,15 +21,14 @@
 /* ---------- 1. Tokens ---------- */
 :root {
   /* Palette */
-  --ink: #1B1F1D;
-  --ink-2: #232826;
-  /* Alternate band: cool charcoal, a neutral (the blue was pulled out so it
-     doesn't compete with the teal hero/footer), drawn as a top-to-bottom
-     gradient. --slate is the mid value for flat uses (halos, mixes). */
-  --slate-hi: #262B31;
-  --slate: #1C2025;
-  --slate-lo: #121416;
-  --slate-2: #2C3238;     /* raised elements on the band (frames, cards) */
+  --ink: #15171C;          /* near-black, a hair cool so it belongs with the blues */
+  --ink-2: #1D2027;
+  /* Alternate band: indigo, drawn as a top-to-bottom gradient. --slate is
+     the mid value for flat uses (halos, mixes). */
+  --slate-hi: #232449;     /* Intelligence: indigo. Analogous to the navy. */
+  --slate: #1A1B38;
+  --slate-lo: #0F1024;
+  --slate-2: #2A2B55;     /* raised elements on the band (frames, cards) */
   --slate-gradient: linear-gradient(175deg, var(--slate-hi) 0%, var(--slate-lo) 100%);
   --rust: #B23D17;        /* errors only (form validation) */
   --pine: #2F6F5E;
@@ -87,30 +86,30 @@
   --font-mono: ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
 }
 
-/* Third surface: deep teal, for the hero / page intros and the footer, so the
-   top and bottom of every page share one colour. Amber sits at ~40deg; its
-   split-complements are blue-violet (~220deg, the slate bands) and teal
-   (~190deg, this), so the three surfaces form one scheme. */
+/* Palette: navy (trust) for the hero/intros/footer, indigo (intelligence) for
+   the alternating bands, amber (hard work) as the accent. Navy and indigo are
+   analogous; amber is their complement; ink is the neutral ground. The token
+   names (--pine-*, --slate-*) are historical; the values are what matter. */
 :root {
-  --pine-hi: #133338;
-  --pine-mid: #0E262A;
-  --pine-lo: #08171A;
-  --pine-2: #183E44;      /* raised elements on the band (cards) */
+  --pine-hi: #1B2D55;      /* Trust: navy. Hero, page intros, footer. */
+  --pine-mid: #142242;
+  --pine-lo: #0B1328;
+  --pine-2: #22376A;      /* raised elements on the band (cards) */
   --pine-gradient: linear-gradient(175deg, var(--pine-hi) 0%, var(--pine-lo) 100%);
 }
 .on-pine {
   --surface: var(--pine-mid);
   --surface-2: var(--pine-2);
   --text: #EDE6D6;
-  --text-dim: #B4B9B3;
+  --text-dim: #B6B8C4;
   --line: rgba(237, 230, 214, 0.14);
   --line-strong: rgba(237, 230, 214, 0.3);
   --accent: var(--amber);
   background: var(--pine-gradient);
   color: var(--text);
 }
-.hero, .page-intro { --surface: var(--pine-mid); --surface-2: var(--pine-2); --text-dim: #B4B9B3; background: var(--pine-gradient); color: var(--text); }
-footer.site { --surface: var(--pine-mid); --surface-2: var(--pine-2); --text-dim: #B4B9B3; background: var(--pine-gradient); }
+.hero, .page-intro { --surface: var(--pine-mid); --surface-2: var(--pine-2); --text-dim: #B6B8C4; background: var(--pine-gradient); color: var(--text); }
+footer.site { --surface: var(--pine-mid); --surface-2: var(--pine-2); --text-dim: #B6B8C4; background: var(--pine-gradient); }
 
 .on-slate {
   --surface: var(--slate);

@@ -38,7 +38,7 @@ $head = @'
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{{TITLE}} — Writing — Devon Kubacki</title>
 <meta name="description" content="{{DESC}}">
-<meta name="theme-color" content="#1B1F1D">
+<meta name="theme-color" content="#15171C">
 <meta property="og:type" content="article">
 <meta property="og:title" content="{{TITLE}} — Devon Kubacki">
 <meta property="og:description" content="{{DESC}}">
@@ -48,7 +48,7 @@ $head = @'
 <meta property="og:image" content="https://devonkubacki.netlify.app/images/{{OG}}">
 <meta name="twitter:card" content="summary_large_image">
 <!--/og-->
-<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 fill=%22%231B1F1D%22/><text x=%2250%22 y=%2268%22 font-size=%2260%22 text-anchor=%22middle%22 fill=%22%23D9A63E%22 font-family=%22Georgia,serif%22>D</text></svg>">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 fill=%22%2315171C%22/><text x=%2250%22 y=%2268%22 font-size=%2260%22 text-anchor=%22middle%22 fill=%22%23D9A63E%22 font-family=%22Georgia,serif%22>D</text></svg>">
 <link rel="stylesheet" href="../../css/style.css">
 {{SCHEMA}}
 </head>

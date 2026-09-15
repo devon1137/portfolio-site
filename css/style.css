@@ -2170,7 +2170,7 @@ section.band.toc-band { padding-block: var(--space-l); }
   padding: var(--space-l) var(--space-l) var(--space-l) calc(var(--space-l) + 1.5rem);
   border: 1px solid var(--line);
   border-radius: var(--radius-m);
-  background: color-mix(in srgb, var(--surface-2) 55%, transparent);
+  background: color-mix(in srgb, var(--ink-2) 62%, transparent);   /* stone, the same glass as the cards beside it, whatever the band */
 }
 .quote::before {
   content: "\201C";
@@ -2186,7 +2186,7 @@ section.band.toc-band { padding-block: var(--space-l); }
 .quote:hover, .quote:focus-within {
   transform: translateY(-4px);
   border-color: color-mix(in srgb, var(--accent) 60%, var(--line));
-  background: color-mix(in srgb, var(--surface-2) 85%, transparent);
+  background: color-mix(in srgb, var(--ink-2) 85%, transparent);
   box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35), 0 0 0 1px color-mix(in srgb, var(--accent) 25%, transparent), 0 0 32px color-mix(in srgb, var(--accent) 18%, transparent);
 }
 .quote:hover::before, .quote:focus-within::before { transform: scale(1.35) rotate(-6deg); color: #FFF0C2; opacity: 1; }

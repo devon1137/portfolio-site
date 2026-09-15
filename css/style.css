@@ -996,9 +996,8 @@ nav.primary .submenu:has(.sub-group) .all a { margin-top: var(--space-xs); }
    tile is authored flat-top (the section tile rotated 30°,
    transposed into its own 66×38.105 repeat) because this layer is
    revealed through a moving mask and can't carry a transform of its
-   own. Like the textured bands, it drifts with scroll (same
-   view-timeline mechanism, see .grid-bg), so the held state is never
-   quite static. Paints between the card fill and its text (z-index -1
+   own. It stays pinned to the card (no scroll drift, unlike the band
+   behind it). Paints between the card fill and its text (z-index -1
    inside the card's own stacking context).
    The wipe is a mask 3× the card along the travel axis with one soft
    edge; sliding it from one end to the other carries the edge across.
@@ -1158,45 +1157,12 @@ nav.primary .submenu:has(.sub-group) .all a { margin-top: var(--space-xs); }
   from { -webkit-mask-position: 0 88%; mask-position: 0 88%; }
   to   { -webkit-mask-position: 0 12%; mask-position: 0 12%; }
 }
-/* Parallax: the lit honeycomb lags behind the card as the section
-   travels up the viewport, the same way the textured bands' honeycomb
-   does. The drift rides a second animation on the same layer, on the
-   section's view timeline; the wipe stays on the document timeline. */
-@supports (animation-timeline: view()) {
-  #practice { view-timeline: --hex block; }
-  .hex-card.is-lit::before,
-  .hex-card.is-leaving::before {
-    animation-duration: 700ms, auto;
-    animation-timing-function: steps(32), linear;
-    animation-fill-mode: both, both;
-    animation-timeline: auto, --hex;
-    animation-range: normal, entry 0% exit 100%;
-  }
-  .hex-card.is-lit::before     { animation-name: practice-wipe-in,  practice-hex-drift; }
-  .hex-card.is-leaving::before { animation-name: practice-wipe-out, practice-hex-drift; }
-  .hex-card.is-lit[data-from="top"]::before,
-  .hex-card.is-lit[data-from="bottom"]::before,
-  .hex-card.is-leaving[data-to="top"]::before,
-  .hex-card.is-leaving[data-to="bottom"]::before {
-    animation-duration: 410ms, auto;
-    animation-timing-function: steps(20), linear;
-  }
-  .hex-card.is-lit[data-from="top"]::before,
-  .hex-card.is-lit[data-from="bottom"]::before { animation-name: practice-wipe-in-y, practice-hex-drift; }
-  .hex-card.is-leaving[data-to="top"]::before,
-  .hex-card.is-leaving[data-to="bottom"]::before { animation-name: practice-wipe-out-y, practice-hex-drift; }
-  /* Reversed directions apply to the wipe only; the drift stays put. */
-  .hex-card.is-lit[data-from="right"]::before,
-  .hex-card.is-lit[data-from="bottom"]::before,
-  .hex-card.is-leaving[data-to="left"]::before,
-  .hex-card.is-leaving[data-to="top"]::before { animation-direction: reverse, normal; }
-  @keyframes practice-hex-drift {
-    from { background-position: 0 -76px; }  /* two tile rows either way */
-    to   { background-position: 0 76px; }
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .hex-card::before { animation: none; }
-  }
+/* No scroll drift on the card's honeycomb: the band behind it
+   parallaxes (see .grid-bg), and the lit ring should stay pinned to
+   the card so it reads as the card's border, not as a window onto the
+   band. */
+@media (prefers-reduced-motion: reduce) {
+  .hex-card::before { animation: none; }
 }
 /* Meteor: a 2px track over the border. The streak is a fixed-length
    gradient (40% of the edge) painted no-repeat and moved by

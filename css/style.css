@@ -1890,6 +1890,14 @@ section.band.toc-band { padding-block: var(--space-l); }
   .toc-rail .toc > ol > li + li { margin-top: var(--space-xs); }
   .toc-rail .toc > ol > li > a { font-weight: 500; }
 }
+/* Rail labels: at most two lines, then an ellipsis (the full title is in the tooltip) */
+.toc-rail .toc li > a {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+}
 /* Scroll-spy: the section in view (script.js sets aria-current="location") */
 .toc-rail .toc a[aria-current="location"] { color: var(--accent); }
 .toc-rail .toc > ol > li > a[aria-current="location"]::before { color: var(--text); }

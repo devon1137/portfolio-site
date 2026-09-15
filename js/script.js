@@ -513,6 +513,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const links = [...toc.querySelectorAll('a[href^="#"]')];
     const targets = links.map((a) => document.getElementById(decodeURIComponent(a.hash.slice(1)))).filter(Boolean);
     if (!targets.length) return;
+    // Labels are clamped to two lines in CSS; keep the full title reachable.
+    links.forEach((a) => { if (!a.title) a.title = a.textContent.trim(); });
     let ticking = false;
     const update = () => {
       ticking = false;

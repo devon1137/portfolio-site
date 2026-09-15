@@ -505,4 +505,26 @@ document.addEventListener('DOMContentLoaded', () => {
     setActive(figs[0]);
     if (figs.length < 2) track.hidden = true;
   });
+
+  // ---- Click-to-load video (figure.video[data-video]) ----
+  // The page ships a local poster; YouTube's player is only requested when
+  // the visitor presses play, so nothing third-party loads on page view. The
+  // privacy-enhanced embed domain is used, and the iframe replaces the poster
+  // with autoplay so it's one click, not two.
+  document.querySelectorAll('figure.video[data-video]').forEach((fig) => {
+    const btn = fig.querySelector('.video-poster');
+    if (!btn) return;
+    btn.addEventListener('click', () => {
+      const id = fig.dataset.video;
+      const iframe = document.createElement('iframe');
+      iframe.src = `https://www.youtube-nocookie.com/embed/${encodeURIComponent(id)}?autoplay=1&rel=0`;
+      iframe.title = fig.dataset.videoTitle || 'Video';
+      iframe.setAttribute('allow', 'autoplay; encrypted-media; picture-in-picture; fullscreen');
+      iframe.setAttribute('allowfullscreen', '');
+      iframe.setAttribute('loading', 'eager');
+      iframe.setAttribute('referrerpolicy', 'strict-origin-when-cross-origin');
+      btn.replaceWith(iframe);
+      iframe.focus();
+    });
+  });
 });

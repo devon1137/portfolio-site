@@ -90,7 +90,24 @@ $head = @'
           <li class="all"><a href="../../projects.html">All work &rarr;</a></li>
         </ul>
       </div><!--/worksub-->
-      <a href="../../writing.html" aria-current="page">Writing</a>
+      <!--writingsub--><div class="has-sub">
+        <a href="../../writing.html" aria-current="page">Writing</a>
+        <button class="sub-toggle" type="button" aria-expanded="false" aria-controls="writing-sub" aria-label="Show writing samples"></button>
+        <ul class="submenu" id="writing-sub" aria-label="Writing samples">
+          <li class="sub-group"><span class="sub-label eyebrow">Articles</span>
+            <ul>
+            <li><a href="../../writing/5e-alternate-combat-rules/">5E Alternate Combat Rules to Speed up Combat</a></li>
+            </ul>
+          </li>
+          <li class="sub-group"><span class="sub-label eyebrow">Fiction</span>
+            <ul>
+            <li><a href="../../writing/powerless-captain-ion/">Captain Ion and the Flammanator</a></li>
+            <li><a href="../../writing/powerless-ian-boraghast/">“My Name Is Ian Boraghast”</a></li>
+            </ul>
+          </li>
+          <li class="all"><a href="../../writing.html">All writing &rarr;</a></li>
+        </ul>
+      </div><!--/writingsub-->
       <a href="../../services.html">Services</a>
       <a href="../../gallery.html">Gallery</a>
       <a href="../../contact.html">Contact</a>
@@ -203,6 +220,8 @@ for ($i = 0; $i -lt $order.Count; $i++) {
   }
   foreach ($kv in $map.GetEnumerator()) { $page = $page.Replace($kv.Key, [string]$kv.Value) }
   $page = [regex]::Replace($page, '(?<=["\s,])images/', '../../images/')
+  # This page's own entry in the Writing submenu.
+  $page = $page.Replace("<a href=""../../writing/$($m.slug)/"">", "<a href=""../../writing/$($m.slug)/"" aria-current=""page"">")
 
   $dir = Join-Path $Root ("writing\" + $m.slug)
   New-Item -ItemType Directory -Force $dir | Out-Null

@@ -56,7 +56,7 @@ function Render([string]$src, [string]$pre, [string]$homeHref, [string]$page) {
   $out.Replace('{{HOME}}', $homeHref).Replace('{{ROOT}}', $pre)
 }
 # The submenu is filled by sync-nav after stamping, so compare with it blanked.
-function Norm([string]$s) { [regex]::Replace($s, '(?s)<!--worksub-->.*?<!--/worksub-->', '<!--worksub-->') }
+function Norm([string]$s) { [regex]::Replace([regex]::Replace($s, '(?s)<!--worksub-->.*?<!--/worksub-->', '<!--worksub-->'), '(?s)<!--writingsub-->.*?<!--/writingsub-->', '<!--writingsub-->') }
 function Stamp([string]$c, [string]$name, [string]$rendered) {
   # Prefer the marked region; otherwise migrate the bare element (first occurrence).
   $marked = [regex]"(?s)<!--$name-->.*?<!--/$name-->"

@@ -1853,18 +1853,41 @@ section.band.toc-band { padding-block: var(--space-l); }
 .prose p strong { color: var(--text); }
 .prose code { font-family: var(--font-mono); font-size: 0.88em; color: var(--text); }
 /* ---------- Writing samples (/writing/<slug>/) ---------- */
-.reading .sample-note { margin-top: var(--space-l); max-width: 72ch; font-size: var(--step--1); color: var(--text-dim); font-style: italic; }
-.reading .content-note { margin-top: var(--space-s); max-width: 72ch; font-size: var(--step--1); color: var(--text-dim); }
+.reading .sample-note { margin-top: var(--space-l); font-size: var(--step--1); color: var(--text-dim); font-style: italic; }
+.reading .content-note { margin-top: var(--space-s); font-size: var(--step--1); color: var(--text-dim); }
 .reading .content-note strong { color: var(--text); }
 .entries .content-flag { color: var(--text-dim); }
-.reading-text { max-width: 68ch; font-size: var(--step-0); line-height: 1.75; }
+/* The text sits in a frosted-glass card spanning the content column; inside it
+   the copy keeps a reading measure, centred, while tables use the full card. */
+.reading-text {
+  max-width: none;
+  font-size: var(--step-0);
+  line-height: 1.75;
+  padding: clamp(1.5rem, 1rem + 3vw, 3.5rem);
+  border-radius: var(--radius-m);
+  background: color-mix(in srgb, var(--surface) 55%, transparent);
+  border: 1px solid color-mix(in srgb, var(--text) 18%, transparent);
+  box-shadow:
+    0 24px 60px rgba(0, 0, 0, 0.35),
+    inset 0 1px 0 color-mix(in srgb, var(--text) 14%, transparent);
+}
+@supports (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px)) {
+  .reading-text {
+    background: color-mix(in srgb, var(--surface) 38%, transparent);
+    -webkit-backdrop-filter: blur(14px) saturate(120%);
+    backdrop-filter: blur(14px) saturate(120%);
+  }
+}
+.reading-text > * { max-width: 72ch; margin-inline: auto; }
+.reading-text > .table-wrap { max-width: none; }
+.reading-text > :first-child { margin-top: 0; }
 .reading-text > p + p { margin-top: var(--space-m); }
 .reading-text h2 { margin-top: var(--space-2xl); }
 .reading-text h3 { margin-top: var(--space-xl); }
 .reading-text ul, .reading-text ol { margin-top: var(--space-m); }
-.reading-text hr { border: 0; border-top: 1px solid var(--line); margin: var(--space-xl) 0; }
+.reading-text hr { border: 0; border-top: 1px solid var(--line); margin: var(--space-xl) auto; }
 .reading-text blockquote {
-  margin: var(--space-l) 0;
+  margin: var(--space-l) auto;
   padding: var(--space-s) var(--space-l);
   border-left: 2px solid var(--accent);
   color: var(--text-dim);
@@ -1880,33 +1903,11 @@ section.band.toc-band { padding-block: var(--space-l); }
 .reading-text tbody tr:hover td { color: var(--text); }
 .reading-text td br + br { display: block; content: ""; margin-top: 0.3rem; }
 /* Fiction: point-of-view switch marker inside a scene */
-.reading-text .pov { margin: var(--space-xl) 0 var(--space-m); font-family: var(--font-mono); font-size: 0.74rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); }
+.reading-text .pov { margin: var(--space-xl) auto var(--space-m); font-family: var(--font-mono); font-size: 0.74rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); }
 .reading-text .pov::before { content: "— "; }
 .reading-text .pov::after { content: " —"; }
-/* Fiction sits in a frosted-glass card over the honeycomb band */
-.reading-text.fiction {
-  max-width: none;
-  width: min(100%, 72ch);
-  padding: clamp(1.5rem, 1rem + 3vw, 3.5rem);
-  border-radius: var(--radius-m);
-  background: color-mix(in srgb, var(--surface) 55%, transparent);
-  border: 1px solid color-mix(in srgb, var(--text) 18%, transparent);
-  box-shadow:
-    0 24px 60px rgba(0, 0, 0, 0.35),
-    inset 0 1px 0 color-mix(in srgb, var(--text) 14%, transparent);
-}
-@supports (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px)) {
-  .reading-text.fiction {
-    background: color-mix(in srgb, var(--surface) 38%, transparent);
-    -webkit-backdrop-filter: blur(14px) saturate(120%);
-    backdrop-filter: blur(14px) saturate(120%);
-  }
-}
-.reading-text.fiction p { text-indent: 0; }
-.reading-text.fiction > p:first-child { margin-top: 0; }
 .entries h3 a { color: inherit; text-decoration: none; }
 .entries h3 a:hover { color: var(--accent); }
-
 /* Sales script: a dialogue block between prose sections (Washville case study) */
 .script {
   margin: var(--space-l) 0;

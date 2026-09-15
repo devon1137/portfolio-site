@@ -1,25 +1,34 @@
-﻿# Rewrites the Work submenu (the case-study list under "Work" in the header)
-# in every page and in the case-study template, from tools/work-src metadata.
-# The block sits between <!--worksub--> and <!--/worksub--> markers. Run this
-# after adding, renaming, or reordering a case study; then run build-work.ps1.
+# Rewrites the two header submenus in every page and in the page templates:
+#   Work    -> case studies from tools/work-src, grouped by "group", ordered by work-order.txt
+#   Writing -> samples from tools/writing-src, grouped by "kind" (Articles / Fiction), ordered by writing-order.txt
+# Each block sits between markers (<!--worksub-->…<!--/worksub-->, <!--writingsub-->…<!--/writingsub-->);
+# a bare <a href="…">Work</a> / <a href="…">Writing</a> link is migrated on first run.
+# Run after adding, renaming, or reordering a case study or sample; then run the builders
+# (tools/build.ps1 does all of it in order).
 param([string]$Root = (Split-Path $PSScriptRoot -Parent))
 $ErrorActionPreference = 'Stop'
-$order = @(Get-Content (Join-Path $PSScriptRoot 'work-order.txt') | Where-Object { $_.Trim() } | ForEach-Object { $_.Trim() })   # one slug per line: the case-study order, used by every tool
-$titles = @{}; $groupOf = @{}
-foreach ($slug in $order) {
-  $raw = [IO.File]::ReadAllText((Join-Path $PSScriptRoot "work-src\$slug.html"))
-  $meta = [regex]::Match($raw, '(?s)<!--meta\s*(\{.*?\})\s*-->').Groups[1].Value | ConvertFrom-Json
-  $titles[$slug] = [Net.WebUtility]::HtmlEncode($meta.title)
-  $groupOf[$slug] = if ($meta.group) { [string]$meta.group } else { 'Case studies' }
+$utf8 = New-Object Text.UTF8Encoding $false
+function Enc([string]$s) { [Net.WebUtility]::HtmlEncode($s) }
+function ReadMeta([string]$dir, [string]$orderFile) {
+  $order = @(Get-Content (Join-Path $PSScriptRoot $orderFile) | Where-Object { $_.Trim() } | ForEach-Object { $_.Trim() })
+  $metas = @{}
+  foreach ($slug in $order) {
+    $raw = [IO.File]::ReadAllText((Join-Path $PSScriptRoot "$dir\$slug.html"), [Text.Encoding]::UTF8)
+    $metas[$slug] = [regex]::Match($raw, '(?s)<!--meta\s*(\{.*?\})\s*-->').Groups[1].Value | ConvertFrom-Json
+  }
+  [pscustomobject]@{ order = $order; metas = $metas }
 }
-# Groups in first-seen order (per work-order.txt), each a column in the panel.
-$groupNames = @(); foreach ($slug in $order) { if ($groupNames -notcontains $groupOf[$slug]) { $groupNames += $groupOf[$slug] } }
 
-function Block([string]$pre, [bool]$workCurrent) {
-  $cur = if ($workCurrent) { ' aria-current="page"' } else { '' }
+# ---- Work ----
+$work = ReadMeta 'work-src' 'work-order.txt'
+$groupOf = @{}; foreach ($slug in $work.order) { $groupOf[$slug] = if ($work.metas[$slug].group) { [string]$work.metas[$slug].group } else { 'Case studies' } }
+$groupNames = @(); foreach ($slug in $work.order) { if ($groupNames -notcontains $groupOf[$slug]) { $groupNames += $groupOf[$slug] } }
+
+function WorkBlock([string]$pre, [bool]$current) {
+  $cur = if ($current) { ' aria-current="page"' } else { '' }
   $cols = foreach ($g in $groupNames) {
-    $items = ($order | Where-Object { $groupOf[$_] -eq $g } | ForEach-Object { "            <li><a href=`"${pre}work/$_/`">$($titles[$_])</a></li>" }) -join "`n"
-    "          <li class=`"sub-group`"><span class=`"sub-label eyebrow`">$([Net.WebUtility]::HtmlEncode($g))</span>`n            <ul>`n$items`n            </ul>`n          </li>"
+    $items = ($work.order | Where-Object { $groupOf[$_] -eq $g } | ForEach-Object { "            <li><a href=`"${pre}work/$_/`">$(Enc $work.metas[$_].title)</a></li>" }) -join "`n"
+    "          <li class=`"sub-group`"><span class=`"sub-label eyebrow`">$(Enc $g)</span>`n            <ul>`n$items`n            </ul>`n          </li>"
   }
   @"
 <!--worksub--><div class="has-sub">
@@ -33,34 +42,65 @@ $($cols -join "`n")
 "@.TrimEnd()
 }
 
-$utf8 = New-Object Text.UTF8Encoding $false
-$linkRx = [regex]'<a href="(?<pre>(?:\.\./\.\./|/)?)projects\.html"(?<cur> aria-current="page")?>Work</a>'
-$blockRx = [regex]'(?s)<!--worksub-->.*?<!--/worksub-->'
+# ---- Writing ----
+$writing = ReadMeta 'writing-src' 'writing-order.txt'
+$kindLabel = @{ Article = 'Articles'; Fiction = 'Fiction'; Excerpt = 'Excerpts' }
+$kindOf = @{}; foreach ($slug in $writing.order) { $k = [string]$writing.metas[$slug].kind; $kindOf[$slug] = if ($kindLabel[$k]) { $kindLabel[$k] } else { $k } }
+$kindNames = @(); foreach ($slug in $writing.order) { if ($kindNames -notcontains $kindOf[$slug]) { $kindNames += $kindOf[$slug] } }
+
+function WritingBlock([string]$pre, [bool]$current) {
+  $cur = if ($current) { ' aria-current="page"' } else { '' }
+  $cols = foreach ($g in $kindNames) {
+    $items = ($writing.order | Where-Object { $kindOf[$_] -eq $g } | ForEach-Object { "            <li><a href=`"${pre}writing/$_/`">$(Enc $writing.metas[$_].title)</a></li>" }) -join "`n"
+    "          <li class=`"sub-group`"><span class=`"sub-label eyebrow`">$(Enc $g)</span>`n            <ul>`n$items`n            </ul>`n          </li>"
+  }
+  @"
+<!--writingsub--><div class="has-sub">
+        <a href="${pre}writing.html"$cur>Writing</a>
+        <button class="sub-toggle" type="button" aria-expanded="false" aria-controls="writing-sub" aria-label="Show writing samples"></button>
+        <ul class="submenu" id="writing-sub" aria-label="Writing samples">
+$($cols -join "`n")
+          <li class="all"><a href="${pre}writing.html">All writing &rarr;</a></li>
+        </ul>
+      </div><!--/writingsub-->
+"@.TrimEnd()
+}
+
+$menus = @(
+  @{ name = 'Work';    blockRx = [regex]'(?s)<!--worksub-->.*?<!--/worksub-->';       linkRx = [regex]'<a href="(?<pre>(?:\.\./\.\./|/)?)projects\.html"(?<cur> aria-current="page")?>Work</a>';    fn = ${function:WorkBlock};    dir = 'work';    page = 'projects.html' }
+  @{ name = 'Writing'; blockRx = [regex]'(?s)<!--writingsub-->.*?<!--/writingsub-->'; linkRx = [regex]'<a href="(?<pre>(?:\.\./\.\./|/)?)writing\.html"(?<cur> aria-current="page")?>Writing</a>'; fn = ${function:WritingBlock}; dir = 'writing'; page = 'writing.html' }
+)
+
 $n = 0
 $targets = @(Get-ChildItem (Join-Path $Root '*.html')) + @(Get-ChildItem (Join-Path $Root 'work\*\index.html') -ErrorAction SilentlyContinue) + @(Get-ChildItem (Join-Path $Root 'writing\*\index.html') -ErrorAction SilentlyContinue)
 foreach ($f in $targets) {
   $c = [IO.File]::ReadAllText($f.FullName)
-  $pre = if ($f.Name -eq '404.html') { '/' } elseif (($f.FullName -like '*\work\*') -or ($f.FullName -like '*\writing\*')) { '../../' } else { '' }
-  $isWork = ($f.Name -eq 'projects.html') -or ($f.FullName -like '*\work\*')
-  $block = Block $pre $isWork
-  if ($blockRx.IsMatch($c)) { $c = $blockRx.Replace($c, ($block -replace '\$', '$$'), 1) }
-  elseif ($linkRx.IsMatch($c)) { $c = $linkRx.Replace($c, ($block -replace '\$', '$$'), 1) }
-  else { "  no Work link: $($f.FullName)"; continue }
-  # On a case-study page, mark its own submenu entry current.
-  if ($f.FullName -like '*\work\*') {
-    $slug = Split-Path (Split-Path $f.FullName -Parent) -Leaf
-    $c = $c.Replace("<a href=`"../../work/$slug/`">", "<a href=`"../../work/$slug/`" aria-current=`"page`">")
+  $deep = ($f.FullName -like '*\work\*') -or ($f.FullName -like '*\writing\*')
+  $pre = if ($f.Name -eq '404.html') { '/' } elseif ($deep) { '../../' } else { '' }
+  foreach ($m in $menus) {
+    $isSection = ($f.Name -eq $m.page) -or ($f.FullName -like "*\$($m.dir)\*")
+    $block = (& $m.fn $pre $isSection) -replace '\$', '$$'
+    if ($m.blockRx.IsMatch($c)) { $c = $m.blockRx.Replace($c, $block, 1) }
+    elseif ($m.linkRx.IsMatch($c)) { $c = $m.linkRx.Replace($c, $block, 1) }
+    else { "  no $($m.name) link: $($f.FullName)"; continue }
+    # On a section page, mark its own submenu entry current.
+    if ($f.FullName -like "*\$($m.dir)\*") {
+      $slug = Split-Path (Split-Path $f.FullName -Parent) -Leaf
+      $c = $c.Replace("<a href=`"../../$($m.dir)/$slug/`">", "<a href=`"../../$($m.dir)/$slug/`" aria-current=`"page`">")
+    }
   }
   [IO.File]::WriteAllText($f.FullName, $c, $utf8); $n++
 }
-# The page templates in the generators (keep their BOM). Work is "current" only in the case-study template.
-foreach ($tp in @(@{ file = 'build-work.ps1'; current = $true }, @{ file = 'build-writing.ps1'; current = $false })) {
+# The page templates in the generators (keep their BOM); each one's own section is "current".
+foreach ($tp in @(@{ file = 'build-work.ps1'; section = 'Work' }, @{ file = 'build-writing.ps1'; section = 'Writing' })) {
   $tpl = Join-Path $PSScriptRoot $tp.file
   if (-not (Test-Path $tpl)) { continue }
   $t = [IO.File]::ReadAllText($tpl, [Text.Encoding]::UTF8)
-  $block = (Block '../../' $tp.current) -replace '\$', '$$'
-  if ($blockRx.IsMatch($t)) { $t = $blockRx.Replace($t, $block, 1) } else { $t = $linkRx.Replace($t, $block, 1) }
+  foreach ($m in $menus) {
+    $block = (& $m.fn '../../' ($m.name -eq $tp.section)) -replace '\$', '$$'
+    if ($m.blockRx.IsMatch($t)) { $t = $m.blockRx.Replace($t, $block, 1) } elseif ($m.linkRx.IsMatch($t)) { $t = $m.linkRx.Replace($t, $block, 1) }
+  }
   [IO.File]::WriteAllText($tpl, $t, (New-Object Text.UTF8Encoding $true))
 }
-# build-work marks the current case study itself (see its {{SLUG}} handling)
-"submenu written to $n pages + templates ($($order.Count) case studies)"
+# The builders mark the current case study / sample themselves ({{SLUG}} handling).
+"submenus written to $n pages + templates ($($work.order.Count) case studies, $($writing.order.Count) writing samples)"

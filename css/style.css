@@ -1839,12 +1839,18 @@ figure.video figcaption strong { color: var(--text); }
 [id] { scroll-margin-top: 5.5rem; }
 section.band.toc-band { padding-block: var(--space-l); }
 .toc {
+  /* Centred, and only as wide as its longest line: entries stay on one line
+     until the hard cap, after which they wrap rather than the card growing. */
+  width: fit-content;
+  max-width: min(100%, 52rem);
+  margin-inline: auto;
   padding: var(--space-l) var(--space-xl);
   border: 1px solid var(--line);
   border-radius: var(--radius-m);
   background: color-mix(in srgb, var(--surface-2) 62%, transparent);
   backdrop-filter: blur(2px);
 }
+.toc li > a { white-space: normal; }
 .toc-title { display: block; margin-bottom: var(--space-m); }
 .toc-title::after { content: ""; display: block; width: 60px; height: 4px; margin-top: var(--space-xs); background: var(--accent); clip-path: polygon(4px 0, 100% 0, calc(100% - 4px) 100%, 0 100%); }
 /* Traditional numbered outline: 1. Category / 1.1 Entry, vertical. */
@@ -1859,9 +1865,9 @@ section.band.toc-band { padding-block: var(--space-l); }
 .toc ol ol li + li { margin-top: 0.2rem; }
 .toc ol ol li.has-case a::after { content: " ›"; color: var(--accent); }
 /* Centred, narrower TOC (writing samples): sits under the facts, above the text */
-.toc.toc-centered { max-width: 36rem; margin-inline: auto; margin-top: var(--space-xl); padding: var(--space-m) var(--space-l); border: 1px solid var(--line); border-radius: var(--radius-m); background: color-mix(in srgb, var(--surface-2) 55%, transparent); }
+.toc.toc-centered { margin-top: var(--space-xl); padding: var(--space-m) var(--space-l); }
 /* Two columns when there's room and the list is long (Work index) */
-@media (min-width: 900px) { .toc.toc-columns > ol { columns: 2; column-gap: var(--space-2xl); } .toc.toc-columns > ol > li { break-inside: avoid; } }
+@media (min-width: 900px) { .toc.toc-columns { max-width: min(100%, 64rem); } .toc.toc-columns > ol { columns: 2; column-gap: var(--space-2xl); } .toc.toc-columns > ol > li { break-inside: avoid; } }
 
 /* ---------- Case study pages (/work/<slug>/) ---------- */
 .case-facts {

@@ -1877,7 +1877,8 @@ section.band.toc-band { padding-block: var(--space-l); }
   .toc-rail {
     position: absolute; top: 0; bottom: 0; z-index: 2;
     right: max(var(--gutter), calc((100% - var(--max)) / 2 + var(--gutter)));
-    width: var(--rail); padding: 0; pointer-events: none;
+    width: var(--rail); padding: 0 0 var(--space-section); pointer-events: none;
+    box-sizing: border-box;   /* the bottom padding is where the sticky card stops: level with the last band's content, not its edge */
   }
   .toc-rail .toc {
     position: sticky; top: calc(var(--header-h) + 1.5rem);

@@ -90,7 +90,9 @@ $tocItems
       </nav>
     </aside>
     <div class="wrap">
+      <div class="case-text gallery-text">
 $($groups -join "`n`n")
+      </div>
     </div>
   </div><!-- /.case-body -->
   </section>

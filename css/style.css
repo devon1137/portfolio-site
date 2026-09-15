@@ -312,11 +312,11 @@ section.band, article.band {
           mask-image: radial-gradient(ellipse 54% 50% at 41% 36.5%, #000 20%, transparent 100%);
   opacity: 0.8;
 }
-/* Parallax: the honeycomb travels at 60% of the band's speed. The
+/* Parallax: the honeycomb travels at 76% of the band's speed. The
    layer slides on the band's view timeline from -Δ (band entering at
-   the bottom) to +Δ (band leaving at the top), where Δ is 20% of the
-   band's whole run: 20vh + 10% of the layer, and the layer is 2× the
-   band, so 0.2·(viewport + band) — the same ratio whatever the band's
+   the bottom) to +Δ (band leaving at the top), where Δ is 12% of the
+   band's whole run: 12vh + 6% of the layer, and the layer is 2× the
+   band, so 0.12·(viewport + band) — the same ratio whatever the band's
    height. `translate` is applied after `transform`, so the rotated
    pattern moves straight up the screen. The hero and page intros opt
    out (see .hero.grid-bg::before below). */
@@ -328,8 +328,8 @@ section.band, article.band {
     animation-range: cover 0% cover 100%;
   }
   @keyframes hex-parallax {
-    from { translate: 0 calc(-20vh - 10%); }
-    to   { translate: 0 calc(20vh + 10%); }
+    from { translate: 0 calc(-12vh - 6%); }
+    to   { translate: 0 calc(12vh + 6%); }
   }
 }
 

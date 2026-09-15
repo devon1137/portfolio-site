@@ -1825,6 +1825,16 @@ section.band.toc-band { padding-block: var(--space-l); }
 .prose li + li { margin-top: var(--space-xs); }
 .prose p { color: var(--text-dim); }
 .prose p strong { color: var(--text); }
+/* Affiliate / sponsorship disclosure: sits directly under the link it covers */
+.prose .disclosure {
+  font-size: var(--step--1);
+  line-height: 1.6;
+  padding: var(--space-s) var(--space-m);
+  border-left: 2px solid var(--accent);
+  background: color-mix(in srgb, var(--accent) 6%, transparent);
+  border-radius: 0 var(--radius-s) var(--radius-s) 0;
+}
+.prose > p + .disclosure { margin-top: var(--space-s); }
 .case .stats { margin-top: var(--space-xl); grid-template-columns: repeat(4, 1fr); }
 .case .stats:has(> li:nth-child(6)) { grid-template-columns: repeat(3, 1fr); }   /* six cards: 3×2, not 4+2 */
 .case .stats > li { padding: var(--space-l); text-align: center; }   /* same centred treatment as the hero cards, so the value sits over its bar */

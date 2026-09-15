@@ -112,7 +112,7 @@ $head = @'
   <section class="band" id="about-this">
     <div class="wrap">
       <dl class="case-facts">
-        <div><dt>Originally published</dt><dd>{{SOURCE}}, {{PUBLISHED}}{{CASE_LINK}}</dd></div>
+        <div><dt>{{PUB_LABEL}}</dt><dd>{{SOURCE}}, {{PUBLISHED}}{{CASE_LINK}}</dd></div>
         <div><dt>Length</dt><dd>{{WORDS}} words</dd></div>
 {{ARCHIVE_DIV}}
       </dl>
@@ -122,7 +122,7 @@ $head = @'
 
   <article class="band on-slate grid-bg" id="text">
     <div class="wrap">
-      <div class="prose reading-text">
+      <div class="prose reading-text{{FICTION}}">
 {{BODY}}
       </div>
     </div>
@@ -185,6 +185,8 @@ for ($i = 0; $i -lt $order.Count; $i++) {
   $next = if ($i -lt $order.Count - 1) { $frags[$order[$i + 1]].meta } else { $null }
   $words = Words $fr.body
   $wordsFmt = $words.ToString('N0')
+  $pubLabel = if ($m.archived) { 'Originally published' } else { 'From' }
+  $fiction = if ($m.kind -eq 'Fiction') { ' fiction' } else { '' }
   $caseLink = if ($m.case) { " &middot; <a href=`"../../work/$($m.case)/`">the case study</a>" } else { '' }
   $archiveDiv = if ($m.archived) { "        <div><dt>The original</dt><dd><a class=`"link-arrow`" href=`"$($m.archived)`" target=`"_blank`" rel=`"noopener`" title=`"Open the archived page on the Wayback Machine (new tab)`">Archived copy <span class=`"arrow`" aria-hidden=`"true`">&#8599;</span></a></dd></div>" } else { '' }
   $prevHtml = if ($prev) { "        <a class=`"prev`" href=`"../$($prev.slug)/`"><span class=`"eyebrow`">&larr; Previous</span><span class=`"case-nav-title`">$(Html $prev.title)</span></a>" } else { '        <span></span>' }
@@ -194,7 +196,7 @@ for ($i = 0; $i -lt $order.Count; $i++) {
   $map = @{
     '{{TITLE}}' = (Html $m.title); '{{DESC}}' = (Html $m.description); '{{SLUG}}' = $m.slug; '{{OG}}' = $m.og
     '{{KIND}}' = (Html $m.kind); '{{SOURCE}}' = (Html $m.source); '{{PUBLISHED}}' = (Html $m.published); '{{DATETIME}}' = $m.datetime
-    '{{LEDE}}' = $m.lede; '{{NOTE}}' = $m.note; '{{WORDS}}' = $wordsFmt; '{{CASE_LINK}}' = $caseLink; '{{ARCHIVE_DIV}}' = $archiveDiv
+    '{{LEDE}}' = $m.lede; '{{NOTE}}' = $m.note; '{{PUB_LABEL}}' = $pubLabel; '{{FICTION}}' = $fiction; '{{WORDS}}' = $wordsFmt; '{{CASE_LINK}}' = $caseLink; '{{ARCHIVE_DIV}}' = $archiveDiv
     '{{BODY}}' = $fr.body; '{{PREV}}' = $prevHtml; '{{NEXT}}' = $nextHtml
   }
   foreach ($kv in $map.GetEnumerator()) { $page = $page.Replace($kv.Key, [string]$kv.Value) }

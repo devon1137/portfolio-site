@@ -18,6 +18,7 @@ $ErrorActionPreference = 'Stop'
 $srcDir = Join-Path $PSScriptRoot 'writing-src'
 $order = @(Get-Content (Join-Path $PSScriptRoot 'writing-order.txt') | Where-Object { $_.Trim() } | ForEach-Object { $_.Trim() })
 $utf8 = New-Object Text.UTF8Encoding $false
+$origin = ([string](Get-Content (Join-Path $PSScriptRoot 'site.json') -Raw | ConvertFrom-Json).origin).TrimEnd('/')   # for JSON-LD URLs; no origin, no schema
 
 function Read-Fragment([string]$path) {
   $raw = [IO.File]::ReadAllText($path, [Text.Encoding]::UTF8)
@@ -49,6 +50,7 @@ $head = @'
 <!--/og-->
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 fill=%22%231B1F1D%22/><text x=%2250%22 y=%2268%22 font-size=%2260%22 text-anchor=%22middle%22 fill=%22%23D9A63E%22 font-family=%22Georgia,serif%22>D</text></svg>">
 <link rel="stylesheet" href="../../css/style.css">
+{{SCHEMA}}
 </head>
 <body id="top" class="reading">
 
@@ -212,12 +214,21 @@ for ($i = 0; $i -lt $order.Count; $i++) {
   $prevHtml = if ($prev) { "        <a class=`"prev`" href=`"../$($prev.slug)/`"><span class=`"eyebrow`">&larr; Previous</span><span class=`"case-nav-title`">$(Html $prev.title)</span></a>" } else { '        <span></span>' }
   $nextHtml = if ($next) { "        <a class=`"next`" href=`"../$($next.slug)/`"><span class=`"eyebrow`">Next &rarr;</span><span class=`"case-nav-title`">$(Html $next.title)</span></a>" } else { '        <span></span>' }
 
+  # JSON-LD: Article for published pieces, CreativeWork for unpublished fiction; author is the Person on the home page.
+  $schemaType = if ($m.kind -eq 'Fiction') { 'CreativeWork' } else { 'Article' }
+  $schema = @{ '@context' = 'https://schema.org'; '@type' = $schemaType; headline = [string]$m.title; description = [string]$m.description
+    author = @{ '@type' = 'Person'; '@id' = "$origin/#devon"; name = 'Devon Kubacki' }; wordCount = $words; inLanguage = 'en'
+    url = "$origin/writing/$($m.slug)/" }
+  if ($m.datetime -match '^\d{4}(-\d{2}-\d{2})?$') { $schema.datePublished = [string]$m.datetime }
+  if ($m.kind -eq 'Fiction') { $schema.genre = 'Fiction'; $schema.isPartOf = @{ '@type' = 'Book'; name = 'Powerless'; author = @{ '@id' = "$origin/#devon" } } }
+  if ($m.archived) { $schema.sameAs = [string]$m.archived }
+  $schemaJson = '<script type="application/ld+json">' + "`n" + ($schema | ConvertTo-Json -Depth 5) + "`n" + '</script>'
   $page = $head + $tail
   $map = @{
     '{{TITLE}}' = (Html $m.title); '{{DESC}}' = (Html $m.description); '{{SLUG}}' = $m.slug; '{{OG}}' = $m.og
     '{{KIND}}' = (Html $m.kind); '{{SOURCE}}' = (Html $m.source); '{{PUBLISHED}}' = (Html $m.published); '{{DATETIME}}' = $m.datetime
     '{{LEDE}}' = $m.lede; '{{NOTE}}' = $m.note; '{{PUB_LABEL}}' = $pubLabel; '{{CONTENT_NOTE}}' = $contentNote; '{{FICTION}}' = $fiction; '{{WORDS}}' = $wordsFmt; '{{CASE_LINK}}' = $caseLink; '{{ARCHIVE_DIV}}' = $archiveDiv
-    '{{BODY}}' = $fr.body; '{{PREV}}' = $prevHtml; '{{NEXT}}' = $nextHtml
+    '{{BODY}}' = $fr.body; '{{SCHEMA}}' = $schemaJson; '{{PREV}}' = $prevHtml; '{{NEXT}}' = $nextHtml
   }
   foreach ($kv in $map.GetEnumerator()) { $page = $page.Replace($kv.Key, [string]$kv.Value) }
   $page = [regex]::Replace($page, '(?<=["\s,])images/', '../../images/')

@@ -77,12 +77,13 @@ if (-not $Origin) { "sitemap.xml skipped: pass -Origin https://your-domain to wr
 
 $entries = $pages | ForEach-Object { [pscustomobject]@{ loc = "$Origin/$($_.rel)"; lastmod = $_.lastmod; priority = $_.priority } }
 $xml = New-Object System.Text.StringBuilder
-[void]$xml.AppendLine('<?xml version="1.0" encoding="UTF-8"?>')
-[void]$xml.AppendLine('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">')
+# LF line endings, not AppendLine (CRLF on Windows), so git and the repo stay consistent
+[void]$xml.Append('<?xml version="1.0" encoding="UTF-8"?>').Append("`n")
+[void]$xml.Append('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">').Append("`n")
 foreach ($e in $entries) {
-  [void]$xml.AppendLine("  <url><loc>$([Security.SecurityElement]::Escape($e.loc))</loc><lastmod>$($e.lastmod)</lastmod><priority>$($e.priority)</priority></url>")
+  [void]$xml.Append("  <url><loc>$([Security.SecurityElement]::Escape($e.loc))</loc><lastmod>$($e.lastmod)</lastmod><priority>$($e.priority)</priority></url>").Append("`n")
 }
-[void]$xml.AppendLine('</urlset>')
+[void]$xml.Append('</urlset>').Append("`n")
 [IO.File]::WriteAllText((Join-Path $Root 'sitemap.xml'), $xml.ToString(), $utf8)
 
 $robots = Join-Path $Root 'robots.txt'

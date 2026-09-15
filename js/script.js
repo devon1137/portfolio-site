@@ -396,8 +396,11 @@ document.addEventListener('DOMContentLoaded', () => {
         caption.textContent = group.length > 1 ? `${cap}  ·  ${index + 1} / ${group.length}` : cap;
         const src = fig.dataset.source;
         if (src) {
+          // Mirror the frame's URL-bar link: an affiliate source keeps rel="sponsored" and says so.
+          const affiliate = fig.querySelector('.frame a.url')?.rel.includes('sponsored');
           sourceLink.href = src;
-          sourceLink.textContent = src.startsWith('https://web.archive.org/') ? 'Open archived page ↗' : 'Open live page ↗';
+          sourceLink.rel = affiliate ? 'sponsored noopener' : 'noopener';
+          sourceLink.textContent = src.startsWith('https://web.archive.org/') ? 'Open archived page ↗' : (affiliate ? 'Open on Amazon (affiliate link) ↗' : 'Open live page ↗');
           caption.appendChild(sourceLink);
         }
       }

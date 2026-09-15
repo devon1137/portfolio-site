@@ -846,8 +846,11 @@ nav.primary .submenu:has(.sub-group) .all a { margin-top: var(--space-xs); }
   border: 1px solid var(--line);
   border-radius: var(--radius-m);
   /* Translucent enough that the honeycomb (and its parallax) reads
-     through the card, opaque enough that text stays on a calm ground. */
-  background: color-mix(in srgb, var(--surface-2) 62%, transparent);
+     through the card, opaque enough that text stays on a calm ground.
+     Stone (--ink-2) on every band, so the cards are one material across
+     the site rather than each band's own colour; the hero's stat tiles
+     are the one exception (below). */
+  background: color-mix(in srgb, var(--ink-2) 62%, transparent);
   -webkit-backdrop-filter: blur(2px);
           backdrop-filter: blur(2px);
   /* Inner top highlight reads as an edge catching light; the outer
@@ -858,10 +861,8 @@ nav.primary .submenu:has(.sub-group) .all a { margin-top: var(--space-xs); }
     0 12px 28px -18px rgba(0, 0, 0, 0.7);
   transition: transform var(--t-med) var(--ease), box-shadow var(--t-med) var(--ease), border-color var(--t-med) var(--ease);
 }
-/* The hex-border cards (Recent Work, Launch Package) sit on the earth band
-   but take stone, like the TOC rail and the reading cards, so the glass is
-   one material across the site rather than the band's own colour. */
-.work-card, .pkg { background: color-mix(in srgb, var(--ink-2) 62%, transparent); }
+/* Hero stat tiles keep the forest ground's own raised tone. */
+.hero .stats > li { background: color-mix(in srgb, var(--surface-2) 62%, transparent); }
 .practice-list > div:hover,
 .stats > li:hover,
 .work-card:hover,

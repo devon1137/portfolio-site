@@ -2318,6 +2318,8 @@ footer.site {
 .footer-grid nav { display: flex; flex-direction: column; gap: 0.45rem; }
 .footer-grid a { text-decoration: none; transition: color var(--t-fast) var(--ease); }
 .footer-grid a:hover { color: var(--text); }
+.footer-grid .footer-label ~ a { display: block; }           /* stacked links in a non-nav column (Reach out) */
+.footer-grid .footer-label ~ a + a { margin-top: 0.45rem; }
 .footer-label {
   display: block;
   font-family: var(--font-mono);

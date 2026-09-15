@@ -1464,7 +1464,7 @@ nav.primary .submenu:has(.sub-group) .all a { margin-top: var(--space-xs); }
   transform-origin: center;
   transition: transform var(--t-med) var(--ease);
 }
-.record li:hover { background: color-mix(in srgb, var(--surface-2) 55%, transparent); }
+.record li:hover { background: color-mix(in srgb, var(--ink-2) 55%, transparent); }   /* stone; the Work entries share it */
 .record li:hover::before { transform: translateY(-50%) scaleY(1); }
 .record .value {
   font-family: var(--font-serif);
@@ -1548,9 +1548,10 @@ nav.primary .submenu:has(.sub-group) .all a { margin-top: var(--space-xs); }
   transform-origin: center;
   transition: transform var(--t-med) var(--ease);
 }
-/* Hover wash: Kokiri forest green, the hero's ground, over the warm stone
-   block, so the row reads as lifted rather than just darker. */
-.entries > .entry:hover { background: color-mix(in srgb, var(--pine-2) 70%, transparent); scale: 1.01; }
+/* Hover wash: the same stone lift as the Track Record rows (--ink-2,
+   pinned rather than --surface-2 so it doesn't turn earth inside the
+   honeycomb band). */
+.entries > .entry:hover { background: color-mix(in srgb, var(--ink-2) 55%, transparent); scale: 1.01; }
 .entries > .entry:hover::before { transform: translateY(-50%) scaleY(1); }
 @supports (animation-timeline: view()) {
   .entries > .entry {

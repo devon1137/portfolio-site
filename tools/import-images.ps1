@@ -39,6 +39,7 @@ try {
     $spec = $Map[$name]
     $srcPath = if ($spec -is [hashtable]) { $spec.path } else { $spec }
     $crop = if ($spec -is [hashtable] -and $spec.crop) { ($spec.crop -split ',') | ForEach-Object { [int]$_ } } else { $null }
+    $rotate = if ($spec -is [hashtable] -and $spec.rotate) { [int]$spec.rotate } else { 0 }   # 90 / -90 / 180, applied before the crop (crop is in rotated pixels)
     $src = (Resolve-Path $srcPath).Path
     # Feed the image as a data: URL so no file:// or server access is needed.
     $ext = [IO.Path]::GetExtension($src).ToLower().TrimStart('.'); if ($ext -eq 'jpg') { $ext = 'jpeg' }
@@ -46,7 +47,15 @@ try {
     $cropJs = if ($crop) { "const sx = $($crop[0]), sy = $($crop[1]), sw = $($crop[2]), sh = $($crop[3]);" } else { 'const sx = 0, sy = 0, sw = img.naturalWidth, sh = img.naturalHeight;' }
     $js = @"
 (async () => {
-  const img = new Image(); img.src = 'data:image/$ext;base64,$b64'; await img.decode();
+  const src = new Image(); src.src = 'data:image/$ext;base64,$b64'; await src.decode();
+  // Optional rotation into an intermediate canvas; everything after works on the rotated pixels.
+  const rot = $rotate; let img = src;
+  if (rot) {
+    const swap = Math.abs(rot) === 90;
+    const rc = document.createElement('canvas'); rc.width = swap ? src.naturalHeight : src.naturalWidth; rc.height = swap ? src.naturalWidth : src.naturalHeight;
+    const rctx = rc.getContext('2d'); rctx.translate(rc.width / 2, rc.height / 2); rctx.rotate(rot * Math.PI / 180); rctx.drawImage(src, -src.naturalWidth / 2, -src.naturalHeight / 2);
+    img = rc; img.naturalWidth = rc.width; img.naturalHeight = rc.height;
+  }
   $cropJs
   const s = Math.min(1, $MaxWidth / sw);
   const w = Math.round(sw * s), h = Math.round(sh * s);

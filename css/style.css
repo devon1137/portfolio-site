@@ -32,7 +32,7 @@
   --slate-gradient: linear-gradient(175deg, var(--slate-hi) 0%, var(--slate-lo) 100%);
   --rust: #B23D17;        /* errors only (form validation) */
   --pine: #2F6F5E;
-  --mint: #5DBFA0;        /* pine lifted for glows on slate (Recent Work honeycomb) */
+  --mint: #64C494;        /* Kokiri lifted: the light on the earth-band cards (Recent Work, Launch Package honeycomb) */
   --amber: #E0B23F;       /* Triforce gold: the accent, warmer than the earth band so it reads on both grounds */
   --amber-bright: #F0C455; /* solid-button hover */
   --rule: #8A7F68;
@@ -300,15 +300,39 @@ section.band, article.band {
 .grid-bg::before {
   content: "";
   position: absolute;
-  inset: -40%;              /* oversized so the rotated layer always covers the band */
+  inset: -50%;              /* oversized so the rotated layer covers the band through the parallax below */
   z-index: -1;
   pointer-events: none;
   background-image: var(--hex-tile);
   background-size: 38.105px 66px;
   transform: rotate(30deg);
-  -webkit-mask-image: radial-gradient(ellipse 60% 55% at 40% 35%, #000 20%, transparent 100%);
-          mask-image: radial-gradient(ellipse 60% 55% at 40% 35%, #000 20%, transparent 100%);
+  /* The bright spot sits up and to the left of the band's centre; the
+     ellipse is sized against the 2× layer so it reads the same as it
+     did on the old 1.8× one. */
+  -webkit-mask-image: radial-gradient(ellipse 54% 50% at 41% 36.5%, #000 20%, transparent 100%);
+          mask-image: radial-gradient(ellipse 54% 50% at 41% 36.5%, #000 20%, transparent 100%);
   opacity: 0.8;
+}
+/* Parallax: the honeycomb travels at 60% of the band's speed. The
+   layer slides on the band's view timeline from -Δ (band entering at
+   the bottom) to +Δ (band leaving at the top), where Δ is 20% of the
+   band's whole run: 20vh + 10% of the layer, and the layer is 2× the
+   band, so 0.2·(viewport + band) — the same ratio whatever the band's
+   height. `translate` is applied after `transform`, so the rotated
+   pattern moves straight up the screen. Both the hero honeycomb and
+   its .hex-blinks layer take the same drift, so the blinks stay on
+   their lattice cells. */
+@supports (animation-timeline: view()) {
+  .grid-bg { view-timeline: --hex block; }
+  .grid-bg::before {
+    animation: hex-parallax linear both;
+    animation-timeline: --hex;
+    animation-range: cover 0% cover 100%;
+  }
+  @keyframes hex-parallax {
+    from { translate: 0 calc(-20vh - 10%); }
+    to   { translate: 0 calc(20vh + 10%); }
+  }
 }
 
 /* Heroes (home, and every page intro that carries a .hex-blinks layer):
@@ -326,6 +350,21 @@ section.band, article.band {
   from { background-position: 0 0; }
   to   { background-position: 76.21px -132px; }
 }
+/* …and the same parallax as every other textured band, stacked as a
+   second animation (the pan is on background-position, the drift on
+   translate, so they don't fight). */
+@supports (animation-timeline: view()) {
+  .hero.grid-bg::before,
+  .page-intro.grid-bg:has(> .hex-blinks)::before {
+    animation-name: hex-pan, hex-parallax;
+    animation-duration: 20s, auto;
+    animation-timing-function: linear, linear;
+    animation-iteration-count: infinite, 1;
+    animation-fill-mode: none, both;
+    animation-timeline: auto, --hex;
+    animation-range: normal, cover 0% cover 100%;
+  }
+}
 
 /* Blinking hexes: a layer that mirrors the hero honeycomb exactly (same
    box, rotation, mask, and pan — the pan here is a local-space
@@ -335,18 +374,29 @@ section.band, article.band {
    pause, keeping clear of the pan's loop point so nothing jumps. */
 :is(.hero, .page-intro) .hex-blinks {
   position: absolute;
-  inset: -40%;
+  inset: -50%;
   z-index: -1;
   pointer-events: none;
   transform: rotate(30deg);
-  -webkit-mask-image: radial-gradient(ellipse 60% 55% at 40% 35%, #000 20%, transparent 100%);
-          mask-image: radial-gradient(ellipse 60% 55% at 40% 35%, #000 20%, transparent 100%);
+  -webkit-mask-image: radial-gradient(ellipse 54% 50% at 41% 36.5%, #000 20%, transparent 100%);
+          mask-image: radial-gradient(ellipse 54% 50% at 41% 36.5%, #000 20%, transparent 100%);
   animation: hex-blinks-pan 20s linear infinite;
   will-change: transform;
 }
 @keyframes hex-blinks-pan {
   from { transform: rotate(30deg) translate(0, 0); }
   to   { transform: rotate(30deg) translate(76.21px, -132px); }
+}
+@supports (animation-timeline: view()) {
+  :is(.hero, .page-intro) .hex-blinks {
+    animation-name: hex-blinks-pan, hex-parallax;
+    animation-duration: 20s, auto;
+    animation-timing-function: linear, linear;
+    animation-iteration-count: infinite, 1;
+    animation-fill-mode: none, both;
+    animation-timeline: auto, --hex;
+    animation-range: normal, cover 0% cover 100%;
+  }
 }
 .hex-blinks .blink {
   position: absolute;
@@ -368,7 +418,7 @@ section.band, article.band {
   :is(.hero, .page-intro) .hex-blinks { display: none; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .hero.grid-bg::before, .page-intro.grid-bg::before { animation: none; }
+  .grid-bg::before { animation: none; translate: none; }
 }
 
 /* Ledger: a narrow margin column for dates/marginalia + content column */
@@ -939,8 +989,9 @@ nav.primary .submenu:has(.sub-group) .all a { margin-top: var(--space-xs); }
      .is-leaving  pointer left toward data-to — the lit area wipes off the
                   card toward that edge, then the class comes off.
    Colour is per card via --hex-lit (the tile), --meteor and
-   --meteor-head: amber by default, a lifted pine ("mint") on the
-   slate-band cards (Recent Work, Launch Package) so it reads cool there.
+   --meteor-head: Triforce gold by default, Kokiri green (--mint) on the
+   earth-band cards (Recent Work, Launch Package) so the light is the
+   band's complement rather than a second warm on warm.
    The honeycomb is the same 22px hex tile the textured bands use. The
    tile is authored flat-top (the section tile rotated 30°,
    transposed into its own 66×38.105 repeat) because this layer is
@@ -967,9 +1018,10 @@ nav.primary .submenu:has(.sub-group) .all a { margin-top: var(--space-xs); }
    border, vertical ones down the right border.
    The icon glow stays on :hover for instant feedback. */
 :root {
-  /* Same path, two strokes: amber (#D9A63E) and mint (#5DBFA0). */
-  --hex-tile-lit:      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='66' height='38.105' viewBox='0 0 66 38.105'%3E%3Cpath d='M11 0L0 19.053L11 38.105M11 0H33M11 38.105H33M33 0L44 19.053L33 38.105M44 19.053H66' fill='none' stroke='%23D9A63E' stroke-opacity='0.45' stroke-width='1'/%3E%3C/svg%3E");
-  --hex-tile-lit-mint: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='66' height='38.105' viewBox='0 0 66 38.105'%3E%3Cpath d='M11 0L0 19.053L11 38.105M11 0H33M11 38.105H33M33 0L44 19.053L33 38.105M44 19.053H66' fill='none' stroke='%235DBFA0' stroke-opacity='0.45' stroke-width='1'/%3E%3C/svg%3E");
+  /* Same path, two strokes: Triforce gold (--amber, #E0B23F) and Kokiri
+     green (--mint, #64C494). Keep these in step with the tokens. */
+  --hex-tile-lit:      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='66' height='38.105' viewBox='0 0 66 38.105'%3E%3Cpath d='M11 0L0 19.053L11 38.105M11 0H33M11 38.105H33M33 0L44 19.053L33 38.105M44 19.053H66' fill='none' stroke='%23E0B23F' stroke-opacity='0.5' stroke-width='1'/%3E%3C/svg%3E");
+  --hex-tile-lit-mint: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='66' height='38.105' viewBox='0 0 66 38.105'%3E%3Cpath d='M11 0L0 19.053L11 38.105M11 0H33M11 38.105H33M33 0L44 19.053L33 38.105M44 19.053H66' fill='none' stroke='%2364C494' stroke-opacity='0.5' stroke-width='1'/%3E%3C/svg%3E");
   /* One soft edge, lit side first (wipe-in) or clear side first
      (wipe-out). The -rev variants are the same gradients reflected
      (105° → 255°, 185° → 355°) for the opposite travel direction. */
@@ -991,13 +1043,13 @@ nav.primary .submenu:has(.sub-group) .all a { margin-top: var(--space-xs); }
   overflow: clip;
   overflow-clip-margin: 16px; /* room for the meteor's glow to bleed past the border */
 }
-/* On the slate band (Recent Work, Launch Package): cool variant. Text
+/* On the earth band (Recent Work, Launch Package): green variant. Text
    and halo colours already flip with the band's surface tokens; only
    the light source changes. */
 .on-slate .hex-card {
   --hex-lit: var(--hex-tile-lit-mint);
   --meteor: var(--mint);
-  --meteor-head: #E6FFF6;
+  --meteor-head: #EAFFF1;
 }
 .hex-card::before {
   content: "";

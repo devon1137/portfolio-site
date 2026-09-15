@@ -1854,6 +1854,9 @@ section.band.toc-band { padding-block: var(--space-l); }
 .prose code { font-family: var(--font-mono); font-size: 0.88em; color: var(--text); }
 /* ---------- Writing samples (/writing/<slug>/) ---------- */
 .reading .sample-note { margin-top: var(--space-l); max-width: 72ch; font-size: var(--step--1); color: var(--text-dim); font-style: italic; }
+.reading .content-note { margin-top: var(--space-s); max-width: 72ch; font-size: var(--step--1); color: var(--text-dim); }
+.reading .content-note strong { color: var(--text); }
+.entries .content-flag { color: var(--text-dim); }
 .reading-text { max-width: 68ch; font-size: var(--step-0); line-height: 1.75; }
 .reading-text > p + p { margin-top: var(--space-m); }
 .reading-text h2 { margin-top: var(--space-2xl); }

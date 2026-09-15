@@ -141,6 +141,7 @@ $head = @'
 {{ARCHIVE_DIV}}
       </dl>
       <p class="sample-note">{{NOTE}}</p>{{CONTENT_NOTE}}
+{{TOC}}
     </div>
   </section>
 
@@ -208,7 +209,26 @@ for ($i = 0; $i -lt $order.Count; $i++) {
   $fr = $frags[$order[$i]]; $m = $fr.meta
   $prev = if ($i -gt 0) { $frags[$order[$i - 1]].meta } else { $null }
   $next = if ($i -lt $order.Count - 1) { $frags[$order[$i + 1]].meta } else { $null }
-  $words = Words $fr.body
+  # Articles and excerpts get ids on their h2/h3s and a centred TOC; fiction doesn't.
+  $body = $fr.body; $tocHtml = ''
+  if ($m.kind -ne 'Fiction') {
+    $used = @{}; $items = New-Object System.Collections.Generic.List[string]; $script:openSub = $false
+    $body = [regex]::Replace($body, '<(h2|h3)>(.*?)</\1>', {
+      param($mm)
+      $lvl = $mm.Groups[1].Value; $text = $mm.Groups[2].Value
+      $plain = [Net.WebUtility]::HtmlDecode(($text -replace '<[^>]+>', '')).Trim()
+      $id = (($plain.ToLower() -replace '[^a-z0-9]+', '-').Trim('-')); if (-not $id) { $id = 'section' }
+      $base = $id; $n = 2; while ($used.ContainsKey($id)) { $id = "$base-$n"; $n++ }; $used[$id] = $true
+      if ($lvl -eq 'h2') { if ($script:openSub) { $items.Add('            </ol></li>'); $script:openSub = $false } else { if ($items.Count -gt 0) { $items.Add('          </li>') } }; $items.Add("          <li><a href=`"#$id`">$(Html $plain)</a>") }
+      else { if (-not $script:openSub) { $items.Add('            <ol>'); $script:openSub = $true }; $items.Add("              <li><a href=`"#$id`">$(Html $plain)</a></li>") }
+      "<$lvl id=`"$id`">$text</$lvl>"
+    })
+    if ($script:openSub) { $items.Add('            </ol></li>') } elseif ($items.Count -gt 0) { $items.Add('          </li>') }
+    if ($items.Count -gt 0) {
+      $tocHtml = "      <nav class=`"toc toc-centered`" aria-label=`"In this piece`">`n        <span class=`"toc-title eyebrow`">In this piece</span>`n        <ol>`n" + ($items -join "`n") + "`n        </ol>`n      </nav>"
+    }
+  }
+  $words = Words $body
   $wordsFmt = $words.ToString('N0')
   $lengthText = if ($m.kind -eq 'Excerpt') { "$wordsFmt-word excerpt" } else { "$wordsFmt words" }
   $contentNote = if ($m.content) { "`n      <p class=`"content-note`"><strong>Content note:</strong> $(Html $m.content)</p>" } else { '' }
@@ -242,7 +262,7 @@ for ($i = 0; $i -lt $order.Count; $i++) {
     '{{TITLE}}' = (Html $m.title); '{{DESC}}' = (Html $m.description); '{{SLUG}}' = $m.slug; '{{OG}}' = $m.og
     '{{KIND}}' = (Html $m.kind); '{{SOURCE}}' = (Html $m.source); '{{PUBLISHED}}' = (Html $m.published); '{{DATETIME}}' = $m.datetime
     '{{LEDE}}' = $m.lede; '{{NOTE}}' = $m.note; '{{PUB_LABEL}}' = $pubLabel; '{{CONTENT_NOTE}}' = $contentNote; '{{FICTION}}' = $fiction; '{{WORDS}}' = $wordsFmt; '{{LENGTH}}' = $lengthText; '{{CASE_LINK}}' = $caseLink; '{{ARCHIVE_DIV}}' = $archiveDiv
-    '{{BODY}}' = $fr.body; '{{SCHEMA}}' = $schemaJson; '{{PREV}}' = $prevHtml; '{{NEXT}}' = $nextHtml
+    '{{BODY}}' = $body; '{{TOC}}' = $tocHtml; '{{SCHEMA}}' = $schemaJson; '{{PREV}}' = $prevHtml; '{{NEXT}}' = $nextHtml
   }
   foreach ($kv in $map.GetEnumerator()) { $page = $page.Replace($kv.Key, [string]$kv.Value) }
   $page = [regex]::Replace($page, '(?<=["\s,])images/', '../../images/')

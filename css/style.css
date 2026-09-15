@@ -110,7 +110,7 @@
   color: var(--text);
 }
 .hero, .page-intro { --surface: var(--pine-mid); --surface-2: var(--pine-2); --text-dim: #C0BBAC; background: var(--pine-gradient); color: var(--text); }
-footer.site { --surface: var(--pine-mid); --surface-2: var(--pine-2); --text-dim: #C0BBAC; background: var(--pine-gradient); }
+/* Footer mirrors the hero: the same forest, but rising (dark at the top edge`n   where it meets the page, lightest at the bottom), so the page ends the way`n   it began. Honeycomb via .grid-bg on the element. */`nfooter.site { --surface: var(--pine-mid); --surface-2: var(--pine-2); --text-dim: #C0BBAC; background: linear-gradient(175deg, var(--pine-mid) 0%, var(--pine-lo) 100%); }
 
 .on-slate {
   --surface: var(--slate);
@@ -435,11 +435,13 @@ nav.primary .submenu {
   left: -0.75rem;
   min-width: 18rem;
   padding: var(--space-xs) 0;
-  background: color-mix(in srgb, var(--ink-2, var(--ink)) 92%, transparent);
-  backdrop-filter: blur(8px);
-  border: 1px solid var(--line-strong);
+  /* Frosted glass: translucent stone, heavy blur, a light rim and inner highlight */
+  background: color-mix(in srgb, var(--ink-2, var(--ink)) 76%, transparent);
+  -webkit-backdrop-filter: blur(24px) saturate(140%);
+  backdrop-filter: blur(24px) saturate(140%);
+  border: 1px solid color-mix(in srgb, var(--text) 22%, transparent);
   border-radius: var(--radius-m);
-  box-shadow: 0 24px 48px -20px rgba(0, 0, 0, 0.7);
+  box-shadow: 0 24px 48px -20px rgba(0, 0, 0, 0.7), inset 0 1px 0 color-mix(in srgb, var(--text) 16%, transparent);
   opacity: 0;
   visibility: hidden;
   transform: translateY(-6px);
@@ -2705,7 +2707,8 @@ dialog.lightbox .lb-caption .lb-source:focus-visible { text-decoration: underlin
 
 /* ---------- 6. Footer ---------- */
 footer.site {
-  border-top: 1px solid var(--line);
+  border-top: 0;
+  box-shadow: inset 0 1px 0 var(--line);
   padding-block: var(--space-2xl) var(--space-l);
   font-size: var(--step--1);
   color: var(--text-dim);

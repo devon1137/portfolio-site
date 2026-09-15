@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>business card source</title>
+<link rel="stylesheet" href="../css/style.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+<style>
+  /* US business card, 3.5 x 2 in, plus 0.125 in bleed on every side: each
+     page is 3.75 x 2.25 in, trim is the inner 3.5 x 2, and everything that
+     matters stays inside the 0.125 in safe zone within the trim. Built by
+     tools/build-card.ps1 (headless Edge print-to-pdf, page 1 front, page 2
+     back), served from the preview server so the site's tokens resolve. */
+  @page { size: 3.75in 2.25in; margin: 0; }
+  html, body { margin: 0; background: #888; }
+  .sheet { width: 3.75in; height: 2.25in; position: relative; overflow: hidden; break-after: page; color: var(--text); isolation: isolate; }
+  .sheet:last-child { break-after: auto; }
+  @media screen { .sheet { margin: 0.25in auto; box-shadow: 0 0 0 1px #000; } }
+
+  /* Trim/safe guides: screen only, so the PDF is clean */
+  .guide { position: absolute; pointer-events: none; border: 1px dashed rgba(255, 0, 0, 0.5); }
+  .guide.trim { inset: 0.125in; }
+  .guide.safe { inset: 0.25in; border-color: rgba(0, 200, 255, 0.5); }
+  @media print { .guide { display: none; } }
+
+  .hex::before {
+    content: ""; position: absolute; inset: -40%; z-index: -1; pointer-events: none;
+    background-image: var(--hex-tile); background-size: 19.05px 33px;   /* half the site's tile: reads as texture at card scale */
+    transform: rotate(30deg);
+    -webkit-mask-image: radial-gradient(ellipse 60% 55% at 40% 35%, #000 20%, transparent 100%);
+            mask-image: radial-gradient(ellipse 60% 55% at 40% 35%, #000 20%, transparent 100%);
+    opacity: 0.8;
+  }
+  .rule { position: absolute; left: 0; right: 0; bottom: 0; height: 0.195in; background: var(--amber); }   /* 0.07in shows after the 0.125in bleed is trimmed */
+
+  /* ---- Front: the share card ---- */
+  .front { background: var(--pine-gradient); }
+  .front .inner { position: absolute; inset: 0.25in 0.25in 0.3in; display: flex; align-items: center; gap: 0.22in; }
+  .front .photo {
+    width: 1.15in; height: 1.15in; flex: none; object-fit: cover;
+    border-radius: 0.07in; border: 1px solid rgba(237, 230, 214, 0.35);
+  }
+  .front .eyebrow { margin: 0 0 0.05in; font-family: var(--font-mono); font-size: 6.2pt; letter-spacing: 0.16em; text-transform: uppercase; color: var(--amber); }
+  .front .name { margin: 0; font-family: var(--font-serif); font-size: 21pt; line-height: 1; letter-spacing: -0.01em; color: var(--text); white-space: nowrap; }
+  .front .name span { color: var(--amber); }
+  .front .tag { margin: 0.08in 0 0; font-family: var(--font-sans); font-size: 7.6pt; line-height: 1.4; color: #C0BBAC; }
+
+  /* ---- Back: the details, stone ---- */
+  .back { background: linear-gradient(175deg, #22221D 0%, #1A1A16 100%); }
+  .back::before { opacity: 0.55; }
+  .back .inner { position: absolute; inset: 0.25in 0.25in 0.3in; display: flex; align-items: center; justify-content: space-between; gap: 0.2in; }
+  .back .details { list-style: none; margin: 0; padding: 0; }
+  .back .details li { display: grid; grid-template-columns: 0.48in 1fr; gap: 0.08in; white-space: nowrap; align-items: baseline; font-family: var(--font-sans); font-size: 7.4pt; line-height: 1.35; color: var(--text); }
+  .back .details li + li { margin-top: 0.055in; }
+  .back .details .k { font-family: var(--font-mono); font-size: 5.6pt; letter-spacing: 0.14em; text-transform: uppercase; color: var(--amber); }
+  .back .wordmark { margin: 0 0 0.1in; font-family: var(--font-serif); font-size: 11pt; line-height: 1; color: var(--text); }
+  .back .wordmark span { color: var(--amber); }
+  /* QR: dark modules on a cream tile so every scanner reads it; the tile's
+     quiet zone is the padding. Links to the site. */
+  .qr { width: 1.0in; height: 1.0in; padding: 0.07in; background: #F0E8D8; border-radius: 0.06in; box-sizing: border-box; }
+  .qr svg { display: block; width: 100%; height: 100%; }
+  .qr-col { flex: none; display: flex; flex-direction: column; align-items: center; gap: 0.05in; }
+  .qr-label { margin: 0; font-family: var(--font-mono); font-size: 5.2pt; letter-spacing: 0.1em; text-transform: uppercase; color: #C0BBAC; }
+</style>
+</head>
+<body>
+
+<section class="sheet front hex">
+  <div class="inner">
+    <img class="photo" src="../images/devon-kubacki.webp" alt="">
+    <div>
+      <p class="eyebrow">Presque Isle, Maine &middot; Remote</p>
+      <h1 class="name">Devon<span>.</span>Kubacki</h1>
+      <p class="tag">I build the site, write the content, and make the sale. Web development, SEO content, sales, and marketing operations.</p>
+    </div>
+  </div>
+  <div class="rule"></div>
+  <div class="guide trim"></div><div class="guide safe"></div>
+</section>
+
+<section class="sheet back hex">
+  <div class="inner">
+    <div>
+      <p class="wordmark">Devon<span>.</span>Kubacki</p>
+      <ul class="details">
+        <li><span class="k">Email</span><span>devon.kubacki@gmail.com</span></li>
+        <li><span class="k">Phone</span><span>(401) 744-8123</span></li>
+        <li><span class="k">Web</span><span>devonkubacki.netlify.app</span></li>
+        <li><span class="k">LinkedIn</span><span>linkedin.com/in/devon-kubacki</span></li>
+        <li><span class="k">GitHub</span><span>github.com/devon1137</span></li>
+      </ul>
+    </div>
+    <div class="qr-col"><div class="qr" id="qr"></div><p class="qr-label">Scan for the portfolio</p></div>
+  </div>
+  <div class="rule"></div>
+  <div class="guide trim"></div><div class="guide safe"></div>
+</section>
+
+<script>
+  // QR for the site URL. Error correction M, dark modules in the site's ink.
+  const q = qrcode(0, 'M');
+  q.addData('https://devonkubacki.netlify.app/');
+  q.make();
+  const n = q.getModuleCount();
+  let d = '';
+  for (let r = 0; r < n; r++) for (let c = 0; c < n; c++) if (q.isDark(r, c)) d += `M${c} ${r}h1v1h-1z`;
+  document.getElementById('qr').innerHTML = `<svg viewBox="0 0 ${n} ${n}" shape-rendering="crispEdges"><path d="${d}" fill="#1A1A16"/></svg>`;
+</script>
+</body>
+</html>

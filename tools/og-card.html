@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>og-card source</title>
+<link rel="stylesheet" href="../css/style.css">
+<style>
+  /* 1200×630 share card. Built by tools/build-og.ps1 (headless Edge screenshot),
+     served from the preview server so the site stylesheet's tokens resolve.
+     The ground is the hero: forest gradient, honeycomb, blinks frozen off. */
+  html, body { margin: 0; width: 1200px; height: 630px; overflow: hidden; }
+  body { background: var(--ink); }
+  .card {
+    position: relative; width: 1200px; height: 630px; overflow: hidden;
+    background: var(--pine-gradient);
+    color: var(--text);
+    isolation: isolate;
+  }
+  .card::before {
+    content: ""; position: absolute; inset: -40%; z-index: -1; pointer-events: none;
+    background-image: var(--hex-tile); background-size: 38.105px 66px;
+    transform: rotate(30deg);
+    -webkit-mask-image: radial-gradient(ellipse 60% 55% at 40% 35%, #000 20%, transparent 100%);
+            mask-image: radial-gradient(ellipse 60% 55% at 40% 35%, #000 20%, transparent 100%);
+    opacity: 0.8;
+  }
+  .card::after {
+    content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 10px;
+    background: var(--amber);
+  }
+  .inner { position: absolute; inset: 0; display: flex; align-items: center; gap: 72px; padding: 0 96px; }
+  .photo {
+    width: 340px; height: 340px; flex: none; object-fit: cover;
+    border-radius: 18px; border: 2px solid rgba(237, 230, 214, 0.3);
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
+  }
+  .eyebrow { margin: 0 0 14px; font-family: var(--font-mono); font-size: 20px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--amber); }
+  .name { margin: 0; font-family: var(--font-serif); font-size: 84px; line-height: 1; letter-spacing: -0.01em; color: var(--text); }
+  .name span { color: var(--amber); }
+  .tag { margin: 26px 0 0; font-family: var(--font-sans); font-size: 30px; line-height: 1.4; color: #C0BBAC; max-width: 600px; }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="inner">
+    <img class="photo" src="../images/devon-kubacki.webp" alt="">
+    <div>
+      <p class="eyebrow">Presque Isle, Maine &middot; Remote</p>
+      <h1 class="name">Devon<span>.</span>Kubacki</h1>
+      <p class="tag">I build the site, write the content, and make the sale. Web development, SEO content, sales, and marketing operations.</p>
+    </div>
+  </div>
+</div>
+</body>
+</html>

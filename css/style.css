@@ -2206,14 +2206,28 @@ section.band.toc-band { padding-block: var(--space-l); }
 
 /* ---------- Resume (resume.html; the PDF is printed from this page) ---------- */
 .resume .actions { margin-top: var(--space-l); display: flex; gap: var(--space-s); flex-wrap: wrap; }
+/* On screen the resume is the same stone glass block as the case studies
+   and writing samples; the "paper" tokens only turn light under @media
+   print, where the PDF is made. */
 .cv {
-  --paper: #F4EFE4; --ink-on-paper: #1B1F1D; --dim-on-paper: #5B574D; --rule-on-paper: #D9D1C0;
+  --ink-on-paper: var(--text); --dim-on-paper: var(--text-dim); --rule-on-paper: var(--line-strong);
   max-width: 52rem; margin: 0 auto;
   padding: clamp(1.75rem, 1rem + 3vw, 3.5rem);
-  background: var(--paper); color: var(--ink-on-paper);
+  color: var(--ink-on-paper);
   border-radius: var(--radius-m);
-  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
+  background: color-mix(in srgb, var(--ink-2) 78%, transparent);
+  border: 1px solid color-mix(in srgb, var(--text) 18%, transparent);
+  box-shadow:
+    0 24px 60px rgba(0, 0, 0, 0.35),
+    inset 0 1px 0 color-mix(in srgb, var(--text) 14%, transparent);
   font-size: 0.95rem; line-height: 1.5;
+}
+@supports (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px)) {
+  .cv {
+    background: color-mix(in srgb, var(--ink-2) 62%, transparent);
+    -webkit-backdrop-filter: blur(14px) saturate(120%);
+    backdrop-filter: blur(14px) saturate(120%);
+  }
 }
 .cv a { color: inherit; text-decoration-color: var(--rule-on-paper); text-underline-offset: 2px; }
 .cv a:hover { color: var(--amber); }
@@ -2245,8 +2259,9 @@ section.band.toc-band { padding-block: var(--space-l); }
 }
 @media print {
   .resume .band, .resume .page-intro { padding: 0 !important; border: 0 !important; background: #fff !important; }
+  .resume .grid-bg::before { display: none; }   /* no honeycomb on paper */
   .resume .wrap { max-width: none; padding: 0; }
-  .cv { max-width: none; margin: 0; padding: 0; background: #fff; color: #000; border-radius: 0; box-shadow: none; font-size: 10.25pt; line-height: 1.4; --dim-on-paper: #444; --rule-on-paper: #bbb; --ink-on-paper: #000; }
+  .cv { max-width: none; margin: 0; padding: 0; background: #fff; color: #000; border: 0; border-radius: 0; box-shadow: none; -webkit-backdrop-filter: none; backdrop-filter: none; font-size: 10.25pt; line-height: 1.4; --dim-on-paper: #444; --rule-on-paper: #bbb; --ink-on-paper: #000; }
   .cv-name { font-size: 22pt; }
   .cv-head { flex-direction: row; flex-wrap: nowrap; }
   .cv-contact { text-align: right; }

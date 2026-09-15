@@ -2025,14 +2025,17 @@ section.band.toc-band { padding-block: var(--space-l); }
 .reading .content-note strong { color: var(--text); }
 .entries .content-flag { color: var(--text-dim); }
 /* The text sits in a frosted-glass card spanning the content column; inside it
-   the copy keeps a reading measure, centred, while tables use the full card. */
+   the copy keeps a reading measure, centred, while tables use the full card.
+   The glass is stone (--ink-2), not the earth band's own surface, so it
+   matches the TOC rail beside it, which sits outside the band and takes
+   the root tokens. */
 .reading-text {
   max-width: none;
   font-size: var(--step-0);
   line-height: 1.75;
   padding: clamp(1.5rem, 1rem + 3vw, 3.5rem);
   border-radius: var(--radius-m);
-  background: color-mix(in srgb, var(--surface) 55%, transparent);
+  background: color-mix(in srgb, var(--ink-2) 78%, transparent);
   border: 1px solid color-mix(in srgb, var(--text) 18%, transparent);
   box-shadow:
     0 24px 60px rgba(0, 0, 0, 0.35),
@@ -2040,7 +2043,7 @@ section.band.toc-band { padding-block: var(--space-l); }
 }
 @supports (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px)) {
   .reading-text {
-    background: color-mix(in srgb, var(--surface) 38%, transparent);
+    background: color-mix(in srgb, var(--ink-2) 62%, transparent);
     -webkit-backdrop-filter: blur(14px) saturate(120%);
     backdrop-filter: blur(14px) saturate(120%);
   }

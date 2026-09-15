@@ -387,7 +387,13 @@ nav.primary .sub-toggle {
 }
 nav.primary .sub-toggle::before { content: ""; width: 0.4rem; height: 0.4rem; border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor; transform: translateY(-2px) rotate(45deg); }
 nav.primary .has-sub:hover .sub-toggle, nav.primary .sub-toggle[aria-expanded="true"] { color: var(--text); }
+/* The caret flips whenever the panel is showing: the click-open state, and on
+   desktop also hover / focus-within (which is what opens the panel there). */
 nav.primary .sub-toggle[aria-expanded="true"] { transform: rotate(180deg); }
+@media (min-width: 721px) {
+  nav.primary .has-sub:hover .sub-toggle,
+  nav.primary .has-sub:focus-within .sub-toggle { transform: rotate(180deg); }
+}
 nav.primary .submenu {
   list-style: none;
   position: absolute;

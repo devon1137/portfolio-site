@@ -21,20 +21,20 @@
 /* ---------- 1. Tokens ---------- */
 :root {
   /* Palette */
-  --ink: #15171C;          /* near-black, a hair cool so it belongs with the blues */
-  --ink-2: #1D2027;
-  /* Alternate band: indigo, drawn as a top-to-bottom gradient. --slate is
+  --ink: #161816;          /* near-black with a breath of green: the forest floor at night */
+  --ink-2: #1F221E;
+  /* Alternate band: desert earth, drawn as a top-to-bottom gradient. --slate is
      the mid value for flat uses (halos, mixes). */
-  --slate-hi: #232449;     /* Intelligence: indigo. Analogous to the navy. */
-  --slate: #1A1B38;
-  --slate-lo: #0F1024;
-  --slate-2: #2A2B55;     /* raised elements on the band (frames, cards) */
+  --slate-hi: #3D2A1C;     /* Gerudo: desert earth, umber to burnt sand. The warm ground. */
+  --slate: #2C1E14;
+  --slate-lo: #1A120B;
+  --slate-2: #4A3524;     /* raised elements on the band (frames, cards) */
   --slate-gradient: linear-gradient(175deg, var(--slate-hi) 0%, var(--slate-lo) 100%);
   --rust: #B23D17;        /* errors only (form validation) */
   --pine: #2F6F5E;
   --mint: #5DBFA0;        /* pine lifted for glows on slate (Recent Work honeycomb) */
-  --amber: #D9A63E;       /* the accent: 6.3:1 on slate, 8:1 on ink */
-  --amber-bright: #E6B54B; /* solid-button hover */
+  --amber: #E0B23F;       /* Triforce gold: the accent, warmer than the earth band so it reads on both grounds */
+  --amber-bright: #F0C455; /* solid-button hover */
   --rule: #8A7F68;
 
   /* Surface tokens — the .on-slate band flips these, so components
@@ -86,38 +86,39 @@
   --font-mono: ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
 }
 
-/* Palette: navy (trust) for the hero/intros/footer, indigo (intelligence) for
-   the alternating bands, amber (hard work) as the accent. Navy and indigo are
-   analogous; amber is their complement; ink is the neutral ground. The token
-   names (--pine-*, --slate-*) are historical; the values are what matter. */
+/* Palette, Hyrule edition: Kokiri forest green (hero, intros, footer), Gerudo
+   desert earth (alternating bands), Triforce gold (accent), on a night-forest
+   near-black. Muted green and muted orange-brown are the warm/cool complement
+   of earth palettes; gold sits between them. Token names (--pine-*, --slate-*)
+   are historical; the values are what matter. */
 :root {
-  --pine-hi: #1B2D55;      /* Trust: navy. Hero, page intros, footer. */
-  --pine-mid: #142242;
-  --pine-lo: #0B1328;
-  --pine-2: #22376A;      /* raised elements on the band (cards) */
+  --pine-hi: #1F3B2B;      /* Kokiri: forest green. Hero, page intros, footer. The cool ground. */
+  --pine-mid: #16291F;
+  --pine-lo: #0D1A13;
+  --pine-2: #264A36;      /* raised elements on the band (cards) */
   --pine-gradient: linear-gradient(175deg, var(--pine-hi) 0%, var(--pine-lo) 100%);
 }
 .on-pine {
   --surface: var(--pine-mid);
   --surface-2: var(--pine-2);
   --text: #EDE6D6;
-  --text-dim: #B6B8C4;
+  --text-dim: #B9B5A6;
   --line: rgba(237, 230, 214, 0.14);
   --line-strong: rgba(237, 230, 214, 0.3);
   --accent: var(--amber);
   background: var(--pine-gradient);
   color: var(--text);
 }
-.hero, .page-intro { --surface: var(--pine-mid); --surface-2: var(--pine-2); --text-dim: #B6B8C4; background: var(--pine-gradient); color: var(--text); }
-footer.site { --surface: var(--pine-mid); --surface-2: var(--pine-2); --text-dim: #B6B8C4; background: var(--pine-gradient); }
+.hero, .page-intro { --surface: var(--pine-mid); --surface-2: var(--pine-2); --text-dim: #B9B5A6; background: var(--pine-gradient); color: var(--text); }
+footer.site { --surface: var(--pine-mid); --surface-2: var(--pine-2); --text-dim: #B9B5A6; background: var(--pine-gradient); }
 
 .on-slate {
   --surface: var(--slate);
   --surface-2: var(--slate-2);
-  --text: #E8EAED;
-  --text-dim: #A9B1BB;
-  --line: rgba(232, 234, 237, 0.12);
-  --line-strong: rgba(232, 234, 237, 0.28);
+  --text: #F0E8D8;
+  --text-dim: #C4B7A2;
+  --line: rgba(240, 232, 216, 0.14);
+  --line-strong: rgba(240, 232, 216, 0.3);
   --accent: var(--amber);
   background: var(--slate-gradient);
   color: var(--text);

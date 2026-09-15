@@ -2341,12 +2341,16 @@ section.band.toc-band { padding-block: var(--space-l); }
    rail alongside. */
 .gallery-group > h2,
 .category-intro.gallery-intro { max-width: none; }   /* title and intro run the grid's full width */
-.gallery-group > h2 { margin-bottom: var(--space-xl); }
-.gallery-group + .gallery-group {
+.gallery-group > h2, .work-group > h2 { margin-bottom: var(--space-xl); }
+.gallery-group + .gallery-group, .work-group + .work-group {
   margin-top: var(--space-2xl);
   padding-top: var(--space-2xl);
   border-top: 1px solid var(--line-strong);
 }
+.work-group > h2 { max-width: 22ch; }
+/* In the block, the entries list keeps its last row's padding as the gap
+   above the rule (the band-edge pull-up would put the rule through it). */
+.work-text .entries { margin-bottom: 0; }
 .gallery-grid {
   display: grid;
   margin-top: var(--space-xl);

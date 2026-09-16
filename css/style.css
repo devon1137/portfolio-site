@@ -2693,6 +2693,30 @@ dialog.lightbox .lb-caption .lb-source:focus-visible { text-decoration: underlin
 .compare .cta-row td { padding-top: var(--space-m); }
 .compare .cta-row .btn { width: 100%; justify-content: center; }
 .compare-note { margin-top: var(--space-m); font-size: var(--step--1); }
+/* What's the same on both, pulled out of the table so the rows above
+   are only the differences. */
+.compare-shared { margin-top: var(--space-s); padding: var(--space-m) 1rem var(--space-s); border-top: 1px solid var(--line-strong); }
+.compare-shared h3 { font-size: var(--step-0); margin-bottom: var(--space-s); }
+.compare-shared ul { list-style: none; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr)); gap: 0.35rem var(--space-l); font-size: var(--step--1); }
+.compare-shared li { position: relative; padding-left: 1.4rem; }
+.compare-shared li::before { content: "✓"; position: absolute; left: 0; color: var(--pine); font-weight: 600; }
+/* "Recommended": a gold pill above the Launch column header, and riding
+   the top border of the Launch card. */
+.rec-badge {
+  display: inline-block;
+  padding: 0.2rem 0.6rem;
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink);
+  background: var(--accent);
+  border-radius: var(--radius-s);
+  white-space: nowrap;
+}
+.compare thead th.rec .rec-badge { display: inline-block; margin-bottom: 0.5rem; }
+.pkg.rec > .rec-badge { position: absolute; top: 0; left: 50%; transform: translate(-50%, -50%); z-index: 2; }
 @media (max-width: 700px) { .compare-wrap { padding-inline: var(--space-s); } .compare th, .compare td { padding-inline: 0.6rem; } .compare tbody th { width: 6rem; } .compare td.yes { padding-left: 1.7rem; } .compare td.yes::before { left: 0.6rem; } }
 /* Phones: stack. Each row becomes its label, then the two answers, each
    prefixed with the package (and price, since the header row is gone). */

@@ -107,7 +107,9 @@ portfolio-opt-out checkboxes, printed name, typed signature, the date they picke
 (a UTC timestamp set on submit), and `countersign_url` — a link that reopens the page in
 **countersign mode** with every answer prefilled and locked, Devon's signature and the effective
 date as inputs, and Print / Save as PDF as the only action. Open it from the notification email,
-sign, set the date, print to PDF, email the client. A honeypot field (`bot-field`) filters basic spam.
+sign, set the date, print to PDF, email the client. The prefill lasts seven days from the
+client's signature; after that the link opens countersign mode empty (the submission is still in
+the Netlify Forms dashboard). Clients type their email twice; the success message echoes it back. A honeypot field (`bot-field`) filters basic spam.
 
 **Changing the terms:** the numbers on `services.html` (prices, deposit split, the footer-credit and own-copy discounts,
 $60/hour, restart and cancellation fees) mirror the agreement's Section 3, and the How It Works

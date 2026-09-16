@@ -351,24 +351,35 @@ document.addEventListener('DOMContentLoaded', () => {
     // ---- Countersign mode (?countersign=1, the link in a submission) ----
     // The client's answers arrive in the URL and are locked; Devon's
     // signature and the effective date become inputs; the only action
-    // left is Print / Save as PDF.
+    // left is Print / Save as PDF. The prefill works for seven days from
+    // the client's signature; after that the mode still opens, but empty,
+    // and the note says where the submission lives.
     const csq = new URLSearchParams(location.search);
     if (csq.get('countersign') === '1') {
+      const signedAt = Date.parse(csq.get('signed_at') || '');
+      const expired = !!signedAt && Date.now() - signedAt > 7 * 864e5;
       agreement.classList.add('countersign');
-      csq.forEach((v, n) => {
-        const el = agreement.elements[n];
-        if (!el || n === 'countersign') return;
-        if (el.type === 'checkbox') el.checked = v === 'yes';
-        else if (el instanceof RadioNodeList) el.value = v;
-        else el.value = v;
-      });
-      [...agreement.querySelectorAll('input[name="package"], input[name="footer_credit"], input[name="own_copy"], input[name="agree"]')]
-        .forEach((el) => { el.disabled = true; });
-      agreement.elements.agree.checked = true;
-      ['client_business', 'client_email', 'client_phone', 'client_printed_name', 'client_signature', 'client_date']
-        .forEach((n) => { agreement.elements[n].readOnly = true; });
+      if (!expired) {
+        csq.forEach((v, n) => {
+          const el = agreement.elements[n];
+          if (!el || n === 'countersign') return;
+          if (el.type === 'checkbox') el.checked = v === 'yes';
+          else el.value = v;
+        });
+        [...agreement.querySelectorAll('input[name="package"], input[name="footer_credit"], input[name="own_copy"], input[name="agree"]')]
+          .forEach((el) => { el.disabled = true; });
+        agreement.elements.agree.checked = true;
+        ['client_business', 'client_email', 'client_phone', 'client_printed_name', 'client_signature', 'client_date']
+          .forEach((n) => { agreement.elements[n].readOnly = true; });
+      } else {
+        history.replaceState(null, '', `${location.pathname}?countersign=1`);
+      }
       document.querySelectorAll('[data-mode="client"]').forEach((el) => { el.hidden = true; });
       document.querySelectorAll('[data-mode="countersign"]').forEach((el) => { el.hidden = false; });
+      if (expired) {
+        document.querySelector('.page-intro [data-mode="countersign"]').hidden = true;
+        document.querySelectorAll('[data-mode="expired"]').forEach((el) => { el.hidden = false; });
+      }
       submitBtn.hidden = true;
       agreement.querySelector('[data-print]')?.classList.add('solid');
       // Effective date follows the developer date field.
@@ -400,7 +411,11 @@ document.addEventListener('DOMContentLoaded', () => {
       const match = sig.value.trim() !== '' && sigMatches();
       sig.classList.toggle('invalid', !match);
       sigError.classList.toggle('show', !match && sig.value.trim() !== '');
-      return ok && match;
+      // The countersigned copy goes to the email they typed; make them type it twice.
+      const em = agreement.elements.client_email, em2 = agreement.elements.client_email_confirm;
+      const emailOk = !em2 || em2.readOnly || em.value.trim().toLowerCase() === em2.value.trim().toLowerCase();
+      if (em2) { em2.classList.toggle('invalid', !emailOk); agreement.querySelector('.field-error[data-for="client_email_confirm"]').classList.toggle('show', !emailOk); }
+      return ok && match && emailOk;
     };
     [printed, sig].forEach((el) => el.addEventListener('input', () => {
       if (sig.classList.contains('invalid')) { sig.classList.toggle('invalid', !sigMatches()); sigError.classList.toggle('show', !sigMatches()); }
@@ -435,6 +450,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         status.textContent = '';
+        done.querySelector('[data-echo-email]').textContent = agreement.elements.client_email.value.trim();
         done.classList.add('show');
         agreement.querySelectorAll('input, button').forEach((el) => { if (el.type !== 'button') el.readOnly = true; });
         submitBtn.hidden = true;

@@ -91,6 +91,7 @@
       <h1><span data-pkg-name>Foundation Package</span></h1>
       <p class="note" data-mode="client">Pick your package in Section 2, fill in your details in Section 1, tick any options that apply, and type your full name at the bottom to sign. I'll countersign and email you a copy for your records. Not sure yet? <a href="services.html">See what's in each package</a> first.</p>
       <p class="note" data-mode="countersign" hidden>Countersigning. The client's answers are locked as submitted; type your name and set the effective date at the signatures, then print or save as PDF and email them the copy.</p>
+      <p class="note" data-mode="expired" hidden>This countersign link has expired: they work for seven days from the client's signature. The submission itself is kept in the Netlify Forms dashboard; open it there for the details, then fill this page in by hand and print.</p>
     </div>
   </section>
 
@@ -116,6 +117,8 @@
             <h3>Client</h3>
             <label class="field"><span>Business or full name</span><input type="text" name="client_business" autocomplete="organization" required></label>
             <label class="field"><span>Email</span><input type="email" name="client_email" autocomplete="email" required></label>
+            <label class="field" data-mode="client"><span>Confirm email (this is where your countersigned copy goes)</span><input type="email" name="client_email_confirm" autocomplete="off" required>
+              <span class="field-error" data-for="client_email_confirm">These two emails don't match — check for a typo.</span></label>
             <label class="field"><span>Phone</span><input type="tel" name="client_phone" autocomplete="tel" required></label>
           </div>
         </div>
@@ -323,7 +326,7 @@
 
           <div class="form-done" role="status">
             <div class="mark">Signed and sent.</div>
-            <p>Thanks. I've received your signed agreement and will countersign and email you a copy, along with the deposit invoice, within two business days. You can print this page now for your own records.</p>
+            <p>Thanks. I've received your signed agreement and will countersign and email a copy to <b data-echo-email></b>, along with the deposit invoice, within two business days. If that address is wrong, email me at devon.kubacki@gmail.com now and I'll send it to the right one. You can print this page now for your own records.</p>
           </div>
         </div>
     </div></div>

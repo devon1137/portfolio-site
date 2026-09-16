@@ -2834,6 +2834,17 @@ dialog.lightbox .lb-caption .lb-source:focus-visible { text-decoration: underlin
 /* The form spans three bands (parties on stone, the numbered terms on
    earth, signatures on stone); each band's .body carries the measure. */
 .contract .body { max-width: 46rem; }
+/* The numbered terms (02–14) sit in a stone glass panel on the earth band. */
+.contract .body.stone {
+  padding: var(--space-xl) clamp(var(--space-l), 4vw, var(--space-2xl));
+  border: 1px solid var(--line);
+  border-radius: var(--radius-m);
+  background: color-mix(in srgb, var(--ink-2) 78%, transparent);
+  -webkit-backdrop-filter: blur(2px);
+          backdrop-filter: blur(2px);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04), 0 1px 2px rgba(0, 0, 0, 0.25), 0 12px 28px -18px rgba(0, 0, 0, 0.7);
+}
+.contract .body.stone > h2:first-child { margin-top: 0; padding-top: 0; border-top: 0; }
 .contract h2 {
   font-size: var(--step-2);
   margin-top: var(--space-2xl);

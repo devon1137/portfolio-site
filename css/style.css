@@ -3094,6 +3094,7 @@ dialog.lightbox .lb-caption .lb-source:focus-visible { text-decoration: underlin
 }
 .ask textarea:focus { outline: none; border-color: var(--accent); }
 .ask textarea[readonly] { color: var(--text-dim); }
+.ask textarea::placeholder, .questionnaire .field input::placeholder { color: var(--text-dim); opacity: 0.55; }
 .questionnaire .field-row { gap: 0 var(--space-xl); }
 .questionnaire h3 + .pkg-pick { margin-top: var(--space-s); }
 

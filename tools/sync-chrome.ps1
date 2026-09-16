@@ -77,6 +77,21 @@ function StampSchema([string]$c, [string]$rendered) {
   $c.Substring(0, $i) + "`n" + $rendered + $c.Substring($i)
 }
 
+# The questionnaire's "or pick a slot yourself" line, between <!--booking-->
+# markers, from "booking_url" in tools/site.json (a Calendly or similar link;
+# plain link, nothing third-party loads on the page). A comment while unset.
+$booking = ([string]$site.booking_url).Trim()
+function RenderBooking() {
+  if (-not $booking) { return '<!--booking--><!-- "or pick a slot yourself" link: set "booking_url" in tools/site.json --><!--/booking-->' }
+  $u = [Net.WebUtility]::HtmlEncode($booking)
+  "<!--booking--><p class=`"note`">Or skip the back-and-forth and <a href=`"$u`" target=`"_blank`" rel=`"noopener`">pick a slot yourself on Calendly</a> (opens their site in a new tab; nothing from Calendly loads here). Booked there? Still send this page, so I have your notes and the recording OK.</p><!--/booking-->"
+}
+function StampBooking([string]$c) {
+  $marked = [regex]'(?s)<!--booking-->.*?<!--/booking-->'
+  if (-not $marked.IsMatch($c)) { return $c }
+  $marked.Replace($c, ((RenderBooking) -replace '\$', '$$'), 1)
+}
+
 function Render([string]$src, [string]$pre, [string]$homeHref, [string]$page) {
   $out = $src
   if ($navPages -contains $page) {
@@ -114,6 +129,7 @@ foreach ($f in $targets) {
     $new = StampOg $new (RenderOg $path 'og-card.jpg')
     $sch = RenderSchema $f.Name $new
     if ($sch) { $new = StampSchema $new $sch }
+    $new = StampBooking $new
   }
   if ((Norm $new) -ne (Norm $c)) {
     $drift += $f.FullName.Replace($Root + '\', '')

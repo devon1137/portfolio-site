@@ -128,8 +128,9 @@ name `questionnaire`, so the same form-detection and notification setup covers i
 call" option in Section 1 swaps the questions for a booking block (phone or video, three date and
 time-of-day preferences, notes, a recording-consent box); the hidden half's fields are disabled so a
 submission carries only the chosen half. The questions are the interview script either way, and a
-blank print of the written version works as one. No calendar link yet; the email from the form is the
-booking. Every answer box has an example placeholder from one made-up plumbing business. The blog section (10)
+blank print of the written version works as one. Set `booking_url` in `tools/site.json` (a Calendly event link) and `sync-chrome.ps1` adds an "or pick a
+slot yourself" line under the dates: a plain link in a new tab, so nothing third-party loads on the page.
+Empty, the line is a comment and the form email is the booking. Every answer box has an example placeholder from one made-up plumbing business. The blog section (10)
 only shows for the Foundation Package. Linked from the agreement and mentioned in Services' How It
 Works step 2; `noindex`, disallowed in `robots.txt`, skipped by the sitemap.
 

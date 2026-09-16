@@ -103,8 +103,11 @@ One form covers both packages (a `package` radio picks Launch or Foundation). Su
    devon.kubacki@gmail.com, so each signed agreement lands in the inbox.
 
 Each submission includes the package, business name, email, phone, the agree, footer-credit and own-copy discount and
-portfolio-opt-out checkboxes, printed name, typed signature, the date they picked, and `signed_at`
-(a UTC timestamp set on submit). A honeypot field (`bot-field`) filters basic spam.
+portfolio-opt-out checkboxes, printed name, typed signature, the date they picked, `signed_at`
+(a UTC timestamp set on submit), and `countersign_url` — a link that reopens the page in
+**countersign mode** with every answer prefilled and locked, Devon's signature and the effective
+date as inputs, and Print / Save as PDF as the only action. Open it from the notification email,
+sign, set the date, print to PDF, email the client. A honeypot field (`bot-field`) filters basic spam.
 
 **Changing the terms:** the numbers on `services.html` (prices, deposit split, the footer-credit and own-copy discounts,
 $60/hour, restart and cancellation fees) mirror the agreement's Section 3, and the How It Works

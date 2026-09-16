@@ -348,6 +348,45 @@ document.addEventListener('DOMContentLoaded', () => {
       applyPkg();
     }
 
+    // ---- Countersign mode (?countersign=1, the link in a submission) ----
+    // The client's answers arrive in the URL and are locked; Devon's
+    // signature and the effective date become inputs; the only action
+    // left is Print / Save as PDF.
+    const csq = new URLSearchParams(location.search);
+    if (csq.get('countersign') === '1') {
+      agreement.classList.add('countersign');
+      csq.forEach((v, n) => {
+        const el = agreement.elements[n];
+        if (!el || n === 'countersign') return;
+        if (el.type === 'checkbox') el.checked = v === 'yes';
+        else if (el instanceof RadioNodeList) el.value = v;
+        else el.value = v;
+      });
+      [...agreement.querySelectorAll('input[name="package"], input[name="footer_credit"], input[name="own_copy"], input[name="agree"]')]
+        .forEach((el) => { el.disabled = true; });
+      agreement.elements.agree.checked = true;
+      ['client_business', 'client_email', 'client_phone', 'client_printed_name', 'client_signature', 'client_date']
+        .forEach((n) => { agreement.elements[n].readOnly = true; });
+      document.querySelectorAll('[data-mode="client"]').forEach((el) => { el.hidden = true; });
+      document.querySelectorAll('[data-mode="countersign"]').forEach((el) => { el.hidden = false; });
+      submitBtn.hidden = true;
+      agreement.querySelector('[data-print]')?.classList.add('solid');
+      // Effective date follows the developer date field.
+      const devDate = agreement.elements.developer_date;
+      const eff = document.querySelector('[data-effective]');
+      const showEff = () => {
+        eff.textContent = devDate.value
+          ? new Date(devDate.value + 'T00:00:00').toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
+          : 'to be entered below, at the signatures';
+      };
+      devDate.addEventListener('input', showEff);
+      if (!devDate.value) { const d = new Date(); devDate.value = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; }
+      showEff();
+      // Re-run the package/discount pass now that the answers are in, then title the tab.
+      agreement.elements.package.forEach?.((r) => r.dispatchEvent(new Event('change')));
+      document.title = `Countersign — ${document.title}`;
+    }
+
     const norm = (s) => s.trim().replace(/\s+/g, ' ').toLowerCase();
     const sigMatches = () => norm(sig.value) === norm(printed.value);
 
@@ -378,6 +417,14 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
       agreement.elements.signed_at.value = new Date().toISOString();
+      // A link that reopens this page in countersign mode with every answer
+      // filled in, so the submission email carries it and nothing needs
+      // retyping before printing the countersigned copy.
+      const carry = ['package', 'footer_credit', 'own_copy', 'client_business', 'client_email', 'client_phone',
+        'client_printed_name', 'client_signature', 'client_date', 'signed_at'];
+      const q = new URLSearchParams({ countersign: '1' });
+      carry.forEach((n) => { const el = agreement.elements[n]; const v = el && (el.type === 'checkbox' ? (el.checked ? 'yes' : '') : el.value); if (v) q.set(n, v); });
+      agreement.elements.countersign_url.value = `${location.origin}${location.pathname}?${q}`;
       submitBtn.disabled = true;
       status.textContent = 'Sending…';
       try {

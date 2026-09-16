@@ -89,13 +89,15 @@
     <div class="wrap">
       <p class="eyebrow">Web Design Services Agreement</p>
       <h1><span data-pkg-name>Foundation Package</span></h1>
-      <p class="note">Pick your package in Section 2, fill in your details in Section 1, tick any options that apply, and type your full name at the bottom to sign. I'll countersign and email you a copy for your records. Not sure yet? <a href="services.html">See what's in each package</a> first.</p>
+      <p class="note" data-mode="client">Pick your package in Section 2, fill in your details in Section 1, tick any options that apply, and type your full name at the bottom to sign. I'll countersign and email you a copy for your records. Not sure yet? <a href="services.html">See what's in each package</a> first.</p>
+      <p class="note" data-mode="countersign" hidden>Countersigning. The client's answers are locked as submitted; type your name and set the effective date at the signatures, then print or save as PDF and email them the copy.</p>
     </div>
   </section>
 
   <form class="contract" name="launch-agreement" method="POST" action="/agreement.html" data-netlify="true" netlify-honeypot="bot-field" data-agreement novalidate>
         <input type="hidden" name="form-name" value="launch-agreement">
         <input type="hidden" name="signed_at" value="">
+        <input type="hidden" name="countersign_url" value="">
         <p class="visually-hidden" aria-hidden="true"><label>Leave this field empty: <input name="bot-field" tabindex="-1" autocomplete="off"></label></p>
 
 
@@ -117,7 +119,8 @@
             <label class="field"><span>Phone</span><input type="tel" name="client_phone" autocomplete="tel" required></label>
           </div>
         </div>
-        <p class="note">Effective Date: to be filled in by Developer on countersigning.</p>
+        <p class="note" data-mode="client">Effective Date: to be filled in by Developer on countersigning.</p>
+        <p class="note" data-mode="countersign" hidden>Effective Date: <b data-effective>to be entered below, at the signatures</b></p>
 
     </div></div>
   </section>
@@ -293,8 +296,10 @@
             <div>
               <h3>Developer</h3>
               <span class="static"><span>Printed name</span><b>Devon Kubacki</b></span>
-              <span class="static"><span>Signature</span><b class="sig">Devon Kubacki</b></span>
-              <span class="static"><span>Date</span><b>On countersigning</b></span>
+              <span class="static" data-mode="client"><span>Signature</span><b class="sig">&nbsp;</b></span>
+              <label class="field" data-mode="countersign" hidden><span>Signature (type your full name)</span><input type="text" name="developer_signature" class="sig" autocomplete="off"></label>
+              <span class="static" data-mode="client"><span>Date</span><b>On countersigning</b></span>
+              <label class="field" data-mode="countersign" hidden><span>Date</span><input type="date" name="developer_date"></label>
             </div>
             <div>
               <h3>Client</h3>

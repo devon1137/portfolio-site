@@ -3013,6 +3013,7 @@ dialog.lightbox .lb-caption .lb-source:focus-visible { text-decoration: underlin
 .field input[type="email"],
 .field input[type="tel"],
 .field input[type="date"] {
+  color-scheme: dark;
   width: 100%;
   font: inherit;
   color: var(--text);
@@ -3040,6 +3041,7 @@ dialog.lightbox .lb-caption .lb-source:focus-visible { text-decoration: underlin
   padding: 0.45rem 0;
 }
 .field select:focus { outline: none; border-bottom-color: var(--accent); }
+.field select option { background: var(--ink-2); color: var(--text); }
 .check:has(input.invalid) { border-color: var(--rust); }
 .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-xl); }
 @media (max-width: 600px) { .field-row { grid-template-columns: 1fr; } }

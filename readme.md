@@ -1,101 +1,171 @@
 # Devon Kubacki — Portfolio
 
-Static site, no build step. Six pages (`index`, `about`, `projects` (labeled "Work" in the nav), `services`, `gallery`, `contact`) plus `agreement.html` (linked from Services and the home page, but `noindex`), one shared stylesheet, one shared script.
+Static site: plain HTML, one stylesheet, one script, no framework. Live at
+[devonkubacki.netlify.app](https://devonkubacki.netlify.app), deployed by Netlify from `main` on
+[github.com/devon1137/portfolio-site](https://github.com/devon1137/portfolio-site).
 
-`services.html` sells the Launch Package ($2,000 flat) and lists the other categories as by-quote. Its numbers (price, deposit split, $300 white-label, $60/hour, $150 restart, $500 cancellation) mirror the agreement — if you change a term in one place, change it in the other.
+There is no build step for the *site* — every page is committed as finished HTML — but the
+pages that repeat (case studies, writing samples, the Gallery, the nav submenus, the header and
+footer, the sitemap) are **generated from sources in `tools/`**. Edit the source, run the build,
+commit the result. Editing generated HTML by hand gets overwritten on the next build.
 
-The site covers four categories of work — web development, SEO & content, sales, and marketing & operations. `projects.html` is grouped by those categories; the home page shows one stat and one work card per category. Non-web work cards use a `.frame .metric` tile (a headline number) in place of a screenshot.
+## What's here
 
-## Deploy to Netlify
+| Page | What it is |
+|---|---|
+| `index.html` | Home: hero stats, What I Actually Do, Recent Work, Track Record, testimonial, Launch Package band |
+| `about.html` | Timeline and skills |
+| `projects.html` | **Work** index (case studies grouped by category) — "projects" is the historical filename |
+| `work/<slug>/index.html` | Ten case studies, **generated** from `tools/work-src/<slug>.html` |
+| `writing.html`, `writing/<slug>/index.html` | Writing samples (articles + fiction), **generated** from `tools/writing-src/` |
+| `gallery.html` | One band of screenshots per case study, **generated** from the case-study sources |
+| `services.html` | Launch Package ($2,000, WordPress) and Starter Site ($1,000, hand-coded), How It Works, terms, FAQ, by-quote services |
+| `agreement.html` | The signable contract for both packages (`noindex`, not in the nav) |
+| `resume.html` + `Devon-Kubacki-Resume.pdf` | Resume page; the PDF is printed from it |
+| `contact.html`, `privacy.html`, `terms.html`, `sitemap.html`, `404.html` | The rest |
+| `sitemap.xml`, `robots.txt`, `_headers` | Generated sitemap, robots, Netlify security headers |
 
-**Fastest way:** go to [app.netlify.com/drop](https://app.netlify.com/drop) and drag this whole folder in. You'll get a live URL in seconds.
+Four categories of work run through everything: web development, SEO & content, sales, and
+marketing & operations.
 
-**Git-based way:** push this folder to a GitHub repo, then in Netlify choose "Import an existing project" and point it at the repo. No build command needed, no publish directory needed (root is fine) — it's already plain HTML/CSS/JS.
+## Building
 
-Once deployed, add a custom domain under Site settings → Domain management if you want something other than the generated `*.netlify.app` address.
-
-## The Launch Package agreement (`agreement.html`)
-
-A fillable, signable version of the Launch Package contract. It's `noindex` and not in the nav, but linked from `services.html` and the home page's Launch Package band.
-
-Submissions go through **Netlify Forms**, which needs no backend: Netlify sees the `data-netlify="true"` form at deploy time and stores every submission. To finish setup after deploying:
-
-1. In the Netlify dashboard, open **Forms** — you should see a form named `launch-agreement`.
-2. Go to **Site configuration → Notifications → Form submission notifications** and add an email notification to devon.kubacki@gmail.com so each signed agreement lands in your inbox.
-3. Each submission includes: business name, email, phone, the white-label and portfolio-opt-out checkboxes, printed name, typed signature, the date they picked, and `signed_at` (a UTC timestamp set at the moment they clicked submit).
-
-The free tier allows 100 submissions/month. A honeypot field (`bot-field`) filters basic spam.
-
-**Local testing:** the local preview server answers POSTs with a 200, so the success state shows locally, but nothing is stored. Real submissions only work on the deployed Netlify site.
-
-**Changing the contract:** edit the text in `agreement.html` directly. The dollar amounts in Section 3 are plain text (not fields), so update them there. If you add a new input, give it a `name` and Netlify will pick it up automatically.
-
-## Screenshots
-
-`images/` holds 1440×900 WebP captures of the hotel and IgnitePI sites. They were taken with `../tools/screenshot-sites.ps1`, which drives headless Edge over the DevTools protocol (no Python or Node needed on Windows), strips the hotel's cookie banner before capturing, and writes WebP directly. To refresh them after a site changes:
-
-```
-powershell -ExecutionPolicy Bypass -File ..\tools\screenshot-sites.ps1
+```powershell
+.\tools\build.ps1
 ```
 
-Edit the `$shots` list at the top to add or change pages. Anything over ~100KB is worth re-running at a lower `-Quality`.
+That's the one command. In order it runs:
 
-LD Maker Co. isn't in the gallery (the business is on hold). If it comes back, add a figure for it and capture the storefront with the script.
+1. `sync-chrome.ps1` — stamps the shared header and footer (`tools/chrome/header.html`, `footer.html`)
+   into every page, then `sync-nav.ps1` fills the Work and Writing submenus from the sources.
+2. `build-work.ps1` — `work/<slug>/index.html` from `tools/work-src/`, in `tools/work-order.txt` order.
+3. `build-writing.ps1` — `writing/<slug>/index.html` and the list on `writing.html`, in `tools/writing-order.txt` order.
+4. `build-gallery.ps1` — Gallery bands from the case studies' own gallery sections.
+5. `build-sitemap.ps1` — `sitemap.xml` (and the `Sitemap:` line in `robots.txt`).
+6. `sync-chrome.ps1 -Check` — fails if anything is still out of sync.
 
-### Adding a screenshot by hand
+Everything is PowerShell 5.1 and headless Edge; no Node, Python, or ImageMagick needed on Windows.
 
-Each placeholder frame shows the exact filename it expects, e.g. `images/ldmakerco-store.webp`. To swap one in:
+### Adding a case study
 
-1. Take a screenshot and drop the raw file somewhere (e.g. `raw/hotel-home.png`).
-2. Run it through the optimizer:
-   ```
-   ../tools/optimize-images.sh raw/hotel-home.png images/hotel-home.webp
-   ```
-   This resizes to a sane max width and re-encodes to WebP, and warns you if it's still over 100KB.
-3. In the HTML, replace:
-   ```html
-   <div class="pending">Screenshot pending<code>images/hotel-home.webp</code></div>
-   ```
-   with:
-   ```html
-   <img class="shot" src="images/hotel-home.webp" alt="The Northeastland Hotel homepage" loading="lazy">
-   ```
-4. On `gallery.html` only, also add `data-full="images/hotel-home.webp"` to the surrounding `<figure>` tag. `script.js` picks that up, makes the tile keyboard-focusable, and opens it in the native `<dialog>` lightbox on click / Enter / Space.
+1. Write `tools/work-src/<slug>.html`: a JSON `<!--meta … -->` block (slug, title, category, dates,
+   lede, description, role, timeline, stack, links, group) followed by top-level `<section>`s with
+   `data-title` for the table of contents. Copy an existing one; `build-work.ps1`'s header documents every field.
+2. Add the slug to `tools/work-order.txt` where it should appear.
+3. Drop images in (see below), run `.\tools\build.ps1`, commit `tools/`, `work/`, `gallery.html`,
+   `sitemap.xml`, and the pages the nav sync touched.
 
-## Design system notes
+Writing samples work the same way with `tools/writing-src/`, `tools/writing-order.txt`, and
+`build-writing.ps1` (fields: kind, source, published, archived, case, note, content).
 
-`css/style.css` is organized as tokens → base → layout → components → footer. A few conventions worth knowing before editing:
+### Things not in `build.ps1` (binaries that only change when their source does)
 
-- **Surface tokens flip inside `.on-slate`.** Components only reference `--surface`, `--text`, `--text-dim`, `--line`, and `--accent`. Wrapping any band in `.on-slate` swaps the whole palette to the dark grey-blue variant with no per-component overrides. (This band was cream "paper" originally; the token structure is what made the swap a one-block change.)
-- **Type and space are fluid.** Use `--step-*` for font sizes and `--space-*` for margins/padding rather than raw rem values, so everything scales together between 360px and 1240px viewports.
-- **No inline styles.** If a one-off needs styling, add a class; there are `.dim`, `.measure`, and `.eyebrow` helpers for the common cases.
-- The blueprint grid is drawn on `.grid-bg::before` and masked toward the edges, so it fades rather than tiling flat across a band.
+- `build-resume.ps1` — prints `resume.html` to `Devon-Kubacki-Resume.pdf`. Run after editing the resume.
+- `build-og.ps1` — renders `tools/og-card.html` to `images/og-card.jpg`. Run after a palette change.
+- `build-card.ps1` — the business card PDF from `tools/business-card.html`.
 
-## Fonts
+All three need the **local preview server running** (below) so the site stylesheet resolves.
 
-System fonts only, no web font requests. Headings use the system serif stack (Georgia first, since it ships on both macOS and Windows); body and UI use the system sans stack (SF / Segoe UI / Roboto / Helvetica / Arial). Both are tokens at the top of `style.css` (`--font-serif`, `--font-sans`), so switching is a one-line change.
+### Images
+
+`images/` holds WebP only, three sizes per picture: `name.webp` (1440w, used by the lightbox),
+`name-960.webp` (main slots), `name-480.webp` (thumbnails, phones).
+
+- `tools/import-images.ps1 -Map @{ 'slug-name' = 'C:\path\to\original.jpg' }` converts originals to
+  WebP at a capped width (add `crop = 'x,y,w,h'` to crop first).
+- `tools/resize-images.ps1` makes the 960/480 variants; re-runnable, skips anything up to date.
+
+Aim for under ~100KB per file; a handful of ad captures are the only ones above 200KB.
+
+## Origin and domain
+
+`tools/site.json` holds the public origin. Canonical URLs, `og:image`, `sitemap.xml`, and the
+robots `Sitemap:` line all key off it. It's currently the `netlify.app` address; when
+`devonkubacki.com` goes live, change that one field and run the build.
+
+## Deploying
+
+Netlify builds from `main` automatically — no build command, publish directory is the root.
+
+**Deploys cost credits.** Each production deploy (git push *or* drag-and-drop) consumes plan
+credits, and running out pauses deploys until the next cycle while the last build stays live.
+Batch changes and push once; preview locally in between. `_headers` sets the security headers and
+marks the agreement `noindex`.
+
+## The agreement form (`agreement.html`)
+
+One form covers both packages (a `package` radio picks Launch or Starter). Submissions go through
+**Netlify Forms**. Two things have to be true for it to work:
+
+1. **Form detection is enabled** in the Netlify dashboard (*Site configuration → Forms → Enable
+   form detection*). It's opt-in, and it only takes effect on the next deploy. Until then, POSTs
+   return 404 and the form shows its "email the signed page" fallback.
+2. *Site configuration → Notifications → Form submission notifications* has an email notification to
+   devon.kubacki@gmail.com, so each signed agreement lands in the inbox.
+
+Each submission includes the package, business name, email, phone, the agree, white-label and
+portfolio-opt-out checkboxes, printed name, typed signature, the date they picked, and `signed_at`
+(a UTC timestamp set on submit). A honeypot field (`bot-field`) filters basic spam.
+
+**Changing the terms:** the numbers on `services.html` (prices, deposit split, white-label add-ons,
+$60/hour, restart and cancellation fees) mirror the agreement's Section 3, and the How It Works
+steps mirror its timeline clauses. Change a term in one place, change it in the other.
+
+**Locally**, the preview server answers POSTs with 200 so the success state can be exercised; nothing is stored.
 
 ## Local preview
 
-No build step, but `file://` previews in some sandboxes won't load the stylesheet. Any static server works. If you're in the Claude desktop app, `.claude/launch.json` (one level up) starts a tiny PowerShell static server on port 8765.
+`file://` won't load the stylesheet in some sandboxes, and the build scripts need a real origin,
+so run the static server:
 
-## Adding social links
+```powershell
+powershell -ExecutionPolicy Bypass -File .claude\serve.ps1
+```
 
-`contact.html` has a commented-out `.social-row` block with the exact markup — uncomment it and fill in real profile URLs. Left out by default rather than shipping dead placeholder buttons.
+It serves the site at `http://localhost:8765` with Netlify-style pretty URLs and `404.html` for
+misses. In the Claude desktop app, `.claude/launch.json` starts it via the preview pane. Both files
+are tracked; the rest of `.claude/` is ignored.
+
+## Design system notes
+
+`css/style.css` is organized as tokens → base → layout → components → footer.
+
+- **Three grounds, one accent.** Stone (`--ink`, warm charcoal) is the neutral body band; the hero,
+  page intros, and `.on-pine` bands are forest green; `.on-slate` bands are desert earth; the
+  footer is deep water with animated caustics. Gold (`--amber`) is the only accent. Every
+  text/ground pair passes AAA (≥ 7:1).
+- **Surface tokens flip per band.** Components only reference `--surface`, `--surface-2`, `--text`,
+  `--text-dim`, `--line`, and `--accent`; wrapping a band in `.on-pine` or `.on-slate` swaps the
+  whole palette with no per-component overrides.
+- **Honeycomb texture** is drawn on `.grid-bg::before` and drifts with scroll (scroll-driven
+  animations, with a static fallback). The hero adds blinking hex outlines from `script.js`.
+- **Card hovers**: `.hex-card` (Recent Work, Launch Package) wipes a lit honeycomb in from the edge
+  the pointer entered and out toward the edge it left; `.orbit-card` (What I Actually Do) runs a
+  meteor round the border and detonates it where the pointer leaves. Both are driven by the phase
+  classes `is-lit` / `is-leaving` that `script.js` sets.
+- **Type and space are fluid** (`--step-*`, `--space-*`), 360px → 1240px. No inline styles.
+- **System fonts only** — serif headings (Georgia first), sans body — both tokens at the top of the stylesheet.
+- `prefers-reduced-motion` collapses every animation site-wide.
 
 ## Structure
 
 ```
-index.html
-about.html
-projects.html
-gallery.html
-contact.html
-css/style.css
-js/script.js
-images/            (screenshots)
-_headers           (Netlify security headers)
-robots.txt
-404.html
-../tools/          (screenshot-sites.ps1, optimize-images.sh — not deployed)
+index.html, about.html, projects.html, services.html, agreement.html, gallery.html,
+writing.html, resume.html, contact.html, privacy.html, terms.html, sitemap.html, 404.html
+work/<slug>/index.html          generated case studies
+writing/<slug>/index.html       generated writing samples
+css/style.css  js/script.js
+images/                          WebP, three sizes each
+Devon-Kubacki-Resume.pdf, Devon-Kubacki-Business-Card.pdf
+sitemap.xml, robots.txt, _headers
+tools/
+  build.ps1                      the one command
+  sync-chrome.ps1, sync-nav.ps1  header/footer + submenus  (sources: tools/chrome/)
+  build-work.ps1                 case studies              (sources: tools/work-src/, work-order.txt)
+  build-writing.ps1              writing samples           (sources: tools/writing-src/, writing-order.txt)
+  build-gallery.ps1, build-sitemap.ps1
+  build-resume.ps1, build-og.ps1, build-card.ps1   binaries, run on demand
+  import-images.ps1, resize-images.ps1
+  site.json                      public origin
+.claude/serve.ps1, launch.json   local preview server
 ```

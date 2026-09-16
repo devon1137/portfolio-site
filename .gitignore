@@ -9,5 +9,7 @@ desktop.ini
 .vscode/
 .idea/
 
-# Local tooling
-.claude/
+# Local tooling (the preview server and its launch config are tracked; the build scripts need them)
+.claude/*
+!.claude/serve.ps1
+!.claude/launch.json

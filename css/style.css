@@ -1394,6 +1394,20 @@ nav.primary .submenu:has(.sub-group) .all a { margin-top: var(--space-xs); }
   text-transform: uppercase;
   color: var(--accent);
 }
+/* Small bordered descriptor after an eyebrow — the nav's .sub-tag, reused
+   on the package cards ("Full custom" / "AI-assisted"). Inherits the
+   eyebrow's mono uppercase; only the colour and box are its own. */
+.cat .tag {
+  display: inline-block;
+  margin-left: 0.5rem;
+  padding: 0.08rem 0.45rem;
+  vertical-align: 1px;
+  font-size: 0.62rem;
+  color: var(--text-dim);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-s);
+  white-space: nowrap;
+}
 
 /* Work cards (home "Recent work") */
 .work-grid {

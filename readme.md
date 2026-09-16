@@ -19,7 +19,7 @@ commit the result. Editing generated HTML by hand gets overwritten on the next b
 | `work/<slug>/index.html` | Ten case studies, **generated** from `tools/work-src/<slug>.html` |
 | `writing.html`, `writing/<slug>/index.html` | Writing samples (articles + fiction), **generated** from `tools/writing-src/` |
 | `gallery.html` | One band of screenshots per case study, **generated** from the case-study sources |
-| `services.html` | Launch Package ($2,000, WordPress) and Foundation Package ($1,000, hand-coded), How It Works, terms, FAQ, by-quote services |
+| `services.html` | Launch Package ($2,000, WordPress) and Foundation Package ($1,500, hand-coded), How It Works, terms, FAQ, by-quote services |
 | `agreement.html` | The signable contract for both packages (`noindex`, not in the nav) |
 | `resume.html` + `Devon-Kubacki-Resume.pdf` | Resume page; the PDF is printed from it |
 | `contact.html`, `privacy.html`, `terms.html`, `sitemap.html`, `404.html` | The rest |
@@ -103,11 +103,11 @@ One form covers both packages (a `package` radio picks Launch or Foundation). Su
 2. *Site configuration → Notifications → Form submission notifications* has an email notification to
    devon.kubacki@gmail.com, so each signed agreement lands in the inbox.
 
-Each submission includes the package, business name, email, phone, the agree, white-label and
+Each submission includes the package, business name, email, phone, the agree, footer-credit-discount and
 portfolio-opt-out checkboxes, printed name, typed signature, the date they picked, and `signed_at`
 (a UTC timestamp set on submit). A honeypot field (`bot-field`) filters basic spam.
 
-**Changing the terms:** the numbers on `services.html` (prices, deposit split, white-label add-ons,
+**Changing the terms:** the numbers on `services.html` (prices, deposit split, the footer-credit discount,
 $60/hour, restart and cancellation fees) mirror the agreement's Section 3, and the How It Works
 steps mirror its timeline clauses. Change a term in one place, change it in the other.
 

@@ -17,7 +17,7 @@
         "priceCurrency": "USD",
         "url": "{{ORIGIN}}/services.html#launch",
         "availability": "https://schema.org/InStock",
-        "description": "Flat price, 50% at signing and 50% at handover. Optional white-label add-on: USD 300."
+        "description": "Flat price, 50% at signing and 50% at handover. Keep the footer credit for USD 150 off."
       }
     },
     {
@@ -32,11 +32,11 @@
       "availableChannel": { "@type": "ServiceChannel", "serviceUrl": "{{ORIGIN}}/agreement.html?package=foundation" },
       "offers": {
         "@type": "Offer",
-        "price": "1000",
+        "price": "1500",
         "priceCurrency": "USD",
         "url": "{{ORIGIN}}/services.html#foundation",
         "availability": "https://schema.org/InStock",
-        "description": "Flat price, 50% at signing and 50% at handover. Optional white-label add-on: USD 150."
+        "description": "Flat price, 50% at signing and 50% at handover. Keep the footer credit for USD 150 off."
       }
     }
   ]

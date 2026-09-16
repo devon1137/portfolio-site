@@ -324,6 +324,14 @@ document.addEventListener('DOMContentLoaded', () => {
       applyPkg();
     }
 
+    // Footer-credit discount: ticking it shows the -$150 line in the price table.
+    const credit = agreement.elements.footer_credit;
+    if (credit) {
+      const applyCredit = () => document.querySelectorAll('[data-credit]').forEach((el) => { el.hidden = !credit.checked; });
+      credit.addEventListener('change', applyCredit);
+      applyCredit();
+    }
+
     const norm = (s) => s.trim().replace(/\s+/g, ' ').toLowerCase();
     const sigMatches = () => norm(sig.value) === norm(printed.value);
 

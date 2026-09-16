@@ -181,7 +181,7 @@
         <label class="ask"><span>Which one to three of those matter most?<small>The ones that make the money, or the ones you want more of. They get the space on the site.</small></span><textarea name="q_offer_top" rows="3"></textarea></label>
         <label class="ask"><span>Should prices appear on the site?<small>Exact prices, "starting at" ranges, or none at all with a quote form instead. If some yes and some no, say which.</small></span><textarea name="q_prices" rows="3"></textarea></label>
         <label class="ask"><span>What do people ask for that you don't do?<small>Saying it on the site saves you both a phone call.</small></span><textarea name="q_not_offered" rows="2"></textarea></label>
-        <label class="ask"><span>Hours, service area, and anything seasonal.<small>Days and hours, whether you take walk-ins or appointments only, busy season, closures.</small></span><textarea name="q_hours" rows="3"></textarea></label>
+        <label class="ask"><span>Hours, service area, and anything seasonal.<small>Days and hours, whether you take walk-ins or appointments only, busy season, closures. These go on the site and your Google listing, so give me the real ones.</small></span><textarea name="q_hours" rows="3"></textarea></label>
 
         <h2 id="s06"><span class="num">06</span>Your Pages</h2>
         <p data-pkg="foundation">The Foundation Package includes up to six pages of your choosing, plus the blog framework, a Terms &amp; Privacy page, and a sitemap page. Most sites use Home, About, Services, Contact, and two more: a second services page, testimonials, an FAQ, a portfolio or gallery.</p>
@@ -208,13 +208,31 @@
         <label class="ask"><span>Anything to avoid?<small>Colours you can't stand, a style that reads wrong for your customers, imagery your industry overuses.</small></span><textarea name="q_avoid" rows="2"></textarea></label>
 
         <h2 id="s09"><span class="num">09</span>Nuts &amp; Bolts</h2>
-        <p>The accounts and details the site plugs into. Don't send passwords here; I'll ask for access the safe way when it's needed.</p>
+        <p>The details the site plugs into, and the accounts around it.</p>
+        <h3>Name, address, phone</h3>
+        <p>Google checks your site against your Business Profile and every directory that lists you, and the match has to be exact: a missing suite number, "St" on one and "Street" on another, or a second phone number all count against you in local search. Give me these once, exactly as you want them everywhere, and I'll use them character for character.</p>
+        <label class="field"><span>Business name, exactly as it should appear everywhere</span><input type="text" name="nap_name" autocomplete="organization"></label>
+        <label class="ask"><span>Any other version of the name in use?<small>The legal name on the paperwork, the short name on the truck, the old name people still say. Tell me which one wins; the others can be mentioned once on the About page and nowhere else.</small></span><textarea name="nap_name_variants" rows="2"></textarea></label>
+        <div class="field-row">
+          <label class="field"><span>Street address</span><input type="text" name="nap_street" autocomplete="address-line1"></label>
+          <label class="field"><span>Suite, unit, or floor</span><input type="text" name="nap_unit" autocomplete="address-line2"></label>
+          <label class="field"><span>City</span><input type="text" name="nap_city" autocomplete="address-level2"></label>
+          <label class="field"><span>State and ZIP</span><input type="text" name="nap_state_zip"></label>
+        </div>
+        <label class="ask"><span>Should the address be shown?<small>A storefront or office: yes, always. Working from home or on the road: Google lets you hide the address and show a service area instead, and the site should match whichever you pick. If customers come to you by appointment only, say that.</small></span><textarea name="nap_address_show" rows="2"></textarea></label>
+        <label class="field"><span>Main business phone</span><input type="tel" name="nap_phone" autocomplete="tel"></label>
+        <label class="ask"><span>Any other numbers?<small>A cell you also answer, a tracking number from an ad campaign, a fax. The main number goes on the site, the Profile, and every listing; tracking numbers must not, or Google sees two businesses.</small></span><textarea name="nap_phone_other" rows="2"></textarea></label>
+        <label class="ask"><span>Where are you listed already?<small>Google Business Profile, Apple Maps, Bing Places, Yelp, Facebook, the BBB, the Chamber of Commerce, Yellow Pages, industry directories. Do they all show the same name, address, phone, and hours? If you're not sure, say so and I'll check.</small></span><textarea name="nap_listings" rows="4"></textarea></label>
+        <label class="ask"><span>Anything old still floating around?<small>A previous name, an address you moved from, a number you gave up, a listing a former employee or a directory created without you. These have to be found and fixed or they compete with the real ones.</small></span><textarea name="nap_stale" rows="3"></textarea></label>
+        <label class="ask"><span>What else should appear publicly?<small>An email address for the site, and any licence numbers or legal lines your industry requires on a website.</small></span><textarea name="q_public_details" rows="2"></textarea></label>
+        <h3>Accounts and access</h3>
+        <p>Don't send passwords here; I'll ask for access the safe way when it's needed.</p>
         <label class="ask"><span>Domain name.<small>Do you own one (which)? Where is it registered (GoDaddy, Namecheap, Google, Squarespace, "my nephew set it up")? Do you know how to log in? If you don't have one, list a few names you'd want.</small></span><textarea name="q_domain" rows="3"></textarea></label>
         <label class="ask"><span>Current site and hosting, if any.<small>Who built it, what it runs on (WordPress, Wix, Squarespace, no idea), who has the logins, and whether anything on it needs to carry over.</small></span><textarea name="q_hosting" rows="3"></textarea></label>
         <label class="ask"><span>Google Business Profile.<small>Do you have one (the box with your hours and reviews on Google)? Who manages it? If none, I'll set one up with you.</small></span><textarea name="q_gbp" rows="2"></textarea></label>
         <label class="ask"><span>Where should contact-form messages go?<small>An email address someone actually checks, and who that is.</small></span><textarea name="q_form_email" rows="2"></textarea></label>
         <label class="ask"><span>Social profiles to link.<small>Facebook, Instagram, LinkedIn, YouTube, TikTok. Only the ones you keep up; a dead link hurts more than none.</small></span><textarea name="q_social" rows="2"></textarea></label>
-        <label class="ask"><span>What should appear publicly: address, phone, email?<small>Some businesses show everything; some show a service area and a phone. Also: any licence numbers or legal lines your industry requires on a website.</small></span><textarea name="q_public_details" rows="3"></textarea></label>
+
 
         <div data-pkg="foundation">
         <h2 id="s10"><span class="num">10</span>The Blog</h2>

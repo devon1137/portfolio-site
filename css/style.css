@@ -2953,6 +2953,13 @@ dialog.lightbox .lb-caption .lb-source:focus-visible { text-decoration: underlin
 .check:has(input:checked) [data-when="on"] { display: inline; }
 .check .state { font-weight: 600; color: var(--text-dim); }
 .check:has(input:checked) .state { color: var(--accent); }
+/* How to pay: the Venmo QR (a cream tile so any scanner reads it on the
+   dark page) beside the instructions. Prints as-is. */
+.pay { display: flex; gap: var(--space-l); align-items: flex-start; margin-top: var(--space-l); }
+.pay .qr { flex: none; display: block; width: 128px; height: 128px; border-radius: var(--radius-s); overflow: hidden; }
+.pay .qr img { display: block; width: 100%; height: 100%; }
+.pay p + p { margin-top: var(--space-xs); }
+@media (max-width: 480px) { .pay { flex-direction: column; } }
 /* Discount rows not taken: present, but struck through and dimmed. The
    computed total gets a heavier rule above and a bold figure. */
 .contract tr.sum td { border-top: 1px solid var(--line-strong); font-weight: 600; }

@@ -1,0 +1,20 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>QR render</title>
+<!-- Renders a QR for ?text=… as a standalone SVG (dark modules on the site's
+     cream tile, so scanners read it on any background). build-qr.ps1 loads
+     this in headless Edge, dumps the DOM, and writes the SVG to images/. -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+<div id="out"></div>
+<script>
+  const text = new URLSearchParams(location.search).get('text') || 'https://devonkubacki.com/';
+  const q = qrcode(0, 'M');
+  q.addData(text);
+  q.make();
+  const n = q.getModuleCount(), pad = 4, size = n + pad * 2;
+  let d = '';
+  for (let r = 0; r < n; r++) for (let c = 0; c < n; c++) if (q.isDark(r, c)) d += `M${c + pad} ${r + pad}h1v1h-1z`;
+  document.getElementById('out').textContent =
+    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${size} ${size}" shape-rendering="crispEdges" role="img" aria-label="QR code">` +
+    `<rect width="${size}" height="${size}" rx="2" fill="#F0E8D8"/><path d="${d}" fill="#1A1A16"/></svg>`;
+</script>

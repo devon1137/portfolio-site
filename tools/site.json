@@ -1,4 +1,6 @@
 {
   "origin": "https://devonkubacki.com",
+  "venmo": "https://venmo.com/code?user_id=3815694839842600173&created=1789528150",
+  "_venmo": "The URL from the Venmo app's own QR (Me tab > QR), or a profile handle without the @. images/venmo-qr.svg keys off it (run tools/build-qr.ps1 after changing it); the agreement's two pay links carry the same URL by hand.",
   "_note": "Public origin, e.g. https://devonkubacki.com (no trailing slash). Leave empty until the domain exists: og:image, canonical, sitemap.xml and the robots.txt Sitemap line are skipped without it."
 }

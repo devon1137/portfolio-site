@@ -63,6 +63,8 @@ Writing samples work the same way with `tools/writing-src/`, `tools/writing-orde
 - `build-resume.ps1` — prints `resume.html` to `Devon-Kubacki-Resume.pdf`. Run after editing the resume.
 - `build-og.ps1` — renders `tools/og-card.html` to `images/og-card.jpg`. Run after a palette change.
 - `build-card.ps1` — the business card PDF from `tools/business-card.html`.
+- `build-qr.ps1` — `images/venmo-qr.svg` from the `venmo` value in `tools/site.json` (the app's own QR URL).
+  The agreement's two pay links carry the same URL by hand. Run after changing it.
 
 All three need the **local preview server running** (below) so the site stylesheet resolves.
 

@@ -2650,6 +2650,79 @@ dialog.lightbox .lb-caption .lb-source:focus-visible { text-decoration: underlin
 }
 
 /* ---------- Services / Launch Package ---------- */
+/* Side-by-side comparison: the decision, in one glance, above the two
+   detail sections. A stone glass panel (same fill as the cards) holding
+   a plain table: mono row labels down the left, one column per package
+   with name and price in the header, pine ticks on the rows both
+   include, and the sign buttons as the last row. Under ~700px the
+   panel scrolls sideways rather than the page. */
+.compare-wrap {
+  margin-top: var(--space-xl);
+  padding: var(--space-s) var(--space-l);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-m);
+  background: color-mix(in srgb, var(--surface-2) 62%, transparent);
+  -webkit-backdrop-filter: blur(2px);
+          backdrop-filter: blur(2px);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04), 0 1px 2px rgba(0, 0, 0, 0.25), 0 12px 28px -18px rgba(0, 0, 0, 0.7);
+  overflow-x: auto;
+}
+.compare { width: 100%; min-width: 34rem; border-collapse: collapse; font-size: var(--step--1); line-height: 1.5; }
+.compare th, .compare td { padding: 0.8rem 1rem; text-align: left; vertical-align: top; border-bottom: 1px solid var(--line); }
+.compare th { font-weight: 500; }
+.compare tbody tr:last-child th, .compare tbody tr:last-child td { border-bottom: 0; }
+/* Row labels: the eyebrow style, dim */
+.compare tbody th {
+  width: 9rem;
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  padding-top: 0.95rem;
+}
+/* Column headers: eyebrow, name, price, stacked */
+.compare thead th { vertical-align: bottom; padding-bottom: var(--space-m); border-bottom: 1px solid var(--line-strong); }
+.compare thead th > span { display: block; }
+.compare .pkg-name { font-family: var(--font-serif); font-size: var(--step-1); line-height: 1.15; color: var(--text); margin-top: 0.35rem; }
+.compare .pkg-price { font-family: var(--font-serif); font-size: var(--step-2); line-height: 1; letter-spacing: -0.02em; color: var(--accent); margin-top: 0.3rem; }
+.compare td { color: var(--text); }
+/* Rows both packages include get the checklist tick */
+.compare td.yes { padding-left: 2.2rem; position: relative; }
+.compare td.yes::before { content: "✓"; position: absolute; left: 1rem; color: var(--pine); font-weight: 600; }
+.compare .cta-row td { padding-top: var(--space-m); }
+.compare .cta-row .btn { width: 100%; justify-content: center; }
+.compare-note { margin-top: var(--space-m); font-size: var(--step--1); }
+@media (max-width: 700px) { .compare-wrap { padding-inline: var(--space-s); } .compare th, .compare td { padding-inline: 0.6rem; } .compare tbody th { width: 6rem; } .compare td.yes { padding-left: 1.7rem; } .compare td.yes::before { left: 0.6rem; } }
+/* Phones: stack. Each row becomes its label, then the two answers, each
+   prefixed with the package (and price, since the header row is gone). */
+@media (max-width: 560px) {
+  .compare-wrap { padding: var(--space-xs) var(--space-m); overflow: visible; }
+  .compare { min-width: 0; }
+  .compare, .compare tbody, .compare tr, .compare th, .compare td { display: block; width: auto; }
+  .compare thead { display: none; }
+  .compare tr { padding: 0.9rem 0; border-bottom: 1px solid var(--line); }
+  .compare tbody tr:last-child { border-bottom: 0; }
+  .compare th, .compare td { padding: 0; border-bottom: 0; }
+  .compare tbody th { width: auto; padding-top: 0; margin-bottom: 0.45rem; }
+  .compare td { padding: 0.35rem 0 0.35rem 0; }
+  .compare td::before {
+    content: attr(data-col);
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.15rem;
+  }
+  .compare td.yes { padding-left: 0; }
+  .compare td.yes::before { content: attr(data-col); position: static; color: var(--accent); font-weight: 400; }
+  .compare td.yes::after { content: " ✓"; color: var(--pine); font-weight: 600; }
+  .compare .cta-row td { padding-top: 0.5rem; }
+  .compare .cta-row th { display: none; }
+}
+
 .offer {
   display: grid;
   grid-template-columns: 1fr 1fr;

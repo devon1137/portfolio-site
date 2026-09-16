@@ -2863,6 +2863,13 @@ dialog.lightbox .lb-caption .lb-source:focus-visible { text-decoration: underlin
   border-bottom: 1px solid var(--line);
 }
 .contract th { font-family: var(--font-mono); font-size: 0.74rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-dim); font-weight: 500; }
+/* Discount boxes carry two descriptions; the box's state picks one.
+   The leading state word is coloured so it reads at a glance. */
+.check [data-when="on"] { display: none; }
+.check:has(input:checked) [data-when="off"] { display: none; }
+.check:has(input:checked) [data-when="on"] { display: inline; }
+.check .state { font-weight: 600; color: var(--text-dim); }
+.check:has(input:checked) .state { color: var(--accent); }
 /* Discount rows not taken: present, but struck through and dimmed. The
    computed total gets a heavier rule above and a bold figure. */
 .contract tr.sum td { border-top: 1px solid var(--line-strong); font-weight: 600; }

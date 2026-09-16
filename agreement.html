@@ -178,11 +178,17 @@
         <p>Two ways to bring the price down. Tick whichever apply; each comes off the remaining balance, and the total above follows.</p>
         <label class="check">
           <input type="checkbox" name="footer_credit" value="yes">
-          <span><strong>Keep the footer credit and take $150 off</strong>Your site ships with no credit to me on it. If you're happy to keep a small "Site by Devon Kubacki" link in the footer, it helps me grow as a business.</span>
+          <span><strong>Keep the footer credit and take $150 off</strong>
+            <span data-when="off"><b class="state">Discount not applied.</b> Your site ships with no credit to me on it. Tick this to keep a small "Site by Devon Kubacki" link in the footer, which helps me grow as a business, and take $150 off.</span>
+            <span data-when="on"><b class="state">Discount applied.</b> A small "Site by Devon Kubacki" link stays in your footer, and $150 comes off the remaining balance.</span>
+          </span>
         </label>
         <label class="check">
           <input type="checkbox" name="own_copy" value="yes">
-          <span><strong>Supply your own copy and take <span data-pkg="foundation">$500</span><span data-pkg="launch" hidden>$400</span> off</strong>You provide the final text for every page before the production clock starts (Section 6). I'll still edit it to fit the layout and write what's usually missing: headings, button labels, meta descriptions. Copy that arrives late or unfinished is treated as a delayed asset, and copy I have to write from scratch is billed at $60/hour.</span>
+          <span><strong>Supply your own copy and take <span data-pkg="foundation">$500</span><span data-pkg="launch" hidden>$400</span> off</strong>
+            <span data-when="off"><b class="state">Discount not applied.</b> I write all of your site's copy from our conversation and your materials, and you review every word before it goes live. Tick this if you already have final copy for every page.</span>
+            <span data-when="on"><b class="state">Discount applied.</b> You provide the final text for every page before the production clock starts (Section 6), and <span data-pkg="foundation">$500</span><span data-pkg="launch" hidden>$400</span> comes off the remaining balance. I'll still edit it to fit the layout and write what's usually missing: headings, button labels, meta descriptions. Copy that arrives late or unfinished is treated as a delayed asset, and copy I have to write from scratch is billed at $60/hour.</span>
+          </span>
         </label>
         <p><b>Changing your mind:</b> either discount can be added or dropped later, and neither direction involves a refund. To <b>add</b> one after signing (keep the credit after all, or send me your finished copy before the production clock starts), the discount comes off the remaining balance; once the balance is paid there is no balance to take it from, so the discounts close at final payment. To <b>drop</b> one you took (have the credit removed, or have me write the copy after all), the discount amount becomes due, and once it's paid I remove the credit or write the copy.</p>
 

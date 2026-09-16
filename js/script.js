@@ -322,15 +322,18 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         document.querySelectorAll('[data-pkg-name]').forEach((el) => { el.textContent = names[pkg]; });
         document.title = `${names[pkg]} Agreement — Devon Kubacki`;
-        // Price table: the visible package price, less whichever discounts
-        // are ticked, is the total.
+        // Price table: the deposit is half the package price; the ticked
+        // discounts come off the other half; the total is their sum.
         const money = (n) => '$' + n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
         const priceCell = [...document.querySelectorAll('[data-price]')].find((c) => !c.closest('tr').hidden);
         if (priceCell) {
+          const half = Number(priceCell.dataset.price) / 2;
           const off = [...document.querySelectorAll('[data-off]')]
             .filter((c) => { const tr = c.closest('tr'); return !tr.hidden && !tr.classList.contains('is-off'); })
             .reduce((sum, c) => sum + Number(c.dataset.off), 0);
-          document.querySelector('[data-total]').textContent = money(Number(priceCell.dataset.price) - off);
+          priceCell.textContent = money(half);
+          document.querySelector('[data-balance]').textContent = money(half - off);
+          document.querySelector('[data-total]').textContent = money(half + half - off);
         }
       };
       // The hand-coded tier was Starter Site, then Foundation Package, now Launch Package; old links keep landing on it.

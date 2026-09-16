@@ -164,18 +164,18 @@
         <table>
           <thead><tr><th>Item</th><th class="amt">Amount</th></tr></thead>
           <tbody>
-            <tr data-pkg="foundation"><td>Package price — the Foundation Package</td><td class="amt" data-price="2000">$2,000.00</td></tr>
-            <tr data-pkg="launch" hidden><td>Package price — the Launch Package</td><td class="amt" data-price="1500">$1,500.00</td></tr>
-            <tr data-discount="footer_credit" class="is-off"><td>Footer credit discount (Section 4, if chosen)</td><td class="amt" data-off="150">−$150.00</td></tr>
-            <tr data-discount="own_copy" data-pkg="foundation" class="is-off"><td>Own-copy discount (Section 4, if chosen)</td><td class="amt" data-off="500">−$500.00</td></tr>
-            <tr data-discount="own_copy" data-pkg="launch" class="is-off"><td>Own-copy discount (Section 4, if chosen)</td><td class="amt" data-off="400">−$400.00</td></tr>
+            <tr data-pkg="foundation"><td>Deposit — 50%, due at signing, before any work begins</td><td class="amt" data-price="2000" data-deposit>$1,000.00</td></tr>
+            <tr data-pkg="launch" hidden><td>Deposit — 50%, due at signing, before any work begins</td><td class="amt" data-price="1500" data-deposit>$750.00</td></tr>
+            <tr><td>Remaining balance — due at completion, before files and access transfer</td><td class="amt" data-balance>$1,000.00</td></tr>
+            <tr data-discount="footer_credit" class="is-off"><td>Footer credit discount (Section 4, if chosen) — off the balance</td><td class="amt" data-off="150">−$150.00</td></tr>
+            <tr data-discount="own_copy" data-pkg="foundation" class="is-off"><td>Own-copy discount (Section 4, if chosen) — off the balance</td><td class="amt" data-off="500">−$500.00</td></tr>
+            <tr data-discount="own_copy" data-pkg="launch" class="is-off"><td>Own-copy discount (Section 4, if chosen) — off the balance</td><td class="amt" data-off="400">−$400.00</td></tr>
             <tr class="sum"><td>Total</td><td class="amt" data-total>$2,000.00</td></tr>
           </tbody>
         </table>
-        <p>Half of the total is due at signing, before any work begins; the other half at completion, before files and access transfer.</p>
 
         <h2><span class="num">04</span>Optional Discounts</h2>
-        <p>Two ways to bring the price down. Tick whichever apply; each is taken off the total in the table above.</p>
+        <p>Two ways to bring the price down. Tick whichever apply; each comes off the remaining balance, and the total above follows.</p>
         <label class="check">
           <input type="checkbox" name="footer_credit" value="yes">
           <span><strong>Keep the footer credit and take $150 off</strong>Your site ships with no credit to me on it. If you're happy to keep a small "Site by Devon Kubacki" link in the footer, it helps me grow as a business. You can ask me to remove it at any time after launch, in which case the $150 becomes due.</span>

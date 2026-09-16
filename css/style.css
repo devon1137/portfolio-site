@@ -2010,6 +2010,9 @@ section.band.toc-band { padding-block: var(--space-l); }
 }
 /* Scroll-spy: the section in view (script.js sets aria-current="location") */
 .toc-rail .toc a[aria-current="location"] { color: var(--accent); }
+/* An entry outside the numbered run (the agreement's Signatures) */
+.toc li.unnumbered { counter-increment: none; padding-left: 1.6em; }
+.toc li.unnumbered > a::before { content: none; }
 .toc-rail .toc > ol > li > a[aria-current="location"]::before { color: var(--text); }
 /* Centred, narrower TOC (writing samples): sits under the facts, above the text */
 .toc.toc-centered { margin-top: var(--space-xl); padding: var(--space-m) var(--space-l); }
@@ -2971,11 +2974,14 @@ dialog.lightbox .lb-caption .lb-source:focus-visible { text-decoration: underlin
 
 /* Print: the signed agreement as a clean document */
 @media print {
-  header.site, footer.site, .skip-link, .page-intro p.note, .sign-off .actions, .form-status, .no-print { display: none !important; }
+  header.site, footer.site, .skip-link, .page-intro p.note, .sign-off .actions, .form-status, .no-print, .contract .toc-rail { display: none !important; }
   body, .on-slate { background: #fff !important; color: #000 !important; }
   .grid-bg::before { display: none; }
   section.band, .page-intro { padding-block: 0.5rem !important; border: 0 !important; }
   .contract { max-width: none; }
+  .contract .body { max-width: none; }
+  .case-body > .band > .wrap { padding-right: var(--gutter) !important; }
+  .contract .body.stone { border: 0; background: none; box-shadow: none; padding: 0; backdrop-filter: none; }
   .contract h2 { break-after: avoid; }
   .field input, .parties .static > b { border-bottom: 1px solid #000 !important; color: #000 !important; }
   .check { border-color: #000; }

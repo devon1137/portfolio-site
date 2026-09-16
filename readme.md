@@ -13,13 +13,13 @@ commit the result. Editing generated HTML by hand gets overwritten on the next b
 
 | Page | What it is |
 |---|---|
-| `index.html` | Home: hero stats, What I Actually Do, Recent Work, Track Record, testimonial, Launch Package band |
+| `index.html` | Home: hero stats, What I Actually Do, Recent Work, Track Record, testimonial, Foundation Package band |
 | `about.html` | Timeline and skills |
 | `projects.html` | **Work** index (case studies grouped by category) — "projects" is the historical filename |
 | `work/<slug>/index.html` | Ten case studies, **generated** from `tools/work-src/<slug>.html` |
 | `writing.html`, `writing/<slug>/index.html` | Writing samples (articles + fiction), **generated** from `tools/writing-src/` |
 | `gallery.html` | One band of screenshots per case study, **generated** from the case-study sources |
-| `services.html` | Launch Package ($2,000, WordPress) and Foundation Package ($1,500, hand-coded), How It Works, terms, FAQ, by-quote services |
+| `services.html` | Foundation Package ($2,000, WordPress) and Launch Package ($1,500, hand-coded), How It Works, terms, FAQ, by-quote services |
 | `agreement.html` | The signable contract for both packages (`noindex`, not in the nav) |
 | `resume.html` + `Devon-Kubacki-Resume.pdf` | Resume page; the PDF is printed from it |
 | `contact.html`, `privacy.html`, `terms.html`, `sitemap.html`, `404.html` | The rest |
@@ -139,7 +139,7 @@ are tracked; the rest of `.claude/` is ignored.
   whole palette with no per-component overrides.
 - **Honeycomb texture** is drawn on `.grid-bg::before` and drifts with scroll (scroll-driven
   animations, with a static fallback). The hero adds blinking hex outlines from `script.js`.
-- **Card hovers**: `.hex-card` (Recent Work, Launch Package) wipes a lit honeycomb in from the edge
+- **Card hovers**: `.hex-card` (Recent Work, Foundation Package) wipes a lit honeycomb in from the edge
   the pointer entered and out toward the edge it left; `.orbit-card` (What I Actually Do) runs a
   meteor round the border and detonates it where the pointer leaves. Both are driven by the phase
   classes `is-lit` / `is-leaving` that `script.js` sets.

@@ -4,8 +4,8 @@
     {
       "@type": "Service",
       "@id": "{{ORIGIN}}/services.html#launch-package",
-      "url": "{{ORIGIN}}/services.html#launch",
-      "name": "The Launch Package",
+      "url": "{{ORIGIN}}/services.html#foundation",
+      "name": "The Foundation Package",
       "serviceType": "Website design, development, and copywriting",
       "description": "A designed, built, and written small-business WordPress website in about three weeks, delivered with full ownership and a 14-day bug-fix period.",
       "provider": { "@id": "{{ORIGIN}}/#devon" },
@@ -15,7 +15,7 @@
         "@type": "Offer",
         "price": "2000",
         "priceCurrency": "USD",
-        "url": "{{ORIGIN}}/services.html#launch",
+        "url": "{{ORIGIN}}/services.html#foundation",
         "availability": "https://schema.org/InStock",
         "description": "Flat price, 50% at signing and 50% at handover. Keep the footer credit for USD 150 off; supply your own copy for USD 500 off."
       }
@@ -23,18 +23,18 @@
     {
       "@type": "Service",
       "@id": "{{ORIGIN}}/services.html#foundation-package",
-      "url": "{{ORIGIN}}/services.html#foundation",
-      "name": "The Foundation Package",
+      "url": "{{ORIGIN}}/services.html#launch",
+      "name": "The Launch Package",
       "serviceType": "Website design, development, and copywriting",
       "description": "A hand-coded static website of up to four pages, designed, built, and written in about a week, with no CMS and free hosting; delivered with full ownership and a 14-day bug-fix period.",
       "provider": { "@id": "{{ORIGIN}}/#devon" },
       "areaServed": { "@type": "Country", "name": "United States" },
-      "availableChannel": { "@type": "ServiceChannel", "serviceUrl": "{{ORIGIN}}/agreement.html?package=foundation" },
+      "availableChannel": { "@type": "ServiceChannel", "serviceUrl": "{{ORIGIN}}/agreement.html?package=launch" },
       "offers": {
         "@type": "Offer",
         "price": "1500",
         "priceCurrency": "USD",
-        "url": "{{ORIGIN}}/services.html#foundation",
+        "url": "{{ORIGIN}}/services.html#launch",
         "availability": "https://schema.org/InStock",
         "description": "Flat price, 50% at signing and 50% at handover. Keep the footer credit for USD 150 off; supply your own copy for USD 400 off."
       }

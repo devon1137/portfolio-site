@@ -127,9 +127,9 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ---- Renamed anchors keep resolving ----
-  // services.html#starter became #foundation when the tier was renamed;
+  // services.html#starter became #launch when the tier was renamed;
   // an old link is rewritten to the new hash and scrolled into place.
-  const hashAliases = { '#starter': '#foundation' };
+  const hashAliases = { '#starter': '#launch' };
   const newHash = hashAliases[location.hash];
   if (newHash && document.querySelector(newHash)) {
     history.replaceState(null, '', newHash);
@@ -302,7 +302,7 @@ document.addEventListener('DOMContentLoaded', () => {
     agreement.querySelector('[data-print]')?.addEventListener('click', () => window.print());
 
     // Package selector: the sections carry [data-pkg="launch"|"foundation"]
-    // variants; only the chosen package's show (and print). ?package=foundation
+    // variants; only the chosen package's show (and print). ?package=launch
     // in the URL preselects, so each services-page button lands on its own
     // terms. The heading follows.
     const pkgRadios = [...agreement.querySelectorAll('input[name="package"]')];
@@ -322,8 +322,8 @@ document.addEventListener('DOMContentLoaded', () => {
         document.querySelectorAll('[data-pkg-name]').forEach((el) => { el.textContent = names[pkg]; });
         document.title = `${names[pkg]} Agreement — Devon Kubacki`;
       };
-      // The tier was Starter Site before it was Foundation Package; old links keep landing on it.
-      const aliases = { starter: 'foundation' };
+      // The hand-coded tier was Starter Site, then Foundation Package, now Launch Package; old links keep landing on it.
+      const aliases = { starter: 'launch' };
       const asked = new URLSearchParams(location.search).get('package');
       const wanted = aliases[asked] || asked;
       const pre = pkgRadios.find((r) => r.value === wanted);

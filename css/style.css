@@ -2684,7 +2684,7 @@ dialog.lightbox .lb-caption .lb-source:focus-visible { text-decoration: underlin
 /* Column headers: eyebrow, name, price, stacked */
 .compare thead th { vertical-align: bottom; padding-bottom: var(--space-m); border-bottom: 1px solid var(--line-strong); }
 .compare thead th > span { display: block; }
-.compare .pkg-name { font-family: var(--font-serif); font-size: var(--step-1); line-height: 1.15; color: var(--text); margin-top: 0.35rem; }
+.compare .pkg-name { font-family: var(--font-serif); font-size: var(--step-1); line-height: 1.15; color: var(--text); }
 .compare .pkg-price { font-family: var(--font-serif); font-size: var(--step-2); line-height: 1; letter-spacing: -0.02em; color: var(--accent); margin-top: 0.3rem; }
 .compare td { color: var(--text); }
 /* Rows both packages include get the checklist tick */
@@ -2717,9 +2717,9 @@ dialog.lightbox .lb-caption .lb-source:focus-visible { text-decoration: underlin
   border-radius: var(--radius-s);
   white-space: nowrap;
 }
-.compare thead th.rec .cat,
+.compare thead th.rec .pkg-name,
 .pkg.rec .cat { display: flex; align-items: center; justify-content: space-between; gap: var(--space-s); }
-.compare thead th.rec .cat { margin-bottom: 0.2rem; }
+.compare thead th.rec .pkg-name { margin-top: 0; }
 @media (max-width: 700px) { .compare-wrap { padding-inline: var(--space-s); } .compare th, .compare td { padding-inline: 0.6rem; } .compare tbody th { width: 6rem; } .compare td.yes { padding-left: 1.7rem; } .compare td.yes::before { left: 0.6rem; } }
 /* Phones: stack. Each row becomes its label, then the two answers, each
    prefixed with the package (and price, since the header row is gone). */

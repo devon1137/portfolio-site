@@ -3028,6 +3028,19 @@ dialog.lightbox .lb-caption .lb-source:focus-visible { text-decoration: underlin
 .field input.invalid { border-bottom-color: var(--rust); }
 .field input[readonly] { color: var(--text-dim); }
 .field input.sig { font-family: var(--font-serif); font-style: italic; font-size: var(--step-2); padding-bottom: 0.2rem; }
+.field select {
+  width: 100%;
+  font: inherit;
+  color: var(--text);
+  background: transparent;
+  color-scheme: dark;
+  border: 0;
+  border-bottom: 1px solid var(--line-strong);
+  border-radius: 0;
+  padding: 0.45rem 0;
+}
+.field select:focus { outline: none; border-bottom-color: var(--accent); }
+.check:has(input.invalid) { border-color: var(--rust); }
 .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-xl); }
 @media (max-width: 600px) { .field-row { grid-template-columns: 1fr; } }
 .field-error { display: none; margin-top: 0.35rem; font-size: var(--step--1); color: var(--rust); }
@@ -3109,6 +3122,7 @@ dialog.lightbox .lb-caption .lb-source:focus-visible { text-decoration: underlin
   .case-body > .band > .wrap, .case-body > .wrap { padding-right: var(--gutter) !important; }
   .contract .body.stone { border: 0; background: none; box-shadow: none; padding: 0; backdrop-filter: none; }
   .contract h2 { break-after: avoid; }
+  .field select { border-bottom: 1px solid #000 !important; color: #000 !important; }
   .field input, .parties .static > b { border-bottom: 1px solid #000 !important; color: #000 !important; }
   .ask textarea { min-height: 5rem; border-color: #000 !important; background: none !important; color: #000 !important; resize: none; }
   .ask, .check { break-inside: avoid; }

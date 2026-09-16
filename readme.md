@@ -125,8 +125,11 @@ steps mirror its timeline clauses. Change a term in one place, change it in the 
 The intake form the agreement's success message links to (carrying `?package=`). Eleven sections of
 questions, most of them optional textareas, on the same Netlify Forms path as the agreement (form
 name `questionnaire`, so the same form-detection and notification setup covers it). A "recorded
-call" option in Section 1 lets clients skim the questions and book a call instead; the questions are
-the interview script either way, and a blank print of the page works as one. The blog section (10)
+call" option in Section 1 swaps the questions for a booking block (phone or video, three date and
+time-of-day preferences, notes, a recording-consent box); the hidden half's fields are disabled so a
+submission carries only the chosen half. The questions are the interview script either way, and a
+blank print of the written version works as one. No calendar link yet; the email from the form is the
+booking. Every answer box has an example placeholder from one made-up plumbing business. The blog section (10)
 only shows for the Foundation Package. Linked from the agreement and mentioned in Services' How It
 Works step 2; `noindex`, disallowed in `robots.txt`, skipped by the sitemap.
 

@@ -512,6 +512,25 @@ document.addEventListener('DOMContentLoaded', () => {
     pkgRadios.forEach((r) => r.addEventListener('change', applyPkg));
     applyPkg();
 
+    // Written or recorded call: the questions band and the booking band
+    // carry [data-answer]; the one not chosen is hidden and its fields
+    // disabled, so the submission only carries the chosen half. The Send
+    // copy and button label follow.
+    const modeRadios = [...quiz.querySelectorAll('input[name="answer_by"]')];
+    const applyMode = () => {
+      const mode = quiz.elements.answer_by.value;
+      quiz.querySelectorAll('[data-answer]').forEach((el) => {
+        const on = el.dataset.answer === mode;
+        el.hidden = !on;
+        el.querySelectorAll('input, textarea, select').forEach((f) => { f.disabled = !on; });
+      });
+    };
+    modeRadios.forEach((r) => r.addEventListener('change', applyMode));
+    applyMode();
+    // Call dates can't be in the past.
+    const today = new Date(); today.setMinutes(today.getMinutes() - today.getTimezoneOffset());
+    quiz.querySelectorAll('input[type="date"]').forEach((d) => { d.min = today.toISOString().slice(0, 10); });
+
     // Answer boxes grow with their text instead of scrolling inside.
     quiz.querySelectorAll('textarea').forEach((ta) => {
       const grow = () => { ta.style.height = 'auto'; ta.style.height = `${ta.scrollHeight + 2}px`; };
@@ -524,12 +543,15 @@ document.addEventListener('DOMContentLoaded', () => {
       status.classList.remove('error');
       let ok = true;
       quiz.querySelectorAll('[required]').forEach((el) => {
-        const bad = !el.value.trim() || (el.type === 'email' && !el.checkValidity());
+        if (el.disabled) return;
+        const bad = el.type === 'checkbox' ? !el.checked : (!el.value.trim() || !el.checkValidity());
         el.classList.toggle('invalid', bad);
         if (bad) ok = false;
       });
       if (!ok) {
-        status.textContent = 'Your name, business, and email are needed so I can reply; they’re marked in red in Section 1.';
+        status.textContent = quiz.elements.answer_by.value === 'call'
+          ? 'Your name, business, and email, a first-choice date, and the recording box are needed; they’re marked in red.'
+          : 'Your name, business, and email are needed so I can reply; they’re marked in red in Section 1.';
         status.classList.add('error');
         quiz.querySelector('.invalid')?.focus();
         return;
@@ -544,9 +566,9 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         status.textContent = '';
-        done.querySelector('[data-echo-email]').textContent = quiz.elements.client_email.value.trim();
+        done.querySelectorAll('[data-echo-email]').forEach((el) => { el.textContent = quiz.elements.client_email.value.trim(); });
         done.classList.add('show');
-        quiz.querySelectorAll('input, textarea').forEach((el) => { el.readOnly = true; });
+        quiz.querySelectorAll('input, textarea, select').forEach((el) => { el.readOnly = true; if (el.type === 'radio' || el.type === 'checkbox' || el.tagName === 'SELECT') el.disabled = true; });
         submitBtn.hidden = true;
         done.scrollIntoView({ block: 'center', behavior: 'smooth' });
       } catch (err) {

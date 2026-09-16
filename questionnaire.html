@@ -89,7 +89,7 @@
     <div class="wrap">
       <p class="eyebrow">Before I build</p>
       <h1>Website Questionnaire</h1>
-      <p class="note">Everything I need to design, build, and write your site, in one pass. Answer what you can and skip what you don't know; the gaps become my follow-up questions. It takes most people 30 to 45 minutes. Would you rather talk than type? Pick <b>recorded call</b> in Section 1 and I'll ask the same questions on a call instead, recorded so neither of us has to take notes.</p>
+      <p class="note">Everything I need to design, build, and write your site, in one pass. Answer what you can and skip what you don't know; the gaps become my follow-up questions. It takes most people 30 to 45 minutes. Would you rather talk than type? Pick <b>recorded call</b> in Section 1, tell me when you're free, and I'll ask the same questions on a call instead, recorded so neither of us has to take notes.</p>
     </div>
   </section>
 
@@ -127,13 +127,13 @@
           </label>
           <label class="check">
             <input type="radio" name="answer_by" value="call">
-            <span><strong>Recorded call</strong>We book 45 minutes to an hour and I ask these same questions out loud. Skim them first so nothing surprises you; jot notes in the boxes if it helps, then Send, and I'll email you to set a time.</span>
+            <span><strong>Recorded call</strong>We book 45 minutes to an hour and I ask the same questions out loud. Pick this and the questions below swap for a few time slots; flip back to Write it here any time to see them.</span>
           </label>
         </div>
     </div></div>
   </section>
 
-  <section class="band on-slate grid-bg case-body">
+  <section class="band on-slate grid-bg case-body" data-answer="written">
     <aside class="toc-rail">
       <nav class="toc toc-flat" aria-label="On this page">
         <span class="toc-title eyebrow">On this page</span>
@@ -248,19 +248,54 @@
     </div></div>
   </section>
 
+  <section class="band on-slate grid-bg" data-answer="call" hidden>
+    <div class="wrap"><div class="body stone">
+        <h2 id="call"><span class="num">02</span>Book the Call</h2>
+        <p>Forty-five minutes to an hour, weekdays between 9 and 5 Eastern. I'll ask the same questions the written version does, plus whatever follow-ups come up, and you can send me the logo and photos afterwards. Give me three times that work and I'll confirm one by email.</p>
+
+        <h3>Phone or video?</h3>
+        <div class="pkg-pick">
+          <label class="check">
+            <input type="radio" name="call_how" value="phone" checked>
+            <span><strong>Phone</strong>I call the number in Section 1. Nothing to install.</span>
+          </label>
+          <label class="check">
+            <input type="radio" name="call_how" value="video">
+            <span><strong>Video call</strong>A Google Meet link in the confirmation email. Handy if you want to show me your current site or a competitor's.</span>
+          </label>
+        </div>
+
+        <h3>When are you free?</h3>
+        <div class="field-row">
+          <label class="field"><span>First choice: date</span><input type="date" name="call_date_1" required></label>
+          <label class="field"><span>Time of day</span><select name="call_time_1"><option value="morning">Morning (9–12)</option><option value="afternoon">Afternoon (12–5)</option><option value="either">Either</option></select></label>
+          <label class="field"><span>Second choice: date</span><input type="date" name="call_date_2"></label>
+          <label class="field"><span>Time of day</span><select name="call_time_2"><option value="morning">Morning (9–12)</option><option value="afternoon">Afternoon (12–5)</option><option value="either">Either</option></select></label>
+          <label class="field"><span>Third choice: date</span><input type="date" name="call_date_3"></label>
+          <label class="field"><span>Time of day</span><select name="call_time_3"><option value="morning">Morning (9–12)</option><option value="afternoon">Afternoon (12–5)</option><option value="either">Either</option></select></label>
+        </div>
+        <label class="ask"><span>Anything I should know before we talk?<small>A specific time within the window, someone else joining, a site you want me to look at first.</small></span><textarea name="call_notes" rows="2" placeholder="e.g. Tuesdays are best, after 10. My business partner will be on the call too."></textarea></label>
+
+        <label class="check">
+          <input type="checkbox" name="call_record_ok" value="yes" required>
+          <span><strong>Record the call</strong>I'm fine with the call being recorded, so Devon can listen back instead of taking notes. The recording stays between us (Section 10 of the agreement) and is deleted once the site launches.</span>
+        </label>
+    </div></div>
+  </section>
+
   <section class="band">
     <div class="wrap"><div class="body">
         <div class="sign-off">
           <h2 id="send"><span class="num">—</span>Send It Over</h2>
-          <p>I'll read everything, then reply with my follow-up questions or a time for the call within two business days. Print or save a copy first if you'd like one.</p>
+          <p><span data-answer="written">I'll read everything, then reply with my follow-up questions within two business days. Print or save a copy first if you'd like one.</span><span data-answer="call" hidden>I'll confirm one of your times by email within two business days, with the call details.</span></p>
           <div class="actions">
-            <button class="btn solid" type="submit">Send answers <span class="arrow" aria-hidden="true">→</span></button>
+            <button class="btn solid" type="submit"><span data-answer="written">Send answers</span><span data-answer="call" hidden>Request the call</span> <span class="arrow" aria-hidden="true">→</span></button>
             <button class="btn no-print" type="button" data-print>Print or save as PDF</button>
           </div>
           <p class="form-status" role="status" aria-live="polite"></p>
           <div class="form-done" role="status">
             <div class="mark">Got it.</div>
-            <p>Thanks. Your answers are in, and I'll reply to <b data-echo-email></b> within two business days with follow-up questions, or a couple of times for the call if you picked that. Meanwhile, start gathering the logo and photos from Section 8; that's usually what holds a project up.</p>
+            <p><span data-answer="written">Thanks. Your answers are in, and I'll reply to <b data-echo-email></b> within two business days with follow-up questions.</span><span data-answer="call" hidden>Thanks. I'll email <b data-echo-email></b> within two business days to confirm which of your times works, and how we'll connect.</span> Meanwhile, start gathering your logo and photos; that's usually what holds a project up.</p>
           </div>
         </div>
     </div></div>

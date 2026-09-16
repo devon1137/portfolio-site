@@ -3035,7 +3035,7 @@ dialog.lightbox .lb-caption .lb-source:focus-visible { text-decoration: underlin
 .sign-off .actions { margin-top: var(--space-l); align-items: center; }
 .form-status { margin-top: var(--space-m); font-size: var(--step--1); }
 .form-status.error { color: var(--rust); }
-.btn[disabled] { opacity: 0.55; cursor: progress; }
+.btn[disabled] { opacity: 0.55; cursor: not-allowed; }
 
 .form-done { display: none; }
 .form-done.show { display: block; }

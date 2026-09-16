@@ -301,6 +301,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     agreement.querySelector('[data-print]')?.addEventListener('click', () => window.print());
 
+    // Sign and submit stays disabled until the agree box is ticked.
+    const agreeBox = agreement.elements.agree;
+    const gateSubmit = () => {
+      submitBtn.disabled = !agreeBox.checked;
+      submitBtn.title = agreeBox.checked ? '' : 'Tick "I have read and agree to this agreement" first';
+    };
+    agreeBox.addEventListener('change', gateSubmit);
+    gateSubmit();
+
     // Package selector: the sections carry [data-pkg="launch"|"foundation"]
     // variants; only the chosen package's show (and print). ?package=launch
     // in the URL preselects, so each services-page button lands on its own

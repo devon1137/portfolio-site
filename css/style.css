@@ -2805,20 +2805,21 @@ dialog.lightbox .lb-caption .lb-source:focus-visible { text-decoration: underlin
   .compare tr { padding: 0.9rem 0; border-bottom: 1px solid var(--line); }
   .compare tbody tr:last-child { border-bottom: 0; }
   .compare th, .compare td { padding: 0; border-bottom: 0; }
-  .compare tbody th { width: auto; padding-top: 0; margin-bottom: 0.45rem; }
+  .compare tbody th { width: auto; padding-top: 0; margin-bottom: 0.5rem; font-size: 0.8rem; color: var(--text); }
   .compare td { padding: 0.35rem 0 0.35rem 0; }
   .compare td::before {
     content: attr(data-col);
     display: block;
     font-family: var(--font-mono);
-    font-size: 0.62rem;
+    font-size: 0.8rem;
+    font-weight: 600;
     letter-spacing: 0.06em;
     text-transform: uppercase;
     color: var(--accent);
-    margin-bottom: 0.15rem;
+    margin-bottom: 0.25rem;
   }
   .compare td.yes { padding-left: 0; }
-  .compare td.yes::before { content: attr(data-col); position: static; color: var(--accent); font-weight: 400; }
+  .compare td.yes::before { content: attr(data-col); position: static; color: var(--accent); font-weight: 600; }
   .compare td.yes::after { content: " ✓"; color: var(--pine); font-weight: 600; }
   .compare .cta-row td { padding-top: 0.5rem; }
   .compare .cta-row th { display: none; }

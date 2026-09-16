@@ -2000,6 +2000,69 @@ section.band.toc-band { padding-block: var(--space-l); }
   .toc-rail .toc ol ol { margin-top: 0.15rem; padding-left: 1.2rem; }
   .toc-rail .toc { scrollbar-width: thin; scrollbar-color: var(--line-strong) transparent; }
 }
+/* Below the rail breakpoint (tablets and phones) the TOC is a fixed tab
+   on the right edge — "Contents", set vertically — that opens a panel
+   over the content. script.js adds the button and the open/close
+   handling; the panel is the same .toc card. */
+.toc-toggle { display: none; }
+@media (max-width: 1099px) {
+  .toc-rail { position: fixed; right: 0; top: 0; bottom: 0; width: 0; padding: 0; z-index: 60; pointer-events: none; }
+  .toc-toggle {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    position: fixed;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: auto;
+    padding: 0.85rem 0.55rem;
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text);
+    background: color-mix(in srgb, var(--surface-2) 88%, transparent);
+    -webkit-backdrop-filter: blur(4px);
+            backdrop-filter: blur(4px);
+    border: 1px solid var(--line-strong);
+    border-right: 0;
+    border-radius: var(--radius-s) 0 0 var(--radius-s);
+    box-shadow: 0 8px 24px -12px rgba(0, 0, 0, 0.7);
+    cursor: pointer;
+    transition: color var(--t-fast) var(--ease), background var(--t-fast) var(--ease);
+  }
+  .toc-toggle::before { content: ""; width: 4px; height: 100%; background: var(--accent); clip-path: polygon(0 4px, 100% 0, 100% 100%, 0 calc(100% - 4px)); }
+  .toc-toggle:hover, .toc-toggle:focus-visible { color: var(--accent); }
+  .toc-rail .toc {
+    position: fixed;
+    right: 0;
+    top: calc(var(--header-h) + 1rem);
+    max-height: calc(100vh - var(--header-h) - 2rem);
+    overflow-y: auto;
+    width: min(20rem, 86vw);
+    max-width: none;
+    margin: 0;
+    padding: var(--space-m) var(--space-l) var(--space-l);
+    border-right: 0;
+    border-radius: var(--radius-m) 0 0 var(--radius-m);
+    background: color-mix(in srgb, var(--surface-2) 94%, transparent);
+    box-shadow: 0 16px 40px -16px rgba(0, 0, 0, 0.85);
+    pointer-events: auto;
+    transform: translateX(105%);
+    visibility: hidden;
+    transition: transform var(--t-med) var(--ease), visibility 0s linear var(--t-med);
+  }
+  .toc-rail.open .toc { transform: none; visibility: visible; transition: transform var(--t-med) var(--ease), visibility 0s; }
+  .toc-rail.open .toc-toggle { color: var(--accent); }
+  .toc-rail .toc-title { margin-bottom: var(--space-s); }
+  .toc-rail .toc > ol > li + li { margin-top: 0.3rem; }
+  .toc-rail .toc > ol > li > a { font-weight: 500; font-size: var(--step--1); line-height: 1.4; }
+  @media (prefers-reduced-motion: reduce) { .toc-rail .toc { transition: none; } }
+}
+@media print { .toc-toggle, .toc-rail { display: none !important; } }
 /* Rail labels: at most two lines, then an ellipsis (the full title is in the tooltip) */
 .toc-rail .toc li > a {
   display: -webkit-box;
@@ -2836,7 +2899,7 @@ dialog.lightbox .lb-caption .lb-source:focus-visible { text-decoration: underlin
 /* ---------- Agreement (contract) page ---------- */
 /* The form spans three bands (parties on stone, the numbered terms on
    earth, signatures on stone); each band's .body carries the measure. */
-.contract .body { max-width: 46rem; }
+.contract .body { max-width: none; }   /* fills its column like the case studies; the rail sets the width */
 /* The numbered terms (02–14) sit in a stone glass panel on the earth band. */
 .contract .body.stone {
   padding: var(--space-xl) clamp(var(--space-l), 4vw, var(--space-2xl));

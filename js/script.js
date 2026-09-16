@@ -563,6 +563,29 @@ document.addEventListener('DOMContentLoaded', () => {
     if (figs.length < 2) track.hidden = true;
   });
 
+  // ---- TOC rail on narrow screens: a fixed "Contents" tab that opens the panel ----
+  // The CSS only shows the tab below the rail breakpoint; at desktop widths
+  // the rail is its usual sticky self and the button is display: none.
+  document.querySelectorAll('.toc-rail').forEach((rail) => {
+    const toc = rail.querySelector('.toc');
+    if (!toc) return;
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'toc-toggle';
+    btn.setAttribute('aria-expanded', 'false');
+    btn.setAttribute('aria-controls', toc.id || (toc.id = 'toc-panel'));
+    btn.textContent = 'Contents';
+    rail.prepend(btn);
+    const setOpen = (open) => {
+      rail.classList.toggle('open', open);
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    };
+    btn.addEventListener('click', () => setOpen(!rail.classList.contains('open')));
+    toc.addEventListener('click', (e) => { if (e.target.closest('a')) setOpen(false); });
+    document.addEventListener('click', (e) => { if (rail.classList.contains('open') && !rail.contains(e.target)) setOpen(false); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && rail.classList.contains('open')) { setOpen(false); btn.focus(); } });
+  });
+
   // ---- Sticky TOC rail: mark the section currently in view ----
   // The link whose target is the topmost section crossing the reader's line
   // (a third of the way down the viewport) gets aria-current="location".

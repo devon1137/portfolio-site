@@ -103,11 +103,11 @@ One form covers both packages (a `package` radio picks Launch or Foundation). Su
 2. *Site configuration → Notifications → Form submission notifications* has an email notification to
    devon.kubacki@gmail.com, so each signed agreement lands in the inbox.
 
-Each submission includes the package, business name, email, phone, the agree, footer-credit-discount and
+Each submission includes the package, business name, email, phone, the agree, footer-credit and own-copy discount and
 portfolio-opt-out checkboxes, printed name, typed signature, the date they picked, and `signed_at`
 (a UTC timestamp set on submit). A honeypot field (`bot-field`) filters basic spam.
 
-**Changing the terms:** the numbers on `services.html` (prices, deposit split, the footer-credit discount,
+**Changing the terms:** the numbers on `services.html` (prices, deposit split, the footer-credit and own-copy discounts,
 $60/hour, restart and cancellation fees) mirror the agreement's Section 3, and the How It Works
 steps mirror its timeline clauses. Change a term in one place, change it in the other.
 

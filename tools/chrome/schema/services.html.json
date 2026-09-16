@@ -17,7 +17,7 @@
         "priceCurrency": "USD",
         "url": "{{ORIGIN}}/services.html#launch",
         "availability": "https://schema.org/InStock",
-        "description": "Flat price, 50% at signing and 50% at handover. Keep the footer credit for USD 150 off."
+        "description": "Flat price, 50% at signing and 50% at handover. Keep the footer credit for USD 150 off; supply your own copy for USD 500 off."
       }
     },
     {
@@ -36,7 +36,7 @@
         "priceCurrency": "USD",
         "url": "{{ORIGIN}}/services.html#foundation",
         "availability": "https://schema.org/InStock",
-        "description": "Flat price, 50% at signing and 50% at handover. Keep the footer credit for USD 150 off."
+        "description": "Flat price, 50% at signing and 50% at handover. Keep the footer credit for USD 150 off; supply your own copy for USD 400 off."
       }
     }
   ]

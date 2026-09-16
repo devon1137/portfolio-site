@@ -310,7 +310,15 @@ document.addEventListener('DOMContentLoaded', () => {
       const names = { launch: 'Launch Package', foundation: 'Foundation Package' };
       const applyPkg = () => {
         const pkg = agreement.elements.package.value;
-        document.querySelectorAll('[data-pkg]').forEach((el) => { el.hidden = el.dataset.pkg !== pkg; });
+        // An element shows when its package matches (if it names one) and its
+        // discount box is ticked (if it names one) — the price table's discount
+        // rows carry both.
+        document.querySelectorAll('[data-pkg], [data-discount]').forEach((el) => {
+          const pkgOk = !el.dataset.pkg || el.dataset.pkg === pkg;
+          const box = el.dataset.discount && agreement.elements[el.dataset.discount];
+          const discountOk = !el.dataset.discount || (box && box.checked);
+          el.hidden = !(pkgOk && discountOk);
+        });
         document.querySelectorAll('[data-pkg-name]').forEach((el) => { el.textContent = names[pkg]; });
         document.title = `${names[pkg]} Agreement — Devon Kubacki`;
       };
@@ -321,15 +329,9 @@ document.addEventListener('DOMContentLoaded', () => {
       const pre = pkgRadios.find((r) => r.value === wanted);
       if (pre) pre.checked = true;
       pkgRadios.forEach((r) => r.addEventListener('change', applyPkg));
+      // The discount boxes (Section 4) re-run the same visibility pass.
+      ['footer_credit', 'own_copy'].forEach((n) => agreement.elements[n]?.addEventListener('change', applyPkg));
       applyPkg();
-    }
-
-    // Footer-credit discount: ticking it shows the -$150 line in the price table.
-    const credit = agreement.elements.footer_credit;
-    if (credit) {
-      const applyCredit = () => document.querySelectorAll('[data-credit]').forEach((el) => { el.hidden = !credit.checked; });
-      credit.addEventListener('change', applyCredit);
-      applyCredit();
     }
 
     const norm = (s) => s.trim().replace(/\s+/g, ' ').toLowerCase();

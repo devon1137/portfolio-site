@@ -93,34 +93,12 @@
     </div>
   </section>
 
-  <form class="contract case-body" name="launch-agreement" method="POST" action="/agreement.html" data-netlify="true" netlify-honeypot="bot-field" data-agreement novalidate>
+  <form class="contract" name="launch-agreement" method="POST" action="/agreement.html" data-netlify="true" netlify-honeypot="bot-field" data-agreement novalidate>
         <input type="hidden" name="form-name" value="launch-agreement">
         <input type="hidden" name="signed_at" value="">
         <p class="visually-hidden" aria-hidden="true"><label>Leave this field empty: <input name="bot-field" tabindex="-1" autocomplete="off"></label></p>
 
 
-    <aside class="toc-rail">
-      <nav class="toc toc-flat" aria-label="On this page">
-        <span class="toc-title eyebrow">On this page</span>
-        <ol>
-          <li><a href="#s01">Who's involved</a></li>
-          <li><a href="#s02">What's included</a></li>
-          <li><a href="#s03">Cost &amp; payment</a></li>
-          <li><a href="#s04">Optional discounts</a></li>
-          <li><a href="#s05">Revisions</a></li>
-          <li><a href="#s06">Timeline</a></li>
-          <li><a href="#s07">Who owns what, and when</a></li>
-          <li><a href="#s08">Expectations</a></li>
-          <li><a href="#s09">Getting in touch</a></li>
-          <li><a href="#s10">Keeping things private</a></li>
-          <li><a href="#s11">If someone needs to cancel</a></li>
-          <li><a href="#s12">Third-party costs &amp; services</a></li>
-          <li><a href="#s13">Limitations of liability</a></li>
-          <li><a href="#s14">Governing law</a></li>
-          <li class="unnumbered"><a href="#signatures">Signatures</a></li>
-        </ol>
-      </nav>
-    </aside>
   <section class="band">
     <div class="wrap"><div class="body">
         <h2 id="s01"><span class="num">01</span>Who's Involved</h2>
@@ -144,7 +122,29 @@
     </div></div>
   </section>
 
-  <section class="band on-slate grid-bg">
+  <section class="band on-slate grid-bg case-body">
+    <aside class="toc-rail">
+      <nav class="toc toc-flat" aria-label="On this page">
+        <span class="toc-title eyebrow">On this page</span>
+        <ol>
+          <li><a href="#s01">Who's involved</a></li>
+          <li><a href="#s02">What's included</a></li>
+          <li><a href="#s03">Cost &amp; payment</a></li>
+          <li><a href="#s04">Optional discounts</a></li>
+          <li><a href="#s05">Revisions</a></li>
+          <li><a href="#s06">Timeline</a></li>
+          <li><a href="#s07">Who owns what, and when</a></li>
+          <li><a href="#s08">Expectations</a></li>
+          <li><a href="#s09">Getting in touch</a></li>
+          <li><a href="#s10">Keeping things private</a></li>
+          <li><a href="#s11">If someone needs to cancel</a></li>
+          <li><a href="#s12">Third-party costs &amp; services</a></li>
+          <li><a href="#s13">Limitations of liability</a></li>
+          <li><a href="#s14">Governing law</a></li>
+          <li class="unnumbered"><a href="#signatures">Signatures</a></li>
+        </ol>
+      </nav>
+    </aside>
     <div class="wrap"><div class="body stone">
         <h2 id="s02"><span class="num">02</span>What's Included</h2>
         <p>Choose the package this agreement covers. The sections below adjust to match; only the chosen package's terms apply.</p>
@@ -194,31 +194,31 @@
           <tbody>
             <tr data-pkg="foundation"><td>Deposit — 50%, due at signing, before any work begins</td><td class="amt" data-price="2000" data-deposit>$1,000.00</td></tr>
             <tr data-pkg="launch" hidden><td>Deposit — 50%, due at signing, before any work begins</td><td class="amt" data-price="1500" data-deposit>$750.00</td></tr>
-            <tr><td>Remaining balance — due at completion, before files and access transfer</td><td class="amt" data-balance>$1,000.00</td></tr>
-            <tr data-discount="footer_credit" class="is-off"><td>Footer credit discount (Section 4, if chosen) — off the balance</td><td class="amt" data-off="150">−$150.00</td></tr>
-            <tr data-discount="own_copy" data-pkg="foundation" class="is-off"><td>Own-copy discount (Section 4, if chosen) — off the balance</td><td class="amt" data-off="500">−$500.00</td></tr>
-            <tr data-discount="own_copy" data-pkg="launch" class="is-off"><td>Own-copy discount (Section 4, if chosen) — off the balance</td><td class="amt" data-off="400">−$400.00</td></tr>
+            <tr data-discount="footer_credit" class="is-off"><td>Footer credit discount (Section 4, if chosen)</td><td class="amt" data-off="150">−$150.00</td></tr>
+            <tr data-discount="own_copy" data-pkg="foundation" class="is-off"><td>Own-copy discount (Section 4, if chosen)</td><td class="amt" data-off="500">−$500.00</td></tr>
+            <tr data-discount="own_copy" data-pkg="launch" class="is-off"><td>Own-copy discount (Section 4, if chosen)</td><td class="amt" data-off="400">−$400.00</td></tr>
+            <tr><td>Final payment — due at completion, before files and access transfer</td><td class="amt" data-balance>$1,000.00</td></tr>
             <tr class="sum"><td>Total</td><td class="amt" data-total>$2,000.00</td></tr>
           </tbody>
         </table>
 
         <h2 id="s04"><span class="num">04</span>Optional Discounts</h2>
-        <p>Two ways to bring the price down. Tick whichever apply; each comes off the remaining balance, and the total above follows.</p>
+        <p>Two ways to bring the price down. Tick whichever apply; each comes off the final payment, and the total above follows.</p>
         <label class="check">
           <input type="checkbox" name="footer_credit" value="yes">
           <span><strong>Keep the footer credit and take $150 off</strong>
             <span data-when="off"><b class="state">Discount not applied.</b> Your site ships with no credit to me on it. Tick this to keep a small "Site by Devon Kubacki" link in the footer, which helps me grow as a business, and take $150 off.</span>
-            <span data-when="on"><b class="state">Discount applied.</b> A small "Site by Devon Kubacki" link stays in your footer, and $150 comes off the remaining balance.</span>
+            <span data-when="on"><b class="state">Discount applied.</b> A small "Site by Devon Kubacki" link stays in your footer, and $150 comes off the final payment.</span>
           </span>
         </label>
         <label class="check">
           <input type="checkbox" name="own_copy" value="yes">
           <span><strong>Supply your own copy and take <span data-pkg="foundation">$500</span><span data-pkg="launch" hidden>$400</span> off</strong>
             <span data-when="off"><b class="state">Discount not applied.</b> I write all of your site's copy from our conversation and your materials, and you review every word before it goes live. Tick this if you already have final copy for every page.</span>
-            <span data-when="on"><b class="state">Discount applied.</b> You provide the final text for every page before the production clock starts (Section 6), and <span data-pkg="foundation">$500</span><span data-pkg="launch" hidden>$400</span> comes off the remaining balance. I'll still edit it to fit the layout and write what's usually missing: headings, button labels, meta descriptions. Copy that arrives late or unfinished is treated as a delayed asset, and copy I have to write from scratch is billed at $60/hour.</span>
+            <span data-when="on"><b class="state">Discount applied.</b> You provide the final text for every page before the production clock starts (Section 6), and <span data-pkg="foundation">$500</span><span data-pkg="launch" hidden>$400</span> comes off the final payment. I'll still edit it to fit the layout and write what's usually missing: headings, button labels, meta descriptions. Copy that arrives late or unfinished is treated as a delayed asset, and copy I have to write from scratch is billed at $60/hour.</span>
           </span>
         </label>
-        <p><b>Changing your mind:</b> either discount can be added or dropped later, and neither direction involves a refund. To <b>add</b> one after signing (keep the credit after all, or send me your finished copy before the production clock starts), the discount comes off the remaining balance; once the balance is paid there is no balance to take it from, so the discounts close at final payment. To <b>drop</b> one you took (have the credit removed, or have me write the copy after all), the discount amount becomes due, and once it's paid I remove the credit or write the copy.</p>
+        <p><b>Changing your mind:</b> either discount can be added or dropped later, and neither direction involves a refund. To <b>add</b> one after signing (keep the credit after all, or send me your finished copy before the production clock starts), the discount comes off the final payment; once that is paid there is nothing to take it from, so the discounts close at final payment. To <b>drop</b> one you took (have the credit removed, or have me write the copy after all), the discount amount becomes due, and once it's paid I remove the credit or write the copy.</p>
         <p>A change of mind late in development can mean real rework (copy written into a finished layout, or a footer rebuilt), so if it affects the schedule we agree an extension to the timeline at the time of the decision, before I make the change.</p>
 
         <h2 id="s05"><span class="num">05</span>Revisions</h2>
@@ -234,7 +234,7 @@
         <ul>
           <li><b>Client Delays:</b> The production clock does not start until all required materials are received. If asset delivery is delayed by more than 30 consecutive calendar days, the project will be placed on hold, and a restart fee of $150 may apply to resume scheduling.</li>
           <li><b>Developer Delays:</b> If development is expected to exceed the <span data-pkg="foundation">3-week</span><span data-pkg="launch" hidden>2-week</span> timeframe, I will notify you prior to the deadline to review project status and schedule a progress meeting.</li>
-          <li><b>Early Completion:</b> If the website is completed ahead of schedule, there's no need to rush, you'll have until the end of the <span data-pkg="foundation">3-week</span><span data-pkg="launch" hidden>2-week</span> window (based on the Effective Date in Section 1) to submit the remaining balance. That said, the site won't be transferred to your domain or handed over until the final payment is received in full, regardless of how early the build finishes (see Section 7).</li>
+          <li><b>Early Completion:</b> If the website is completed ahead of schedule, there's no need to rush, you'll have until the end of the <span data-pkg="foundation">3-week</span><span data-pkg="launch" hidden>2-week</span> window (based on the Effective Date in Section 1) to submit the final payment. That said, the site won't be transferred to your domain or handed over until the final payment is received in full, regardless of how early the build finishes (see Section 7).</li>
         </ul>
 
         <h2 id="s07"><span class="num">07</span>Who Owns What, and When</h2>

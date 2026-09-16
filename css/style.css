@@ -2980,7 +2980,7 @@ dialog.lightbox .lb-caption .lb-source:focus-visible { text-decoration: underlin
   section.band, .page-intro { padding-block: 0.5rem !important; border: 0 !important; }
   .contract { max-width: none; }
   .contract .body { max-width: none; }
-  .case-body > .band > .wrap { padding-right: var(--gutter) !important; }
+  .case-body > .band > .wrap, .case-body > .wrap { padding-right: var(--gutter) !important; }
   .contract .body.stone { border: 0; background: none; box-shadow: none; padding: 0; backdrop-filter: none; }
   .contract h2 { break-after: avoid; }
   .field input, .parties .static > b { border-bottom: 1px solid #000 !important; color: #000 !important; }

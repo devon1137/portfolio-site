@@ -2717,6 +2717,8 @@ dialog.lightbox .lb-caption .lb-source:focus-visible { text-decoration: underlin
   border-radius: var(--radius-s);
   white-space: nowrap;
 }
+/* The card's hover pass halos everything on the eyebrow line; the pill opts out. */
+.hex-card .rec-badge, .hex-card:is(.is-lit, .is-leaving) .rec-badge { text-shadow: none; transition: none; }
 .compare thead th.rec .pkg-name,
 .pkg.rec .cat { display: flex; align-items: center; justify-content: space-between; gap: var(--space-s); }
 .compare thead th.rec .pkg-name { margin-top: 0; }

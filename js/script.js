@@ -126,6 +126,16 @@ document.addEventListener('DOMContentLoaded', () => {
     entries.forEach((en) => en.classList.add('is-in'));
   }
 
+  // ---- Renamed anchors keep resolving ----
+  // services.html#starter became #foundation when the tier was renamed;
+  // an old link is rewritten to the new hash and scrolled into place.
+  const hashAliases = { '#starter': '#foundation' };
+  const newHash = hashAliases[location.hash];
+  if (newHash && document.querySelector(newHash)) {
+    history.replaceState(null, '', newHash);
+    document.querySelector(newHash).scrollIntoView({ behavior: 'instant' });
+  }
+
   // ---- Sticky header: add a shadow/rule once the page has scrolled ----
   if (header) {
     const onScroll = () => header.classList.toggle('is-scrolled', window.scrollY > 8);
@@ -304,7 +314,10 @@ document.addEventListener('DOMContentLoaded', () => {
         document.querySelectorAll('[data-pkg-name]').forEach((el) => { el.textContent = names[pkg]; });
         document.title = `${names[pkg]} Agreement — Devon Kubacki`;
       };
-      const wanted = new URLSearchParams(location.search).get('package');
+      // The tier was Starter Site before it was Foundation Package; old links keep landing on it.
+      const aliases = { starter: 'foundation' };
+      const asked = new URLSearchParams(location.search).get('package');
+      const wanted = aliases[asked] || asked;
       const pre = pkgRadios.find((r) => r.value === wanted);
       if (pre) pre.checked = true;
       pkgRadios.forEach((r) => r.addEventListener('change', applyPkg));

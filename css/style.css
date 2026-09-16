@@ -1952,7 +1952,8 @@ section.band.toc-band { padding-block: var(--space-l); }
   padding: var(--space-l) var(--space-xl);
   border: 1px solid var(--line);
   border-radius: var(--radius-m);
-  background: color-mix(in srgb, var(--surface-2) 62%, transparent);
+  /* Stone on every band, whatever the band is, so every TOC on the site matches. */
+  background: color-mix(in srgb, var(--ink-2) 62%, transparent);
   backdrop-filter: blur(2px);
 }
 .toc li > a { white-space: normal; }
@@ -2016,17 +2017,16 @@ section.band.toc-band { padding-block: var(--space-l); }
     top: 50%;
     transform: translateY(-50%);
     pointer-events: auto;
-    padding: 0.85rem 0.55rem;
+    padding: 1rem 0.7rem;
     writing-mode: vertical-rl;
     text-orientation: mixed;
-    font-family: var(--font-mono);
-    font-size: 0.72rem;
-    letter-spacing: 0.08em;
+    font-family: var(--font-sans);
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
     color: var(--text);
-    background: color-mix(in srgb, var(--surface-2) 88%, transparent);
-    -webkit-backdrop-filter: blur(4px);
-            backdrop-filter: blur(4px);
+    background: var(--ink-2);
     border: 1px solid var(--line-strong);
     border-right: 0;
     border-radius: var(--radius-s) 0 0 var(--radius-s);
@@ -2048,7 +2048,7 @@ section.band.toc-band { padding-block: var(--space-l); }
     padding: var(--space-m) var(--space-l) var(--space-l);
     border-right: 0;
     border-radius: var(--radius-m) 0 0 var(--radius-m);
-    background: color-mix(in srgb, var(--surface-2) 94%, transparent);
+    background: var(--ink-2);
     box-shadow: 0 16px 40px -16px rgba(0, 0, 0, 0.85);
     pointer-events: auto;
     transform: translateX(105%);
@@ -2161,7 +2161,7 @@ section.band.toc-band { padding-block: var(--space-l); }
    the block: the rail's card starts at its top and its bottom padding is the
    band's own, so no offsets. The card is stone like the block beside it,
    not the earth band it now sits in. */
-.case-band .toc-rail .toc { margin-top: 0; background: color-mix(in srgb, var(--ink-2) 62%, transparent); }
+.case-band .toc-rail .toc { margin-top: 0; }
 .case-band .toc-rail { padding-bottom: 0; }
 .case-numbers .stats { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 .case-numbers .stats:has(> li:nth-child(5)) { grid-template-columns: repeat(3, minmax(0, 1fr)); }

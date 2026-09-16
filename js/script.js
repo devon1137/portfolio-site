@@ -126,6 +126,22 @@ document.addEventListener('DOMContentLoaded', () => {
     entries.forEach((en) => en.classList.add('is-in'));
   }
 
+  // ---- Services comparison on phones: the two tabs pick which column shows ----
+  // The CSS only shows the switch below 560px; the class it sets is
+  // harmless at desktop widths, where both columns are always visible.
+  const compareSwitch = document.querySelector('.compare-switch');
+  if (compareSwitch) {
+    const table = document.querySelector('.compare');
+    const tabs = [...compareSwitch.querySelectorAll('[data-show]')];
+    const show = (pkg) => {
+      table.classList.remove('show-foundation', 'show-launch');
+      table.classList.add(`show-${pkg}`);
+      tabs.forEach((t) => t.setAttribute('aria-selected', t.dataset.show === pkg ? 'true' : 'false'));
+    };
+    tabs.forEach((t) => t.addEventListener('click', () => show(t.dataset.show)));
+    show(tabs.find((t) => t.getAttribute('aria-selected') === 'true')?.dataset.show || 'foundation');
+  }
+
   // ---- Renamed anchors keep resolving ----
   // services.html#starter became #launch when the tier was renamed;
   // an old link is rewritten to the new hash and scrolled into place.

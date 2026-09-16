@@ -310,14 +310,15 @@ document.addEventListener('DOMContentLoaded', () => {
       const names = { launch: 'Launch Package', foundation: 'Foundation Package' };
       const applyPkg = () => {
         const pkg = agreement.elements.package.value;
-        // An element shows when its package matches (if it names one) and its
-        // discount box is ticked (if it names one) — the price table's discount
-        // rows carry both.
+        // An element shows when its package matches (if it names one). A
+        // discount row stays in the table either way, struck through until
+        // its box in Section 4 is ticked, so the reader sees what's on offer.
         document.querySelectorAll('[data-pkg], [data-discount]').forEach((el) => {
-          const pkgOk = !el.dataset.pkg || el.dataset.pkg === pkg;
-          const box = el.dataset.discount && agreement.elements[el.dataset.discount];
-          const discountOk = !el.dataset.discount || (box && box.checked);
-          el.hidden = !(pkgOk && discountOk);
+          el.hidden = !!el.dataset.pkg && el.dataset.pkg !== pkg;
+          if (el.dataset.discount) {
+            const box = agreement.elements[el.dataset.discount];
+            el.classList.toggle('is-off', !(box && box.checked));
+          }
         });
         document.querySelectorAll('[data-pkg-name]').forEach((el) => { el.textContent = names[pkg]; });
         document.title = `${names[pkg]} Agreement — Devon Kubacki`;

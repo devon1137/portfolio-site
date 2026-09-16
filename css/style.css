@@ -2690,6 +2690,11 @@ dialog.lightbox .lb-caption .lb-source:focus-visible { text-decoration: underlin
 /* Rows both packages include get the checklist tick */
 .compare td.yes { padding-left: 2.2rem; position: relative; }
 .compare td.yes::before { content: "✓"; position: absolute; left: 1rem; color: var(--pine); font-weight: 600; }
+/* Row hover: a faint gold wash and the label steps up to full text. */
+.compare tbody tr { transition: background var(--t-fast) var(--ease); }
+.compare tbody tr:not(.cta-row):hover { background: color-mix(in srgb, var(--amber) 7%, transparent); }
+.compare tbody th { transition: color var(--t-fast) var(--ease); }
+.compare tbody tr:not(.cta-row):hover th { color: var(--text); }
 .compare .cta-row td { padding-top: var(--space-m); }
 .compare .cta-row .btn { width: 100%; justify-content: center; }
 .compare-note { margin-top: var(--space-m); font-size: var(--step--1); }
@@ -2697,7 +2702,8 @@ dialog.lightbox .lb-caption .lb-source:focus-visible { text-decoration: underlin
    are only the differences. */
 .compare-shared { margin-top: var(--space-s); padding: var(--space-m) 1rem var(--space-s); border-top: 1px solid var(--line-strong); }
 .compare-shared h3 { font-size: var(--step-0); margin-bottom: var(--space-s); }
-.compare-shared ul { list-style: none; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr)); gap: 0.35rem var(--space-l); font-size: var(--step--1); }
+.compare-shared ul { list-style: none; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr)); grid-auto-rows: 1fr; align-items: start; gap: 0.35rem var(--space-l); font-size: var(--step--1); }
+.compare-shared li { min-height: 2.6em; }   /* two lines, so a wrapped item never staggers its row */
 .compare-shared li { position: relative; padding-left: 1.4rem; }
 .compare-shared li::before { content: "✓"; position: absolute; left: 0; color: var(--pine); font-weight: 600; }
 /* "Recommended": a gold pill at the right end of the eyebrow line, in
@@ -2857,6 +2863,8 @@ dialog.lightbox .lb-caption .lb-source:focus-visible { text-decoration: underlin
   border-bottom: 1px solid var(--line);
 }
 .contract th { font-family: var(--font-mono); font-size: 0.74rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-dim); font-weight: 500; }
+/* Discount rows not taken: present, but struck through and dimmed. */
+.contract tr.is-off td { color: var(--text-dim); text-decoration: line-through; text-decoration-color: color-mix(in srgb, var(--text-dim) 70%, transparent); }
 .contract td.amt { font-family: var(--font-mono); white-space: nowrap; text-align: right; padding-right: 0; }
 .contract td.who { font-weight: 600; white-space: nowrap; }
 .contract .note { font-size: var(--step--1); color: var(--text-dim); }

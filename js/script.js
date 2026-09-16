@@ -322,20 +322,15 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         document.querySelectorAll('[data-pkg-name]').forEach((el) => { el.textContent = names[pkg]; });
         document.title = `${names[pkg]} Agreement — Devon Kubacki`;
-        // Price table: the visible package price, less the discounts that
-        // are ticked, gives the total; the deposit is half the package
-        // price and the discounts come off the balance.
+        // Price table: the visible package price, less whichever discounts
+        // are ticked, is the total.
         const money = (n) => '$' + n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
         const priceCell = [...document.querySelectorAll('[data-price]')].find((c) => !c.closest('tr').hidden);
         if (priceCell) {
-          const price = Number(priceCell.dataset.price);
           const off = [...document.querySelectorAll('[data-off]')]
             .filter((c) => { const tr = c.closest('tr'); return !tr.hidden && !tr.classList.contains('is-off'); })
             .reduce((sum, c) => sum + Number(c.dataset.off), 0);
-          const deposit = price / 2;
-          document.querySelector('[data-total]').textContent = money(price - off);
-          document.querySelector('[data-deposit]').textContent = money(deposit);
-          document.querySelector('[data-balance]').textContent = money(price - deposit - off);
+          document.querySelector('[data-total]').textContent = money(Number(priceCell.dataset.price) - off);
         }
       };
       // The hand-coded tier was Starter Site, then Foundation Package, now Launch Package; old links keep landing on it.

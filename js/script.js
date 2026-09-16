@@ -291,13 +291,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     agreement.querySelector('[data-print]')?.addEventListener('click', () => window.print());
 
-    // Package selector: the sections carry [data-pkg="launch"|"starter"]
-    // variants; only the chosen package's show (and print). ?package=starter
+    // Package selector: the sections carry [data-pkg="launch"|"foundation"]
+    // variants; only the chosen package's show (and print). ?package=foundation
     // in the URL preselects, so each services-page button lands on its own
     // terms. The heading follows.
     const pkgRadios = [...agreement.querySelectorAll('input[name="package"]')];
     if (pkgRadios.length) {
-      const names = { launch: 'Launch Package', starter: 'Starter Site' };
+      const names = { launch: 'Launch Package', foundation: 'Foundation Package' };
       const applyPkg = () => {
         const pkg = agreement.elements.package.value;
         document.querySelectorAll('[data-pkg]').forEach((el) => { el.hidden = el.dataset.pkg !== pkg; });

@@ -22,19 +22,19 @@
     },
     {
       "@type": "Service",
-      "@id": "{{ORIGIN}}/services.html#starter-site",
-      "url": "{{ORIGIN}}/services.html#starter",
-      "name": "The Starter Site",
+      "@id": "{{ORIGIN}}/services.html#foundation-package",
+      "url": "{{ORIGIN}}/services.html#foundation",
+      "name": "The Foundation Package",
       "serviceType": "Website design, development, and copywriting",
       "description": "A hand-coded static website of up to four pages, designed, built, and written in about a week, with no CMS and free hosting; delivered with full ownership and a 14-day bug-fix period.",
       "provider": { "@id": "{{ORIGIN}}/#devon" },
       "areaServed": { "@type": "Country", "name": "United States" },
-      "availableChannel": { "@type": "ServiceChannel", "serviceUrl": "{{ORIGIN}}/agreement.html?package=starter" },
+      "availableChannel": { "@type": "ServiceChannel", "serviceUrl": "{{ORIGIN}}/agreement.html?package=foundation" },
       "offers": {
         "@type": "Offer",
         "price": "1000",
         "priceCurrency": "USD",
-        "url": "{{ORIGIN}}/services.html#starter",
+        "url": "{{ORIGIN}}/services.html#foundation",
         "availability": "https://schema.org/InStock",
         "description": "Flat price, 50% at signing and 50% at handover. Optional white-label add-on: USD 150."
       }

@@ -19,7 +19,7 @@ commit the result. Editing generated HTML by hand gets overwritten on the next b
 | `work/<slug>/index.html` | Ten case studies, **generated** from `tools/work-src/<slug>.html` |
 | `writing.html`, `writing/<slug>/index.html` | Writing samples (articles + fiction), **generated** from `tools/writing-src/` |
 | `gallery.html` | One band of screenshots per case study, **generated** from the case-study sources |
-| `services.html` | Launch Package ($2,000, WordPress) and Starter Site ($1,000, hand-coded), How It Works, terms, FAQ, by-quote services |
+| `services.html` | Launch Package ($2,000, WordPress) and Foundation Package ($1,000, hand-coded), How It Works, terms, FAQ, by-quote services |
 | `agreement.html` | The signable contract for both packages (`noindex`, not in the nav) |
 | `resume.html` + `Devon-Kubacki-Resume.pdf` | Resume page; the PDF is printed from it |
 | `contact.html`, `privacy.html`, `terms.html`, `sitemap.html`, `404.html` | The rest |
@@ -94,7 +94,7 @@ marks the agreement `noindex`.
 
 ## The agreement form (`agreement.html`)
 
-One form covers both packages (a `package` radio picks Launch or Starter). Submissions go through
+One form covers both packages (a `package` radio picks Launch or Foundation). Submissions go through
 **Netlify Forms**. Two things have to be true for it to work:
 
 1. **Form detection is enabled** in the Netlify dashboard (*Site configuration → Forms → Enable

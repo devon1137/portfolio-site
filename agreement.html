@@ -164,15 +164,14 @@
         <table>
           <thead><tr><th>Item</th><th class="amt">Amount</th></tr></thead>
           <tbody>
-            <tr data-pkg="foundation"><td>Total cost for the Foundation Package</td><td class="amt">$2,000.00</td></tr>
-            <tr data-pkg="foundation"><td>Deposit — due at signing, before any work begins</td><td class="amt">$1,000.00</td></tr>
-            <tr data-pkg="foundation"><td>Remaining balance — due at completion, before files/access transfer</td><td class="amt">$1,000.00</td></tr>
-            <tr data-pkg="launch" hidden><td>Total cost for the Launch Package</td><td class="amt">$1,500.00</td></tr>
-            <tr data-pkg="launch" hidden><td>Deposit — due at signing, before any work begins</td><td class="amt">$750.00</td></tr>
-            <tr data-pkg="launch" hidden><td>Remaining balance — due at completion, before files/access transfer</td><td class="amt">$750.00</td></tr>
-            <tr data-discount="footer_credit" class="is-off"><td>Footer credit discount (Section 4, if chosen) — comes off the remaining balance</td><td class="amt">−$150.00</td></tr>
-            <tr data-discount="own_copy" data-pkg="foundation" class="is-off"><td>Own-copy discount (Section 4, if chosen) — comes off the remaining balance</td><td class="amt">−$500.00</td></tr>
-            <tr data-discount="own_copy" data-pkg="launch" class="is-off"><td>Own-copy discount (Section 4, if chosen) — comes off the remaining balance</td><td class="amt">−$400.00</td></tr>
+            <tr data-pkg="foundation"><td>Package price — the Foundation Package</td><td class="amt" data-price="2000">$2,000.00</td></tr>
+            <tr data-pkg="launch" hidden><td>Package price — the Launch Package</td><td class="amt" data-price="1500">$1,500.00</td></tr>
+            <tr data-discount="footer_credit" class="is-off"><td>Footer credit discount (Section 4, if chosen)</td><td class="amt" data-off="150">−$150.00</td></tr>
+            <tr data-discount="own_copy" data-pkg="foundation" class="is-off"><td>Own-copy discount (Section 4, if chosen)</td><td class="amt" data-off="500">−$500.00</td></tr>
+            <tr data-discount="own_copy" data-pkg="launch" class="is-off"><td>Own-copy discount (Section 4, if chosen)</td><td class="amt" data-off="400">−$400.00</td></tr>
+            <tr class="sum"><td>Total, after any discounts</td><td class="amt" data-total>$2,000.00</td></tr>
+            <tr><td>Deposit — 50% of the package price, due at signing, before any work begins</td><td class="amt" data-deposit>$1,000.00</td></tr>
+            <tr><td>Remaining balance — due at completion, before files/access transfer; discounts come off this half</td><td class="amt" data-balance>$1,000.00</td></tr>
           </tbody>
         </table>
 

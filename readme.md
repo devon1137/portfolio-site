@@ -1,8 +1,8 @@
 # Devon Kubacki — Portfolio
 
 Static site: plain HTML, one stylesheet, one script, no framework. Live at
-[devonkubacki.netlify.app](https://devonkubacki.netlify.app), deployed by Netlify from `main` on
-[github.com/devon1137/portfolio-site](https://github.com/devon1137/portfolio-site).
+[devonkubacki.com](https://devonkubacki.com) (Netlify, from `main` on
+[github.com/devon1137/portfolio-site](https://github.com/devon1137/portfolio-site)).
 
 There is no build step for the *site* — every page is committed as finished HTML — but the
 pages that repeat (case studies, writing samples, the Gallery, the nav submenus, the header and
@@ -80,8 +80,7 @@ Aim for under ~100KB per file; a handful of ad captures are the only ones above 
 ## Origin and domain
 
 `tools/site.json` holds the public origin. Canonical URLs, `og:image`, `sitemap.xml`, and the
-robots `Sitemap:` line all key off it. It's currently the `netlify.app` address; when
-`devonkubacki.com` goes live, change that one field and run the build.
+robots `Sitemap:` line all key off it. It is `https://devonkubacki.com`; the build stamps it into every page.
 
 ## Deploying
 

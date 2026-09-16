@@ -2797,6 +2797,10 @@ dialog.lightbox .lb-caption .lb-source:focus-visible { text-decoration: underlin
 .pkg ul { list-style: none; margin-top: var(--space-m); }
 .pkg li { position: relative; padding: 0.35rem 0 0.35rem 1.4rem; font-size: var(--step--1); }
 .pkg li::before { content: "✓"; position: absolute; left: 0; color: var(--pine); font-weight: 600; }
+.pkg li.plus { margin-top: 0.3rem; color: var(--text-dim); }
+.pkg li.plus::before { content: "+"; color: var(--text-dim); }
+.pkg li.plus a { color: inherit; text-decoration-color: var(--line-strong); }
+.pkg li.plus a:hover { color: var(--text); }
 /* Services: the card runs the height of the copy plus the testimonial, so
    the checklist steps up to body size and breathes to fill it. */
 .offer:has(.quote) .pkg li { font-size: var(--step-0); line-height: 1.6; padding-block: 0.6rem; }
@@ -2827,7 +2831,9 @@ dialog.lightbox .lb-caption .lb-source:focus-visible { text-decoration: underlin
 .quote-list p { color: var(--text-dim); font-size: var(--step--1); }
 
 /* ---------- Agreement (contract) page ---------- */
-.contract { max-width: 46rem; }
+/* The form spans three bands (parties on stone, the numbered terms on
+   earth, signatures on stone); each band's .body carries the measure. */
+.contract .body { max-width: 46rem; }
 .contract h2 {
   font-size: var(--step-2);
   margin-top: var(--space-2xl);
@@ -2835,7 +2841,7 @@ dialog.lightbox .lb-caption .lb-source:focus-visible { text-decoration: underlin
   padding-top: var(--space-l);
   border-top: 1px solid var(--line);
 }
-.contract h2:first-of-type { margin-top: 0; padding-top: 0; border-top: 0; }
+.contract .body > h2:first-child, .contract .sign-off > h2:first-child { margin-top: 0; padding-top: 0; border-top: 0; }
 .contract h2 .num {
   display: inline-block;
   min-width: 2.2rem;
@@ -2941,7 +2947,7 @@ dialog.lightbox .lb-caption .lb-source:focus-visible { text-decoration: underlin
 .parties .static > b.sig { font-family: var(--font-serif); font-style: italic; font-size: var(--step-2); padding-bottom: 0.2rem; }
 @media (max-width: 720px) { .parties { grid-template-columns: 1fr; gap: var(--space-xl); } }
 
-.sign-off { margin-top: var(--space-2xl); padding-top: var(--space-l); border-top: 1px solid var(--line-strong); }
+.sign-off { margin-top: 0; }
 .sign-off .actions { margin-top: var(--space-l); align-items: center; }
 .form-status { margin-top: var(--space-m); font-size: var(--step--1); }
 .form-status.error { color: var(--rust); }

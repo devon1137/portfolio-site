@@ -1,10 +1,34 @@
 {
   "@context": "https://schema.org",
-  "@type": "WebSite",
-  "@id": "{{ORIGIN}}/#site",
-  "url": "{{ORIGIN}}/",
-  "name": "Devon Kubacki",
-  "description": "Web development, SEO content, sales, and marketing operations. Case studies, writing samples, and a freelance Launch Package.",
-  "author": { "@id": "{{ORIGIN}}/#devon" },
-  "inLanguage": "en"
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "@id": "{{ORIGIN}}/#site",
+      "url": "{{ORIGIN}}/",
+      "name": "Devon Kubacki",
+      "description": "Web development, SEO content, sales, and marketing operations. Case studies, writing samples, and two freelance website packages.",
+      "author": { "@id": "{{ORIGIN}}/#devon" },
+      "inLanguage": "en"
+    },
+    {
+      "@type": "Person",
+      "@id": "{{ORIGIN}}/#devon",
+      "name": "Devon Kubacki",
+      "url": "{{ORIGIN}}/",
+      "image": "{{ORIGIN}}/images/devon-kubacki.webp",
+      "email": "mailto:devon.kubacki@gmail.com",
+      "jobTitle": "Web developer, SEO content writer, and sales and marketing operations",
+      "description": "Web development, SEO content, sales, and marketing operations. Based in Presque Isle, Maine; available for remote work.",
+      "address": { "@type": "PostalAddress", "addressLocality": "Presque Isle", "addressRegion": "ME", "addressCountry": "US" },
+      "sameAs": [
+        "https://www.linkedin.com/in/devon-kubacki",
+        "https://github.com/devon1137"
+      ],
+      "knowsAbout": ["WordPress", "Web development", "SEO", "Content writing", "Sales", "Marketing operations", "CRM migration"],
+      "knowsLanguage": [
+        { "@type": "Language", "name": "English" },
+        { "@type": "Language", "name": "Spanish", "description": "conversational" }
+      ]
+    }
+  ]
 }

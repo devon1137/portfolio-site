@@ -2,4 +2,4 @@ User-agent: *
 Allow: /
 Disallow: /agreement.html
 
-Sitemap: https://devonkubacki.netlify.app/sitemap.xml
+Sitemap: https://devonkubacki.com/sitemap.xml

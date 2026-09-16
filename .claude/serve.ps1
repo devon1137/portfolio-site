@@ -28,7 +28,7 @@ while ($listener.IsListening) {
     $res.ContentType = if ($mime.ContainsKey($ext)) { $mime[$ext] } else { 'application/octet-stream' }
     $bytes = [IO.File]::ReadAllBytes($path)
     $res.ContentLength64 = $bytes.Length
-    $res.OutputStream.Write($bytes, 0, $bytes.Length)
+    if ($req.HttpMethod -ne 'HEAD') { $res.OutputStream.Write($bytes, 0, $bytes.Length) }
   } catch { $res.StatusCode = 500 }
   finally { $res.Close() }
 }

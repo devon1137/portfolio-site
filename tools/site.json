@@ -1,4 +1,4 @@
 {
-  "origin": "https://devonkubacki.netlify.app",
+  "origin": "https://devonkubacki.com",
   "_note": "Public origin, e.g. https://devonkubacki.com (no trailing slash). Leave empty until the domain exists: og:image, canonical, sitemap.xml and the robots.txt Sitemap line are skipped without it."
 }

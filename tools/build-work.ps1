@@ -49,9 +49,9 @@ $head = @'
 <meta property="og:title" content="{{TITLE}} — Case Study — Devon Kubacki">
 <meta property="og:description" content="{{DESC}}">
 <!--og-->
-<link rel="canonical" href="https://devonkubacki.netlify.app/work/{{SLUG}}/">
-<meta property="og:url" content="https://devonkubacki.netlify.app/work/{{SLUG}}/">
-<meta property="og:image" content="https://devonkubacki.netlify.app/images/{{OG}}">
+<link rel="canonical" href="https://devonkubacki.com/work/{{SLUG}}/">
+<meta property="og:url" content="https://devonkubacki.com/work/{{SLUG}}/">
+<meta property="og:image" content="https://devonkubacki.com/images/{{OG}}">
 <meta name="twitter:card" content="summary_large_image">
 <!--/og-->
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 fill=%22%231A1A16%22/><text x=%2250%22 y=%2268%22 font-size=%2260%22 text-anchor=%22middle%22 fill=%22%23E0B23F%22 font-family=%22Georgia,serif%22>D</text></svg>">

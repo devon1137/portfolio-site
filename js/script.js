@@ -476,6 +476,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         status.textContent = '';
         done.querySelector('[data-echo-email]').textContent = agreement.elements.client_email.value.trim();
+        done.querySelector('[data-questionnaire-link]')?.setAttribute('href', `questionnaire.html?package=${agreement.elements.package.value}`);
         done.classList.add('show');
         agreement.querySelectorAll('input, button').forEach((el) => { if (el.type !== 'button') el.readOnly = true; });
         submitBtn.hidden = true;
@@ -483,6 +484,74 @@ document.addEventListener('DOMContentLoaded', () => {
       } catch (err) {
         submitBtn.disabled = false;
         status.textContent = 'That didn’t go through. Please try again, or email the signed page to devon.kubacki@gmail.com using Print / Save as PDF.';
+        status.classList.add('error');
+      }
+    });
+  }
+
+  // ---- Questionnaire (questionnaire.html) — same Netlify Forms path ----
+  // Only Section 1's name, business, and email are required; every other
+  // answer is optional, since the gaps are what the follow-up covers.
+  const quiz = document.querySelector('form[data-questionnaire]');
+  if (quiz) {
+    const status = quiz.querySelector('.form-status');
+    const done = quiz.querySelector('.form-done');
+    const submitBtn = quiz.querySelector('button[type="submit"]');
+    quiz.querySelector('[data-print]')?.addEventListener('click', () => window.print());
+
+    // Package: the blog section and the page-count notes carry [data-pkg];
+    // ?package=launch preselects, as on the agreement.
+    const pkgRadios = [...quiz.querySelectorAll('input[name="package"]')];
+    const applyPkg = () => {
+      const pkg = quiz.elements.package.value;
+      quiz.querySelectorAll('[data-pkg]').forEach((el) => { el.hidden = el.dataset.pkg !== pkg; });
+    };
+    const asked = new URLSearchParams(location.search).get('package');
+    const pre = pkgRadios.find((r) => r.value === ({ starter: 'launch' }[asked] || asked));
+    if (pre) pre.checked = true;
+    pkgRadios.forEach((r) => r.addEventListener('change', applyPkg));
+    applyPkg();
+
+    // Answer boxes grow with their text instead of scrolling inside.
+    quiz.querySelectorAll('textarea').forEach((ta) => {
+      const grow = () => { ta.style.height = 'auto'; ta.style.height = `${ta.scrollHeight + 2}px`; };
+      ta.addEventListener('input', grow);
+    });
+
+    quiz.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      status.textContent = '';
+      status.classList.remove('error');
+      let ok = true;
+      quiz.querySelectorAll('[required]').forEach((el) => {
+        const bad = !el.value.trim() || (el.type === 'email' && !el.checkValidity());
+        el.classList.toggle('invalid', bad);
+        if (bad) ok = false;
+      });
+      if (!ok) {
+        status.textContent = 'Your name, business, and email are needed so I can reply; they’re marked in red in Section 1.';
+        status.classList.add('error');
+        quiz.querySelector('.invalid')?.focus();
+        return;
+      }
+      submitBtn.disabled = true;
+      status.textContent = 'Sending…';
+      try {
+        const res = await fetch(quiz.getAttribute('action') || '/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: new URLSearchParams(new FormData(quiz)).toString(),
+        });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        status.textContent = '';
+        done.querySelector('[data-echo-email]').textContent = quiz.elements.client_email.value.trim();
+        done.classList.add('show');
+        quiz.querySelectorAll('input, textarea').forEach((el) => { el.readOnly = true; });
+        submitBtn.hidden = true;
+        done.scrollIntoView({ block: 'center', behavior: 'smooth' });
+      } catch (err) {
+        submitBtn.disabled = false;
+        status.textContent = 'That didn’t go through. Please try again, or use Print / Save as PDF and email it to devon.kubacki@gmail.com.';
         status.classList.add('error');
       }
     });
@@ -688,7 +757,7 @@ document.addEventListener('DOMContentLoaded', () => {
       ticking = false;
       const line = window.innerHeight / 3;
       let current = targets[0];
-      for (const t of targets) { if (t.getBoundingClientRect().top <= line) current = t; else break; }
+      for (const t of targets) { if (!t.getClientRects().length) continue; if (t.getBoundingClientRect().top <= line) current = t; else break; }
       links.forEach((a) => {
         const on = a.hash === '#' + current.id;
         if (on) a.setAttribute('aria-current', 'location'); else a.removeAttribute('aria-current');

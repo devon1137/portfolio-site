@@ -21,6 +21,7 @@ commit the result. Editing generated HTML by hand gets overwritten on the next b
 | `gallery.html` | One band of screenshots per case study, **generated** from the case-study sources |
 | `services.html` | Foundation Package ($2,000, WordPress) and Launch Package ($1,500, hand-coded), How It Works, terms, FAQ, by-quote services |
 | `agreement.html` | The signable contract for both packages (`noindex`, not in the nav) |
+| `questionnaire.html` | The client intake questionnaire, sent after signing (`noindex`, not in the nav) |
 | `resume.html` + `Devon-Kubacki-Resume.pdf` | Resume page; the PDF is printed from it |
 | `contact.html`, `privacy.html`, `terms.html`, `sitemap.html`, `404.html` | The rest |
 | `sitemap.xml`, `robots.txt`, `_headers` | Generated sitemap, robots, Netlify security headers |
@@ -119,6 +120,16 @@ steps mirror its timeline clauses. Change a term in one place, change it in the 
 
 **Locally**, the preview server answers POSTs with 200 so the success state can be exercised; nothing is stored.
 
+## The questionnaire (`questionnaire.html`)
+
+The intake form the agreement's success message links to (carrying `?package=`). Eleven sections of
+questions, most of them optional textareas, on the same Netlify Forms path as the agreement (form
+name `questionnaire`, so the same form-detection and notification setup covers it). A "recorded
+call" option in Section 1 lets clients skim the questions and book a call instead; the questions are
+the interview script either way, and a blank print of the page works as one. The blog section (10)
+only shows for the Foundation Package. Linked from the agreement and mentioned in Services' How It
+Works step 2; `noindex`, disallowed in `robots.txt`, skipped by the sitemap.
+
 ## Local preview
 
 `file://` won't load the stylesheet in some sandboxes, and the build scripts need a real origin,
@@ -156,7 +167,7 @@ are tracked; the rest of `.claude/` is ignored.
 ## Structure
 
 ```
-index.html, about.html, projects.html, services.html, agreement.html, gallery.html,
+index.html, about.html, projects.html, services.html, agreement.html, questionnaire.html, gallery.html,
 writing.html, resume.html, contact.html, privacy.html, terms.html, sitemap.html, 404.html
 work/<slug>/index.html          generated case studies
 writing/<slug>/index.html       generated writing samples

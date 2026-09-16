@@ -1,5 +1,5 @@
 ﻿# Writes sitemap.xml for the site: every top-level page (except 404 and the
-# noindex agreement page) plus the case studies under /work/<slug>/.
+# noindex agreement and questionnaire pages) plus the case studies under /work/<slug>/.
 # lastmod comes from each file's modified time. Also makes sure robots.txt
 # advertises the sitemap.
 #   .\tools\build-sitemap.ps1 -Origin https://example.com
@@ -10,7 +10,7 @@ param(
 $ErrorActionPreference = 'Stop'
 $Origin = $Origin.TrimEnd('/')
 $utf8 = New-Object Text.UTF8Encoding $false
-$skip = @('404.html', 'agreement.html', 'sitemap.html')
+$skip = @('404.html', 'agreement.html', 'questionnaire.html', 'sitemap.html')
 
 # Page list: relative path, title (from <title>, minus the site suffix), group.
 $pages = New-Object System.Collections.Generic.List[object]

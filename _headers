@@ -11,3 +11,7 @@
 # The agreement is a contract page, not a landing page.
 /agreement.html
   X-Robots-Tag: noindex
+
+# The questionnaire is for signed clients, not search.
+/questionnaire.html
+  X-Robots-Tag: noindex

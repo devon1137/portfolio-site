@@ -1,5 +1,6 @@
 User-agent: *
 Allow: /
 Disallow: /agreement.html
+Disallow: /questionnaire.html
 
 Sitemap: https://devonkubacki.com/sitemap.xml

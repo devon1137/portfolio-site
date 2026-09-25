@@ -1,8 +1,15 @@
 # Devon Kubacki — Portfolio
 
-Static site: plain HTML, one stylesheet, one script, no framework. Live at
-[devonkubacki.com](https://devonkubacki.com) (Netlify, from `main` on
-[github.com/devon1137/portfolio-site](https://github.com/devon1137/portfolio-site)).
+Static site: plain HTML, one stylesheet, one script, no framework. Deployed on Netlify from `main`,
+currently at [devonkubacki.netlify.app](https://devonkubacki.netlify.app); the custom domain
+[devonkubacki.com](https://devonkubacki.com) is what the canonicals and sitemap point at and goes
+live with a future deploy.
+
+> [!NOTE]
+> **The live site is behind this repo** (temporary, through roughly 12 October 2026). Netlify
+> deploys are paused until the plan's credits reset, so what's deployed predates the services and
+> agreement rework, the client questionnaire, and several case-study corrections that are in `main`
+> here. Where the two disagree, this repo is current.
 
 There is no build step for the *site* — every page is committed as finished HTML — but the
 pages that repeat (case studies, writing samples, the Gallery, the nav submenus, the header and
